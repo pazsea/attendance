@@ -2,14 +2,16 @@ import app from "firebase/app";
 import "firebase/auth";
 import "firebase/firebase-firestore";
 
+import * as SECRET from "./env.js";
+
 const config = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGE_SENDER_ID,
-  appId: process.env.REACT_APP_APP_ID
+  apiKey: SECRET.API_KEY,
+  authDomain: SECRET.AUTH_DOMAIN,
+  databaseURL: SECRET.DATABASE_URL,
+  projectId: SECRET.PROJECT_ID,
+  storageBucket: SECRET.STORAGE_BUCKET,
+  messagingSenderId: SECRET.MESSAGE_SENDER_ID,
+  appId: SECRET.APP_ID
 };
 
 class Firebase {
