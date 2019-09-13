@@ -1,7 +1,7 @@
 //HOOKA UP DETTA TILL FIREBASE OCH DÖP OM ALLA CLASSNAMES
 
 // ----  { Libraries } ----
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Link, withRouter } from "react-router-dom";
 
@@ -18,6 +18,7 @@ import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Fab from "@material-ui/core/Fab";
+import SimpleModal from "../AddClassModal";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -39,8 +40,23 @@ const useStyles = makeStyles(theme =>
 export default function ClassesContainer(props) {
   const { loading, myClasses } = props;
   const classes = useStyles();
+
+  const [openModalState, setOpenModalState] = useState(false);
+
+  const openModal = () => {
+    setOpenModalState(true);
+  };
+
+  const closeModal = () => {
+    setOpenModalState(false);
+  };
+
   return (
     <React.Fragment>
+      {openModalState ? (
+        <SimpleModal openModalState={openModalState} closeModal={closeModal} openModal={openModal}></SimpleModal>
+      ) : null}
+
       <Container className="container" maxWidth="md">
         <Typography component="div">
           {loading ? (
@@ -55,7 +71,7 @@ export default function ClassesContainer(props) {
                   // className={classes.button}
                   to={ROUTES.HOME}
                   component={Link}
-                  size="large"
+                  size="large"          
                 >
                   FE 18
                 </Button>
@@ -98,7 +114,9 @@ export default function ClassesContainer(props) {
             style={{ width: "60px", height: "60px" }}
             // className={{ root: "addClassesDiv" }}
           >
-            <Icon style={{ fontSize: 40 }}>add</Icon>
+            <Icon style={{ fontSize: 40 }} onClick={() => openModal()}>
+              add
+            </Icon>
           </Fab>
         </div>
       </Container>
