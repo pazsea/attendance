@@ -1,0 +1,19 @@
+.navbar_links_desktop {
+  display: flex;
+  flex-grow: 0.2;
+  justify-content: space-around;
+
+  @media (max-width: 992px) {
+    display: none;
+  }
+}
+
+.navbar_links {
+  display: flex;
+  flex-grow: 0.2;
+  justify-content: space-around;
+}
+
+.span_logo {
+  margin-left: 2%;
+}

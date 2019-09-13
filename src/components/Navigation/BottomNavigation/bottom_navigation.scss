@@ -1,0 +1,15 @@
+.selected_span {
+  /* We increase the specificity */
+  color: white !important;
+  //   text-transform: uppercase;
+}
+
+.label_span {
+  font-size: 18px !important;
+}
+
+.bottom_navigation {
+  @media (min-width: 992px) {
+    display: none;
+  }
+}

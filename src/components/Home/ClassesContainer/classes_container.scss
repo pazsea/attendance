@@ -1,0 +1,26 @@
+.classesDiv {
+  display: flex;
+}
+.classesButton {
+  flex: 1;
+}
+
+.classesLabel {
+  font-size: 20px;
+}
+
+.addClassesDiv {
+  width: fit-content;
+  position: absolute;
+  bottom: 15%;
+  right: 3%;
+  // display: flex;
+  // padding: 5% 0;
+  // justify-content: center;
+  // border: 1px solid black;
+}
+
+
+.container {
+  margin: 8% auto;
+}
