@@ -41,7 +41,7 @@ export default function ClassesContainer(props) {
   const { loading, myClasses } = props;
   const classes = useStyles();
 
-  const [openModalState, setOpenModalState] = useState(false);
+  const [openModalState, setOpenModalState] = useState(true);
 
   const openModal = () => {
     setOpenModalState(true);
