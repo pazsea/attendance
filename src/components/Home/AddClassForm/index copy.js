@@ -17,12 +17,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Icon from "@material-ui/core/Icon";
 
-// import FaceIcon from '@material-ui/icons/Face';
-// import DoneIcon from '@material-ui/icons/Done';
-
-export default function SimpleModal(props) {
-  // getModalStyle is not a pure function, we roll the style only on the first render
-
+export default function AddClassForm(props) {
   const { openModalState, closeModal } = props;
 
   return (
