@@ -18,13 +18,29 @@ import Chip from "@material-ui/core/Chip";
 import Icon from "@material-ui/core/Icon";
 import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
+import { statement } from "@babel/template";
 
 export default function AddClassForm(props) {
   const { addClassModalState, closeModal } = props;
+
   const [lectureModalState, setLectureModalState] = useState(false);
   const [studentsModalState, setStudentsModalState] = useState(false);
 
+  const [classDetails, setClassDetails] = useState({
+    className: "",
+    students: [{ Patrick: true }],
+    lectureDates: [{ 120201: true }]
+  });
+
   // STATES, CLASS NAME STATE ,NEW CLASS DETAILS STATE, OPEN LECTURE MODAL, OPEN ADD STUDENTS MODAL,
+
+  const addToClassDetails = event => {
+    setClassDetails({
+      ...classDetails,
+      [event.target.name]: event.target.value
+    });
+    console.log(classDetails);
+  };
 
   return (
     <React.Fragment>
@@ -48,12 +64,13 @@ export default function AddClassForm(props) {
             <TextField
               id="outlined-email-input"
               label="Klassnamn"
+              name="className"
               type="text"
-              name="text"
               required
-              placeholder="text"
               margin="normal"
               variant="outlined"
+              value={classDetails.className}
+              onChange={addToClassDetails}
             />
             <Button
               variant="contained"
@@ -64,7 +81,9 @@ export default function AddClassForm(props) {
               onClick={() => setLectureModalState(true)}
             >
               Lägg till föreläsningsdatum
-            </Button>{" "}
+            </Button>
+            Antal föreläsningar: {classDetails.lectureDates.length} st.
+            <p></p>
             <Button
               variant="contained"
               color="primary"
@@ -74,7 +93,8 @@ export default function AddClassForm(props) {
               onClick={() => setStudentsModalState(true)}
             >
               Lägg till elever
-            </Button>{" "}
+            </Button>
+            Antal elever: {classDetails.students.length} st.
             <p className="divider"></p>
             <Button
               className="submitButton"
