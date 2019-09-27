@@ -1,5 +1,5 @@
 // ----  { Libraries } ----
-import React, { useState } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import Modal from "@material-ui/core/Modal";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
@@ -25,17 +25,38 @@ export default function AddClassForm(props) {
   const [lectureModalState, setLectureModalState] = useState(false);
   const [studentsModalState, setStudentsModalState] = useState(false);
 
-  const [classDetails, setClassDetails] = useState({
+  const INITIAL_STATE = {
     className: "",
     students: [],
-    lectureDates: [{ 120201: true }]
-  });
+    lectureDates: []
+  };
+
+  const [classDetails, setClassDetails] = useState(INITIAL_STATE);
+
+  const [preSubmitStudent, setPreSubmitStudent] = useState("");
+
+  useEffect(() => {
+    if (classDetails === INITIAL_STATE) {
+      return;
+    } else {
+      localStorage.setItem("classDetails", JSON.stringify(classDetails));
+    }
+  }, [classDetails]);
+
+  useEffect(() => {
+    const details = localStorage.getItem("classDetails");
+    if (details) {
+      setClassDetails(JSON.parse(details));
+    }
+  }, []);
+  // [] i detta fallet beter sig som componentDidMount(). Tomt = renderar om på alla ändringar.
 
   const addStudentToClass = (event, studentName) => {
     setClassDetails({
       ...classDetails,
       students: [...classDetails.students, studentName]
     });
+    setPreSubmitStudent("");
     event.preventDefault();
   };
 
@@ -67,6 +88,8 @@ export default function AddClassForm(props) {
 
       {studentsModalState ? (
         <AddStudentsModal
+          preSubmitStudent={preSubmitStudent}
+          setPreSubmitStudent={setPreSubmitStudent}
           students={classDetails.students}
           addStudentToClass={addStudentToClass}
           deleteStudentFromClass={deleteStudentFromClass}

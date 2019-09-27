@@ -20,11 +20,12 @@ export default function AddStudentsModal(props) {
     setStudentsModalState,
     addStudentToClass,
     deleteStudentFromClass,
-    students
+    students,
+    preSubmitStudent,
+    setPreSubmitStudent
   } = props;
   //Deconstructing här gör att man slipper props. prefix.
 
-  const [studentName, setStudentName] = useState("");
   // STATES, CLASS NAME STATE ,NEW CLASS DETAILS STATE, OPEN Students MODAL, OPEN ADD STUDENTS MODAL,
 
   return (
@@ -33,37 +34,37 @@ export default function AddStudentsModal(props) {
         <h2 id="simple-modal-title">Lägg till elever</h2>
 
         <form
-          className="add_students_form"
-          onSubmit={event => addStudentToClass(event, studentName)}
+          className="add_students_form_column"
+          onSubmit={event => addStudentToClass(event, preSubmitStudent)}
         >
           <TextField
             id="outlined-email-input"
-            label="Klassnamn"
+            label="Student namn"
             type="text"
-            name="text"
+            name="studentNamn"
             required
-            placeholder="text"
+            placeholder="Student namn"
             margin="normal"
             variant="outlined"
-            onChange={event => setStudentName(event.target.value)}
-            value={studentName}
+            onChange={event => setPreSubmitStudent(event.target.value)}
+            value={preSubmitStudent}
           />
-
-          {students.length > 0 ? (
-            students.map((student, index) => (
-              <Chip
-                className="student_chip"
-                key={student + index}
-                icon={<FaceIcon />}
-                label={student}
-                // onClick={handleClick}
-                onDelete={() => deleteStudentFromClass(index)}
-              />
-            ))
-          ) : (
-            <p>Du har inga studenter </p>
-          )}
-
+          <div className="chip_container">
+            {students.length > 0 ? (
+              students.map((student, index) => (
+                <Chip
+                  className="student_chip"
+                  key={student + index}
+                  icon={<FaceIcon />}
+                  label={student}
+                  // onClick={handleClick}
+                  onDelete={() => deleteStudentFromClass(index)}
+                />
+              ))
+            ) : (
+              <p>Du har inga studenter </p>
+            )}
+          </div>
           <p className="divider"></p>
           <Button
             className="submitButton"

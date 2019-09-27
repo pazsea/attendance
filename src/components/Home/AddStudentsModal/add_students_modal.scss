@@ -13,7 +13,7 @@
   }
 }
 
-.add_students_form {
+.add_students_form_column {
   display: flex;
   flex-direction: column;
   padding: 0 5%;
@@ -25,6 +25,12 @@
   }
 }
 
+.chip_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .student_chip {
-  width: 50%;
+  width: fit-content;
+  margin: 0.8rem 0.3rem 0 0.3rem;
 }
