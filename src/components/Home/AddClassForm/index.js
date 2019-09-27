@@ -18,7 +18,6 @@ import Chip from "@material-ui/core/Chip";
 import Icon from "@material-ui/core/Icon";
 import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
-import { statement } from "@babel/template";
 
 export default function AddClassForm(props) {
   const { addClassModalState, closeModal } = props;
@@ -28,13 +27,28 @@ export default function AddClassForm(props) {
 
   const [classDetails, setClassDetails] = useState({
     className: "",
-    students: [{ Patrick: true }],
+    students: [],
     lectureDates: [{ 120201: true }]
   });
 
+  const addStudentToClass = (event, studentName) => {
+    setClassDetails({
+      ...classDetails,
+      students: [...classDetails.students, studentName]
+    });
+    event.preventDefault();
+  };
+
+  const deleteStudentFromClass = index => {
+    setClassDetails({
+      ...classDetails,
+      students: classDetails.students.filter((_, i) => i !== index)
+    });
+  };
+
   // STATES, CLASS NAME STATE ,NEW CLASS DETAILS STATE, OPEN LECTURE MODAL, OPEN ADD STUDENTS MODAL,
 
-  const addToClassDetails = event => {
+  const addNameToClass = event => {
     setClassDetails({
       ...classDetails,
       [event.target.name]: event.target.value
@@ -50,12 +64,17 @@ export default function AddClassForm(props) {
           setLectureModalState={() => setLectureModalState(false)}
         ></AddLecturesModal>
       ) : null}
+
       {studentsModalState ? (
         <AddStudentsModal
+          students={classDetails.students}
+          addStudentToClass={addStudentToClass}
+          deleteStudentFromClass={deleteStudentFromClass}
           studentsModalState={studentsModalState}
           setStudentsModalState={() => setStudentsModalState(false)}
         ></AddStudentsModal>
       ) : null}
+
       <Modal open={addClassModalState} onClose={closeModal}>
         <div className="add_class_container">
           <h2 id="simple-modal-title">Skapa klass</h2>
@@ -70,7 +89,7 @@ export default function AddClassForm(props) {
               margin="normal"
               variant="outlined"
               value={classDetails.className}
-              onChange={addToClassDetails}
+              onChange={addNameToClass}
             />
             <Button
               variant="contained"
@@ -80,7 +99,7 @@ export default function AddClassForm(props) {
               margin="normal"
               onClick={() => setLectureModalState(true)}
             >
-              Lägg till föreläsningsdatum
+              Lägg till föreläsningstillfällen
             </Button>
             Antal föreläsningar: {classDetails.lectureDates.length} st.
             <p></p>
