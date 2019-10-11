@@ -10,7 +10,7 @@ import {
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 
 // ----  { Backend } ----
-// import firebase from "../../Firebase";
+
 
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
@@ -29,22 +29,21 @@ export default function AddLectureModal(props) {
     addDatesToClass
   } = props;
 
+  const dateMax = new Date(new Date().setMonth(new Date().getMonth() + 24));
+  const dateMin = new Date(new Date().setMonth(new Date().getMonth() - 24));
+
   return (
     <Modal open={lectureModalState} onClose={setLectureModalState}>
       <div className="add_class_container">
         <form className="add_class_form" onSubmit={e => e.preventDefault()}>
-          {/* TODO: Få calendern att anpassa storlek till container 
-              TODO: blå färgen ska vara likadan som material(Gustav kan inte nå node modules)
-              TODO: Månader måste vara på svenska. (Gustav kan inte nå node modules)
-              TODO: Kolla heighten på datumen KLAR
-              TODO: När man är i en annan månad så fokuserar den tillbaka till tidigare valda datum KLAR
-          */}
           <div className="add_lectures_datepicker">
             <MultipleDatesCalendar
+              // height={350}
               // width={window.innerWidth <= 650 ? window.innerWidth : 600}
               height={window.innerHeight - 300}
+              max={dateMax}
+              min={dateMin}
               width="100%"
-              // height={350}
               selected={dates}
               onSelect={selectedDate =>
                 addDatesToClass(
