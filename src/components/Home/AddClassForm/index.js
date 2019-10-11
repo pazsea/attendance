@@ -1,5 +1,5 @@
 // ----  { Libraries } ----
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@material-ui/core/Modal";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
@@ -8,33 +8,53 @@ import Modal from "@material-ui/core/Modal";
 import "./add_class_modal.scss";
 
 // ----  { Backend } ----
-import firebase from "../../Firebase";
+// import firebase from "../../Firebase";
 
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
-import Icon from "@material-ui/core/Icon";
+
 import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
+
+const INITIAL_STATE = {
+  className: "",
+  students: [],
+  lectureDates: []
+};
 
 export default function AddClassForm(props) {
   const { addClassModalState, closeModal } = props;
 
+  //THIS STATE HOLDS ALL DETAILS OF THE CLASS
+  const [classDetails, setClassDetails] = useState(INITIAL_STATE);
+  //
+  //
+  //
+  //
+  //
+  //THESE STATES CONTROLS THE MODUL POPUPS ONLY
   const [lectureModalState, setLectureModalState] = useState(false);
   const [studentsModalState, setStudentsModalState] = useState(false);
-
-  const INITIAL_STATE = {
-    className: "",
-    students: [],
-    lectureDates: []
-  };
-
-  const [classDetails, setClassDetails] = useState(INITIAL_STATE);
-
+  //
+  //
+  //
+  //
+  //
+  //THIS STATE IS JUST FOR INPUT FIELDS IN STUDENT
   const [preSubmitStudent, setPreSubmitStudent] = useState("");
-
+  //
+  //
+  //
+  //
+  //
+  //THIS STATE HOLDS THE CURRENT DATE SELECTION FOR CLASSES
+  // const [preSubmitDates, setPreSubmitDates] = useState("");
+  //
+  //
+  //
+  //
+  //
   useEffect(() => {
     if (classDetails === INITIAL_STATE) {
       return;
@@ -50,6 +70,8 @@ export default function AddClassForm(props) {
     }
   }, []);
   // [] i detta fallet beter sig som componentDidMount(). Tomt = renderar om på alla ändringar.
+
+  //ADDERA OCH DELETE STUDENTS FUNKTIONER.
 
   const addStudentToClass = (event, studentName) => {
     setClassDetails({
@@ -67,8 +89,6 @@ export default function AddClassForm(props) {
     });
   };
 
-  // STATES, CLASS NAME STATE ,NEW CLASS DETAILS STATE, OPEN LECTURE MODAL, OPEN ADD STUDENTS MODAL,
-
   const addNameToClass = event => {
     setClassDetails({
       ...classDetails,
@@ -77,11 +97,23 @@ export default function AddClassForm(props) {
     console.log(classDetails);
   };
 
+  //FUNKTION FÖR ATT LÄGGA TILL NYA DATUM I LECTURE DATES ARRAYEN SAMT TA BORT
+
+  const addDatesToClass = (calenderFunction, pickedDate) => {
+    const dates = classDetails.lectureDates;
+    setClassDetails({
+      ...classDetails,
+      lectureDates: calenderFunction(pickedDate, dates)
+    });
+  };
+
   return (
     <React.Fragment>
       {lectureModalState ? (
         <AddLecturesModal
           lectureModalState={lectureModalState}
+          addDatesToClass={addDatesToClass}
+          dates={classDetails.lectureDates}
           setLectureModalState={() => setLectureModalState(false)}
         ></AddLecturesModal>
       ) : null}

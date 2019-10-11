@@ -1,44 +1,69 @@
 // ----  { Libraries } ----
 import React from "react";
 import Modal from "@material-ui/core/Modal";
+import {
+  Calendar,
+  defaultMultipleDateInterpolation,
+  withMultipleDates
+} from "react-infinite-calendar";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 
-// ----  { Styles } ----
-import "./add_lectures_modal.scss";
-
 // ----  { Backend } ----
-import firebase from "../../Firebase";
+
 
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
-import Icon from "@material-ui/core/Icon";
+
+// ----  { Styles } ----
+import "./add_lectures_modal.scss";
+import "./styles.css"; // Make sure to import the default stylesheet
+
+const MultipleDatesCalendar = withMultipleDates(Calendar);
 
 export default function AddLectureModal(props) {
-  const { lectureModalState, setLectureModalState } = props;
+  const {
+    lectureModalState,
+    setLectureModalState,
+    dates,
+    addDatesToClass
+  } = props;
 
-  // STATES, CLASS NAME STATE ,NEW CLASS DETAILS STATE, OPEN LECTURE MODAL, OPEN ADD STUDENTS MODAL,
+  const dateMax = new Date(new Date().setMonth(new Date().getMonth() + 24));
+  const dateMin = new Date(new Date().setMonth(new Date().getMonth() - 24));
 
   return (
     <Modal open={lectureModalState} onClose={setLectureModalState}>
       <div className="add_class_container">
-        <h2 id="simple-modal-title">Lägg till föreläsningsdatum</h2>
-
         <form className="add_class_form" onSubmit={e => e.preventDefault()}>
-          <TextField
-            id="outlined-email-input"
-            label="Klassnamn"
-            type="text"
-            name="text"
-            required
-            placeholder="text"
-            margin="normal"
-            variant="outlined"
-          />
-
+          <div className="add_lectures_datepicker">
+            <MultipleDatesCalendar
+              // height={350}
+              // width={window.innerWidth <= 650 ? window.innerWidth : 600}
+              height={window.innerHeight - 300}
+              max={dateMax}
+              min={dateMin}
+              width="100%"
+              selected={dates}
+              onSelect={selectedDate =>
+                addDatesToClass(
+                  defaultMultipleDateInterpolation,
+                  selectedDate.getTime()
+                )
+              }
+              locale={{
+                blank: "Välj föreläsningsdatum..",
+                todayLabel: {
+                  long: "Gå till dagens datum",
+                  short: "Idag"
+                },
+                locale: require("date-fns/locale/sv"),
+                headerFormat: "dddd, D MMM",
+                weekdays: ["Sön", "Mån", "Tis", "Ons", "Tors", "Fre", "Lör"],
+                weekStartsOn: 1
+              }}
+            ></MultipleDatesCalendar>
+          </div>
           <p className="divider"></p>
           <Button
             className="submitButton"
@@ -46,8 +71,9 @@ export default function AddLectureModal(props) {
             color="secondary"
             type="submit"
             size="large"
+            onClick={setLectureModalState}
           >
-            SKAPA KLASS
+            Bekräfta
           </Button>
         </form>
       </div>
