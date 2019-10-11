@@ -1,34 +1,33 @@
 .add_lectures_container {
-    text-align: center;
-    width: 50%;
-    height: 95vh;
-    margin: 1% auto auto auto;
-    background: white;
-    border: 2px solid #000;
-    position: relative;
-    overflow-y: auto;
-  
-    @media (max-width: 992px) {
-      width: 95%;
-    }
-  }
-  
-  .add_lectures_form {
-    display: flex;
-    flex-direction: column;
-    padding: 0 5%;
-    height: 85%;
-  
-    button {
-      margin: 1% auto;
-      width: 100%;
-    }
-  }
-  
+  text-align: center;
+  width: 50%;
+  height: 95vh;
+  margin: 1% auto auto auto;
+  background: white;
+  border: 2px solid #000;
+  position: relative;
+  overflow-y: auto;
 
-  .add_lectures_datepicker {
-    display: flex;
-    flex-direction: column;
-    padding: 0 5%;
-    height: 85%;
+  @media (max-width: 992px) {
+    width: 95%;
   }
+}
+
+.add_lectures_form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 5%;
+  height: 85%;
+
+  button {
+    margin: 1% auto;
+    width: 100%;
+  }
+}
+
+.add_lectures_datepicker {
+  display: flex;
+  border: 1px solid red;
+  justify-content: center;
+  padding-top: 1rem;
+}

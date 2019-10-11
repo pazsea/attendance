@@ -11,8 +11,8 @@ import "./add_class_modal.scss";
 // import firebase from "../../Firebase";
 
 // ----  { Render Components } -----
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+// import Button from "@material-ui/core/Button";
+// import TextField from "@material-ui/core/TextField";
 // import Avatar from "@material-ui/core/Avatar";
 // import Chip from "@material-ui/core/Chip";
 // import Icon from "@material-ui/core/Icon";
@@ -36,7 +36,7 @@ export default function AddClassForm(props) {
   //
   //
   //THESE STATES CONTROLS THE MODUL POPUPS ONLY
-  const [lectureModalState, setLectureModalState] = useState(false);
+  const [lectureModalState, setLectureModalState] = useState(true);
   const [studentsModalState, setStudentsModalState] = useState(false);
   //
   //
@@ -45,6 +45,13 @@ export default function AddClassForm(props) {
   //
   //THIS STATE IS JUST FOR INPUT FIELDS IN STUDENT
   const [preSubmitStudent, setPreSubmitStudent] = useState("");
+  //
+  //
+  //
+  //
+  //
+  //THIS STATE HOLDS THE CURRENT DATE SELECTION FOR CLASSES
+  // const [preSubmitDates, setPreSubmitDates] = useState("");
   //
   //
   //
@@ -84,24 +91,49 @@ export default function AddClassForm(props) {
     });
   };
 
-  const addNameToClass = event => {
-    setClassDetails({
-      ...classDetails,
-      [event.target.name]: event.target.value
-    });
-    console.log(classDetails);
-  };
+  // const addNameToClass = event => {
+  //   setClassDetails({
+  //     ...classDetails,
+  //     [event.target.name]: event.target.value
+  //   });
+  //   console.log(classDetails);
+  // };
 
   //ADDERA OCH DELETE LECTURES DATES
 
+  //FUNKTION FÖR ATT LÄGGA TILL NYA DATUM I LECTURE DATES ARRAYEN SAMT TA BORT
+  const addDatesToClass = pickedDate => {
+    const dates = classDetails.lectureDates;
+    if (dates.includes(pickedDate)) {
+      setClassDetails({
+        ...classDetails,
+        lectureDates: dates.filter(dateInArray => pickedDate !== dateInArray)
+      });
+    } else {
+      setClassDetails({
+        ...classDetails,
+        //blir en helt ny array
+        lectureDates: [pickedDate, ...dates]
+      });
+      
+    }
+  };
+
+  // const deleteDatesFromClass = pickedDate => {
+  //   setClassDetail({
+  //     ...classDetails,
+  //     lectureDates: [...classDetails.lectureDates, pickedDate]
+  //   });
+  // };
+
   return (
     <React.Fragment>
-      {lectureModalState ? (
+      {/* {lectureModalState ? (
         <AddLecturesModal
           lectureModalState={lectureModalState}
           setLectureModalState={() => setLectureModalState(false)}
         ></AddLecturesModal>
-      ) : null}
+      ) : null} */}
 
       {studentsModalState ? (
         <AddStudentsModal
@@ -116,7 +148,13 @@ export default function AddClassForm(props) {
       ) : null}
 
       <Modal open={addClassModalState} onClose={closeModal}>
-        <div className="add_class_container">
+        <AddLecturesModal
+          lectureModalState={lectureModalState}
+          addDatesToClass={addDatesToClass}
+          dates={classDetails.lectureDates}
+          setLectureModalState={() => setLectureModalState(false)}
+        ></AddLecturesModal>
+        {/* <div className="add_class_container">
           <h2 id="simple-modal-title">Skapa klass</h2>
 
           <form className="add_class_form" onSubmit={e => e.preventDefault()}>
@@ -166,7 +204,7 @@ export default function AddClassForm(props) {
               SKAPA KLASS
             </Button>
           </form>
-        </div>
+        </div> */}
       </Modal>
     </React.Fragment>
   );
