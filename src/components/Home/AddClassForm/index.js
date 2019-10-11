@@ -102,21 +102,12 @@ export default function AddClassForm(props) {
   //ADDERA OCH DELETE LECTURES DATES
 
   //FUNKTION FÖR ATT LÄGGA TILL NYA DATUM I LECTURE DATES ARRAYEN SAMT TA BORT
-  const addDatesToClass = pickedDate => {
+  const addDatesToClass = (calenderFunction, pickedDate) => {
     const dates = classDetails.lectureDates;
-    if (dates.includes(pickedDate)) {
-      setClassDetails({
-        ...classDetails,
-        lectureDates: dates.filter(dateInArray => pickedDate !== dateInArray)
-      });
-    } else {
-      setClassDetails({
-        ...classDetails,
-        //blir en helt ny array
-        lectureDates: [pickedDate, ...dates]
-      });
-      
-    }
+    setClassDetails({
+      ...classDetails,
+      lectureDates: calenderFunction(pickedDate, dates)
+    });
   };
 
   // const deleteDatesFromClass = pickedDate => {
