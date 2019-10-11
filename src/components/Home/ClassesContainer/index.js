@@ -1,7 +1,7 @@
 //HOOKA UP DETTA TILL FIREBASE OCH DÖP OM ALLA CLASSNAMES
 
 // ----  { Libraries } ----
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Link, withRouter } from "react-router-dom";
 
@@ -18,6 +18,7 @@ import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Fab from "@material-ui/core/Fab";
+import AddClassForm from "../AddClassForm";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -39,8 +40,19 @@ const useStyles = makeStyles(theme =>
 export default function ClassesContainer(props) {
   const { loading, myClasses } = props;
   const classes = useStyles();
+
+  const [addClassModalState, setAddClassModal] = useState(true);
+
   return (
     <React.Fragment>
+      {addClassModalState ? (
+        <AddClassForm
+          addClassModalState={addClassModalState}
+          closeModal={() => setAddClassModal(false)}
+          openModal={() => setAddClassModal(true)}
+        ></AddClassForm>
+      ) : null}
+
       <Container className="container" maxWidth="md">
         <Typography component="div">
           {loading ? (
@@ -97,6 +109,7 @@ export default function ClassesContainer(props) {
             aria-label="add"
             style={{ width: "60px", height: "60px" }}
             // className={{ root: "addClassesDiv" }}
+            onClick={() => setAddClassModal(true)}
           >
             <Icon style={{ fontSize: 40 }}>add</Icon>
           </Fab>
