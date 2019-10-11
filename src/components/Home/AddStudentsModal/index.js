@@ -12,7 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Icon from "@material-ui/core/Icon";
-import FaceIcon from "@material-ui/icons/Face";
+// import FaceIcon from "@material-ui/icons/Face";
 
 export default function AddStudentsModal(props) {
   const {
@@ -55,7 +55,7 @@ export default function AddStudentsModal(props) {
                 <Chip
                   className="student_chip"
                   key={student + index}
-                  icon={<FaceIcon />}
+                  // icon={<FaceIcon />}
                   label={student}
                   // onClick={handleClick}
                   onDelete={() => deleteStudentFromClass(index)}
