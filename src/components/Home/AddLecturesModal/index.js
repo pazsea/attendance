@@ -19,7 +19,6 @@ import Button from "@material-ui/core/Button";
 import "./add_lectures_modal.scss";
 import "./styles.css"; // Make sure to import the default stylesheet
 
-
 const MultipleDatesCalendar = withMultipleDates(Calendar);
 
 export default function AddLectureModal(props) {

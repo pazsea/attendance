@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.4.0",
-    "date-fns": "^2.4.1",
+    "date-fns": "^1.27.2",
     "dotenv": "^8.1.0",
     "firebase": "^6.5.0",
     "node-sass": "^4.12.0",
