@@ -71,6 +71,7 @@ export default function AddLectureModal(props) {
             color="secondary"
             type="submit"
             size="large"
+            onClick={setLectureModalState}
           >
             Bekräfta
           </Button>
