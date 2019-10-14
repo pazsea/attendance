@@ -16,6 +16,7 @@ import TextField from "@material-ui/core/TextField";
 
 import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
+import PopUpHeader from "../../../constants/PopUpHeader";
 
 const INITIAL_STATE = {
   className: "",
@@ -132,7 +133,11 @@ export default function AddClassForm(props) {
 
       <Modal open={addClassModalState} onClose={closeModal}>
         <div className="add_class_container">
-          <h2 id="simple-modal-title">Skapa klass</h2>
+          <PopUpHeader
+            color="#3f51b5"
+            headerTitle="SKAPA KLASS"
+            close={closeModal}
+          ></PopUpHeader>
 
           <form className="add_class_form" onSubmit={e => e.preventDefault()}>
             <TextField

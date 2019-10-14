@@ -11,7 +11,6 @@ import {
 
 // ----  { Backend } ----
 
-
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
 
@@ -34,36 +33,34 @@ export default function AddLectureModal(props) {
 
   return (
     <Modal open={lectureModalState} onClose={setLectureModalState}>
-      <div className="add_class_container">
-        <form className="add_class_form" onSubmit={e => e.preventDefault()}>
-          <div className="add_lectures_datepicker">
-            <MultipleDatesCalendar
-              // height={350}
-              // width={window.innerWidth <= 650 ? window.innerWidth : 600}
-              height={window.innerHeight - 300}
-              max={dateMax}
-              min={dateMin}
-              width="100%"
-              selected={dates}
-              onSelect={selectedDate =>
-                addDatesToClass(
-                  defaultMultipleDateInterpolation,
-                  selectedDate.getTime()
-                )
-              }
-              locale={{
-                blank: "Välj föreläsningsdatum..",
-                todayLabel: {
-                  long: "Gå till dagens datum",
-                  short: "Idag"
-                },
-                locale: require("date-fns/locale/sv"),
-                headerFormat: "dddd, D MMM",
-                weekdays: ["Sön", "Mån", "Tis", "Ons", "Tors", "Fre", "Lör"],
-                weekStartsOn: 1
-              }}
-            ></MultipleDatesCalendar>
-          </div>
+      <div className="add_lectures_container">
+        <form className="add_lectures_form" onSubmit={e => e.preventDefault()}>
+          <MultipleDatesCalendar
+            // width={window.innerWidth <= 650 ? window.innerWidth : 600}
+            height={window.innerHeight - 290}
+            max={dateMax}
+            min={dateMin}
+            width="100%"
+            selected={dates}
+            onSelect={selectedDate =>
+              addDatesToClass(
+                defaultMultipleDateInterpolation,
+                selectedDate.getTime()
+              )
+            }
+            locale={{
+              blank: "Välj föreläsningsdatum..",
+              todayLabel: {
+                long: "Gå till dagens datum",
+                short: "Idag"
+              },
+              locale: require("date-fns/locale/sv"),
+              headerFormat: "dddd, D MMM",
+              weekdays: ["Sön", "Mån", "Tis", "Ons", "Tors", "Fre", "Lör"],
+              weekStartsOn: 1
+            }}
+          ></MultipleDatesCalendar>
+
           <p className="divider"></p>
           <Button
             className="submitButton"

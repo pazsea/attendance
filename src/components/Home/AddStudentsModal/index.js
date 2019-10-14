@@ -12,6 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Icon from "@material-ui/core/Icon";
+import PopUpHeader from "../../../constants/PopUpHeader";
 // import FaceIcon from "@material-ui/icons/Face";
 
 export default function AddStudentsModal(props) {
@@ -31,7 +32,11 @@ export default function AddStudentsModal(props) {
   return (
     <Modal open={studentsModalState} onClose={setStudentsModalState}>
       <div className="add_students_container">
-        <h2 id="simple-modal-title">Lägg till elever</h2>
+        <PopUpHeader
+          color="#559FFF"
+          headerTitle="LÄGG TILL ELEVER"
+          close={setStudentsModalState}
+        ></PopUpHeader>
 
         <form
           className="add_students_form_column"
