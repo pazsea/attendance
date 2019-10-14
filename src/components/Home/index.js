@@ -10,30 +10,30 @@ import firebase from "../Firebase";
 import ClassesContainer from "./ClassesContainer";
 
 const Home = () => {
-  const [{ uid }] = useContext(Context);
+  const [{ userUid }] = useContext(Context);
 
   const [loading, setLoading] = useState(true);
   const [myClasses, setMyClasses] = useState(false);
-  // console.log("UTANFÖR " + uid);
+  // console.log("UTANFÖR " + userUid);
 
-  // useEffect(() => {
-  //   const unsubcribe = firebase
-  //     .user(uid)
-  //     .collection("myClasses")
-  //     .onSnapshot(snapshot => {
-  //       const val = snapshot.docs;
-  //       if (val.length > 0) {
-  //         const newData = val.map(doc => ({
-  //           id: doc.id,
-  //           ...doc.data()
-  //         }));
-  //         setMyClasses(newData);
-  //       }
-  //       setLoading(false);
-  //     });
+  useEffect(() => {
+    const unsubcribe = firebase
+      .user(userUid)
+      .collection("myClasses")
+      .onSnapshot(snapshot => {
+        const val = snapshot.docs;
+        if (val) {
+          const newData = val.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setMyClasses(newData);
+        }
+        setLoading(false);
+      });
 
-  //   return () => unsubcribe;
-  // }, [uid]);
+    return () => unsubcribe;
+  }, [userUid]);
 
   return (
     <div>

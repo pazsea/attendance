@@ -34,7 +34,7 @@ const SignUpPage = props => {
         verified: false
       });
       await setUserDetails({
-        uid: firebase.getCurrentUid(),
+        userUid: firebase.getCurrentUid(),
         loggedIn: true
       });
       // await firebase.addQuote(quote);

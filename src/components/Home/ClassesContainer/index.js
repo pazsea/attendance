@@ -1,9 +1,9 @@
 //HOOKA UP DETTA TILL FIREBASE OCH DÖP OM ALLA CLASSNAMES
 
 // ----  { Libraries } ----
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 import * as ROUTES from "../../../constants/routes";
@@ -12,6 +12,8 @@ import * as ROUTES from "../../../constants/routes";
 import "./classes_container.scss";
 
 // ----  { Backend } ----
+
+import firebase from "../../Firebase";
 // ----  { Render Components } -----
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -19,6 +21,7 @@ import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Fab from "@material-ui/core/Fab";
 import AddClassForm from "../AddClassForm";
+import { Context } from "../../../context";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -40,8 +43,26 @@ const useStyles = makeStyles(theme =>
 export default function ClassesContainer(props) {
   const { loading, myClasses } = props;
   const classes = useStyles();
+  const [addClassModalState, setAddClassModal] = useState(false);
+  const [{ userUid }] = useContext(Context);
 
-  const [addClassModalState, setAddClassModal] = useState(true);
+  const deleteFromDB = classUid => {
+    // USERS > "USERNS UID" > MY CLASSES > "KLASSENS UID"
+
+    firebase
+      .user(userUid)
+      // db.collection("users")
+      //   .doc(userUid)
+      .collection("myClasses")
+      .doc(classUid)
+      .delete()
+      .then(function() {
+        console.log("Document successfully deleted!");
+      })
+      .catch(function(error) {
+        console.error("Error removing document: ", error);
+      });
+  };
 
   return (
     <React.Fragment>
@@ -57,46 +78,39 @@ export default function ClassesContainer(props) {
         <Typography component="div">
           {loading ? (
             <div>
-              {/* <div>Laddar.....</div> */}
-
-              <div className="classesDiv">
+              <div>Laddar.....</div>
+            </div>
+          ) : myClasses ? (
+            myClasses.map((schoolClass, index) => (
+              <div className="classesDiv" key={"div " + schoolClass.id}>
                 <Button
                   variant="contained"
                   color="primary"
                   classes={{ root: "classesButton", label: "classesLabel" }}
-                  // className={classes.button}
                   to={ROUTES.HOME}
                   component={Link}
-                  size="large"
+                  size="medium"
+                  key={"button class " + schoolClass.id}
                 >
-                  FE 18
+                  {schoolClass.name}
                 </Button>
                 <Fab
                   color="secondary"
                   aria-label="edit"
                   className={classes.fab}
+                  key={"fab " + schoolClass.id}
                 >
                   <Icon>edit</Icon>
                 </Fab>
-                <Fab aria-label="delete" className={classes.fab}>
-                  <Icon>delete</Icon>
-                </Fab>
-              </div>
-            </div>
-          ) : myClasses ? (
-            myClasses.map(schoolClass => (
-              <div key={"div " + schoolClass.id} className="classesDiv">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  classes={{ root: "classesDiv" }}
-                  // className={classes.button}
-                  key={"button " + schoolClass.id}
-                  to={ROUTES.HOME}
-                  component={Link}
+                <Fab
+                  key={"delete button " + schoolClass.id}
+                  aria-label="delete"
+                  className={classes.fab}
                 >
-                  {schoolClass.name}
-                </Button>
+                  <Icon onClick={() => deleteFromDB(schoolClass.id)}>
+                    delete
+                  </Icon>
+                </Fab>
               </div>
             ))
           ) : (

@@ -1,5 +1,5 @@
 // ----  { Libraries } ----
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Modal from "@material-ui/core/Modal";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
@@ -8,7 +8,7 @@ import Modal from "@material-ui/core/Modal";
 import "./add_class_modal.scss";
 
 // ----  { Backend } ----
-// import firebase from "../../Firebase";
+import firebase from "../../Firebase";
 
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
@@ -17,6 +17,8 @@ import TextField from "@material-ui/core/TextField";
 import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
 import PopUpHeader from "../../../constants/PopUpHeader";
+import NotificationButton from "../../../constants/NotificationButton";
+import { Context } from "../../../context";
 
 const INITIAL_STATE = {
   className: "",
@@ -26,6 +28,7 @@ const INITIAL_STATE = {
 
 export default function AddClassForm(props) {
   const { addClassModalState, closeModal } = props;
+  const [{ userUid }] = useContext(Context);
 
   //THIS STATE HOLDS ALL DETAILS OF THE CLASS
   const [classDetails, setClassDetails] = useState(INITIAL_STATE);
@@ -108,6 +111,43 @@ export default function AddClassForm(props) {
     });
   };
 
+  const sendToDB = () => {
+    console.log("SEND TO DB STARTADE");
+    firebase
+      .user(userUid)
+      .collection("myClasses")
+      .add({
+        name: [classDetails.className]
+      })
+      .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch(function(error) {
+        console.error("Error adding document: ", error);
+      });
+    console.log("SEND TO DB SLUTADE");
+    // // Get a new write batch
+    // var batch = firebase.db.batch();
+
+    // // Set the value of 'NYC'
+    // var nycRef = db.collection("cities").doc("NYC");
+    // batch.set(nycRef, { name: "New York City" });
+
+    // // Update the population of 'SF'
+    // var sfRef = db.collection("cities").doc("SF");
+    // batch.update(sfRef, { population: 1000000 });
+
+    // // Delete the city 'LA'
+    // var laRef = db.collection("cities").doc("LA");
+    // batch.delete(laRef);
+
+    // // Commit the batch
+    // batch.commit().then(function() {
+    //   // ...
+
+    // });
+  };
+
   return (
     <React.Fragment>
       {lectureModalState ? (
@@ -151,29 +191,18 @@ export default function AddClassForm(props) {
               value={classDetails.className}
               onChange={addNameToClass}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              type="button"
-              size="large"
-              margin="normal"
+
+            <NotificationButton
+              text="Lägg till föreläsningsdatum"
+              quantity={classDetails.lectureDates.length}
               onClick={() => setLectureModalState(true)}
-            >
-              Lägg till föreläsningstillfällen
-            </Button>
-            Antal föreläsningar: {classDetails.lectureDates.length} st.
+            ></NotificationButton>
             <p></p>
-            <Button
-              variant="contained"
-              color="primary"
-              type="button"
-              margin="normal"
-              size="large"
+            <NotificationButton
+              text="Lägg till elever"
+              quantity={classDetails.students.length}
               onClick={() => setStudentsModalState(true)}
-            >
-              Lägg till elever
-            </Button>
-            Antal elever: {classDetails.students.length} st.
+            ></NotificationButton>
             <p className="divider"></p>
             <Button
               className="submitButton"
@@ -182,6 +211,7 @@ export default function AddClassForm(props) {
               type="submit"
               margin="normal"
               size="large"
+              onClick={sendToDB}
             >
               SKAPA KLASS
             </Button>
@@ -191,3 +221,8 @@ export default function AddClassForm(props) {
     </React.Fragment>
   );
 }
+
+// SKAPA KLASS
+// 1. EN UID I USERS > "MY UID" > MY CLASSES > "CLASS UID" = TRUE
+// 2. EN UID I CLASSES > CLASS NAME + STUDENTS = TRUE ARRAY + LECTURES = TRUE ARRAY
+// 3. EN UID I LECTURES + TIME JS OCH ATTENDANCE

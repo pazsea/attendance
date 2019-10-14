@@ -26,7 +26,7 @@ const SignInPage = props => {
     try {
       await firebase.login(email, password);
       await setUserDetails({
-        uid: firebase.getCurrentUid(),
+        userUid: firebase.getCurrentUid(),
         loggedIn: true
       });
       props.history.replace("/home");
