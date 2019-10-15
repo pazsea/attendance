@@ -14,7 +14,6 @@ const Home = () => {
 
   const [loading, setLoading] = useState(true);
   const [myClasses, setMyClasses] = useState(false);
-  // console.log("UTANFÖR " + userUid);
 
   useEffect(() => {
     const unsubcribe = firebase

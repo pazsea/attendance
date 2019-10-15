@@ -78,7 +78,7 @@ export default function ClassesContainer(props) {
         <Typography component="div">
           {loading ? (
             <div>
-              <div>Laddar.....</div>
+              <div>Hämtar klasser.....</div>
             </div>
           ) : myClasses ? (
             myClasses.map((schoolClass, index) => (

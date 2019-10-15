@@ -19,6 +19,7 @@ import AddStudentsModal from "../AddStudentsModal";
 import PopUpHeader from "../../../constants/PopUpHeader";
 import NotificationButton from "../../../constants/NotificationButton";
 import { Context } from "../../../context";
+import { array } from "prop-types";
 
 const INITIAL_STATE = {
   className: "",
@@ -112,15 +113,79 @@ export default function AddClassForm(props) {
   };
 
   const sendToDB = () => {
+    let sendStudents = classDetails.students;
+    let sendClassName = classDetails.className;
+    let sendLecturesDates = classDetails.lectureDates;
     console.log("SEND TO DB STARTADE");
     firebase
-      .user(userUid)
+      .user(userUid) //Går in på nuletande inloggade personen via Context
       .collection("myClasses")
       .add({
-        name: [classDetails.className]
+        name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
       })
       .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
+        let classUid = docRef.id; // hämtar ut för den klassen som just lades till
+        let batch = firebase.db.batch(); //Batch är ny grej för firestore.
+
+        let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
+          .class(classUid);
+
+        batch.set(nameInMyClasses, {
+          name: sendClassName,
+          students: sendStudents
+        }); // Lägger till klassnamn
+
+        sendLecturesDates.forEach(lectureTime => {
+          let addLectures = firebase
+            .lecture(classUid)
+            .collection("dates")
+            .doc();
+          batch.add(addLectures, {
+            time: lectureTime
+          });
+        });
+
+        // sendLecturesDates.forEach(lectureTime => {
+        //   batch
+        //     .set(addToClasses, {
+        //       time: lectureTime
+        //     })
+        //     .then(function(docRef) {
+        //       var lectureUid = docRef.id;
+        //       var addToLectures = firebase.lectures();
+        //     });
+        // });
+
+        // var addToClasses = firebase.classes().doc(classUid);
+
+        //LÄGG IN NAMNET PÅ KLASSEN I CLASSES
+        //FLYTTA UT LECTUREDATES TILL LECTURES
+
+        // batch.set(addToClasses, {
+        //   students: sendStudents,
+        //   lectureDates: sendLecturesDates
+        // });
+
+        // sendLecturesDates.forEach(lectureTime => {
+        //   batch
+        //     .set(addToClasses, {
+        //       time: lectureTime
+        //     })
+        //     .then(function(docRef) {
+        //       var lectureUid = docRef.id
+        //       var addToLectures = firebase.lectures()
+
+        //     });
+        // });
+
+        batch
+          .commit()
+          .then(function() {
+            console.log("GICK IVÄG");
+          })
+          .catch(function(error) {
+            console.error("NÅGOT GICK FEL ", error);
+          });
       })
       .catch(function(error) {
         console.error("Error adding document: ", error);

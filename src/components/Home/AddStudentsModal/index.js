@@ -1,17 +1,17 @@
 // ----  { Libraries } ----
-import React, { useState } from "react";
+import React from "react";
 import Modal from "@material-ui/core/Modal";
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 // ----  { Styles } ----
 import "./add_students_modal.scss";
 // ----  { Backend } ----
-import firebase from "../../Firebase";
+
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Avatar from "@material-ui/core/Avatar";
+// import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
-import Icon from "@material-ui/core/Icon";
+// import Icon from "@material-ui/core/Icon";
 import PopUpHeader from "../../../constants/PopUpHeader";
 // import FaceIcon from "@material-ui/icons/Face";
 

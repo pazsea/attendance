@@ -27,7 +27,7 @@ class Firebase {
   class = uid => this.db.doc(`classes/${uid}`);
   classes = () => this.db.collection(`classes/`);
 
-  lectur = uid => this.db.doc(`lectures/${uid}`);
+  lecture = uid => this.db.doc(`lectures/${uid}`);
   lectures = () => this.db.collection(`lectures/`);
 
   login(email, password) {
