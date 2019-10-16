@@ -14,18 +14,23 @@ const Home = () => {
 
   const [myClasses, setMyClasses] = useState({
     loading: true,
-    myClasses: [{}]
+    myClasses: null
   });
 
   useEffect(() => {
     console.log("USE EFFECT RUNS");
-
     const unsubcribe = firebase
       .user(userUid)
       .collection("myClasses")
       .onSnapshot(snapshot => {
+        const empty = snapshot.empty;
         const val = snapshot.docs;
-        if (val) {
+        if (empty) {
+          setMyClasses({
+            loading: false,
+            myClasses: null
+          });
+        } else {
           const newData = val.map(doc => ({
             id: doc.id,
             ...doc.data()
