@@ -24,11 +24,11 @@ class Firebase {
   user = uid => this.db.doc(`users/${uid}`);
   users = () => this.db.collection("users");
 
-  class = uid => this.db.doc(`classes/${uid}`);
-  classes = () => this.db.collection(`classes/`);
+  classDetails = uid => this.db.doc(`classDetails/${uid}`);
+  rootClassDetails = () => this.db.collection(`classDetails/`);
 
-  lecture = uid => this.db.doc(`lectures/${uid}`);
-  lectures = () => this.db.collection(`lectures/`);
+  attendance = uid => this.db.doc(`attendance/${uid}`);
+  rootAttendance = () => this.db.collection(`attendance/`);
 
   login(email, password) {
     return this.auth.signInWithEmailAndPassword(email, password);

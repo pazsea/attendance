@@ -12,10 +12,14 @@ import ClassesContainer from "./ClassesContainer";
 const Home = () => {
   const [{ userUid }] = useContext(Context);
 
-  const [loading, setLoading] = useState(true);
-  const [myClasses, setMyClasses] = useState(false);
+  const [myClasses, setMyClasses] = useState({
+    loading: true,
+    myClasses: [{}]
+  });
 
   useEffect(() => {
+    console.log("USE EFFECT RUNS");
+
     const unsubcribe = firebase
       .user(userUid)
       .collection("myClasses")
@@ -26,20 +30,18 @@ const Home = () => {
             id: doc.id,
             ...doc.data()
           }));
-          setMyClasses(newData);
+          setMyClasses({
+            loading: false,
+            myClasses: newData
+          });
         }
-        setLoading(false);
       });
-
-    return () => unsubcribe;
+    return () => unsubcribe();
   }, [userUid]);
 
   return (
     <div>
-      <ClassesContainer
-        loading={loading}
-        myClasses={myClasses}
-      ></ClassesContainer>
+      <ClassesContainer myClasses={myClasses}></ClassesContainer>
     </div>
   );
 };

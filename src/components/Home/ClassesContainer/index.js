@@ -41,26 +41,33 @@ const useStyles = makeStyles(theme =>
 );
 
 export default function ClassesContainer(props) {
-  const { loading, myClasses } = props;
+  const {
+    myClasses: { loading, myClasses }
+  } = props;
   const classes = useStyles();
   const [addClassModalState, setAddClassModal] = useState(false);
   const [{ userUid }] = useContext(Context);
 
   const deleteFromDB = classUid => {
-    // USERS > "USERNS UID" > MY CLASSES > "KLASSENS UID"
+    let batch = firebase.db.batch();
 
-    firebase
+    let deleteInClassDetails = firebase.classDetails(classUid);
+
+    batch.delete(deleteInClassDetails);
+
+    let deleteInUserMyClasses = firebase
       .user(userUid)
-      // db.collection("users")
-      //   .doc(userUid)
       .collection("myClasses")
-      .doc(classUid)
-      .delete()
+      .doc(classUid);
+    batch.delete(deleteInUserMyClasses);
+
+    batch
+      .commit()
       .then(function() {
-        console.log("Document successfully deleted!");
+        console.log("GICK IVÄG");
       })
       .catch(function(error) {
-        console.error("Error removing document: ", error);
+        console.error("NÅGOT GICK FEL ", error);
       });
   };
 
@@ -106,10 +113,9 @@ export default function ClassesContainer(props) {
                   key={"delete button " + schoolClass.id}
                   aria-label="delete"
                   className={classes.fab}
+                  onClick={() => deleteFromDB(schoolClass.id)}
                 >
-                  <Icon onClick={() => deleteFromDB(schoolClass.id)}>
-                    delete
-                  </Icon>
+                  <Icon>delete</Icon>
                 </Fab>
               </div>
             ))

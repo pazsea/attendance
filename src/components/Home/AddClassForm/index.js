@@ -128,54 +128,22 @@ export default function AddClassForm(props) {
         let batch = firebase.db.batch(); //Batch är ny grej för firestore.
 
         let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
-          .class(classUid);
+          .classDetails(classUid);
 
         batch.set(nameInMyClasses, {
           name: sendClassName,
-          students: sendStudents
+          students: sendStudents,
+          dates: sendLecturesDates
         }); // Lägger till klassnamn
 
-        sendLecturesDates.forEach(lectureTime => {
-          let addLectures = firebase
-            .lecture(classUid)
-            .collection("dates")
-            .doc();
-          batch.add(addLectures, {
-            time: lectureTime
-          });
-        });
-
         // sendLecturesDates.forEach(lectureTime => {
-        //   batch
-        //     .set(addToClasses, {
-        //       time: lectureTime
-        //     })
-        //     .then(function(docRef) {
-        //       var lectureUid = docRef.id;
-        //       var addToLectures = firebase.lectures();
-        //     });
-        // });
-
-        // var addToClasses = firebase.classes().doc(classUid);
-
-        //LÄGG IN NAMNET PÅ KLASSEN I CLASSES
-        //FLYTTA UT LECTUREDATES TILL LECTURES
-
-        // batch.set(addToClasses, {
-        //   students: sendStudents,
-        //   lectureDates: sendLecturesDates
-        // });
-
-        // sendLecturesDates.forEach(lectureTime => {
-        //   batch
-        //     .set(addToClasses, {
-        //       time: lectureTime
-        //     })
-        //     .then(function(docRef) {
-        //       var lectureUid = docRef.id
-        //       var addToLectures = firebase.lectures()
-
-        //     });
+        //   let addLectures = firebase
+        //     .lecture(classUid)
+        //     .collection("dates")
+        //     .doc();
+        //   batch.set(addLectures, {
+        //     time: lectureTime
+        //   });
         // });
 
         batch
@@ -191,26 +159,6 @@ export default function AddClassForm(props) {
         console.error("Error adding document: ", error);
       });
     console.log("SEND TO DB SLUTADE");
-    // // Get a new write batch
-    // var batch = firebase.db.batch();
-
-    // // Set the value of 'NYC'
-    // var nycRef = db.collection("cities").doc("NYC");
-    // batch.set(nycRef, { name: "New York City" });
-
-    // // Update the population of 'SF'
-    // var sfRef = db.collection("cities").doc("SF");
-    // batch.update(sfRef, { population: 1000000 });
-
-    // // Delete the city 'LA'
-    // var laRef = db.collection("cities").doc("LA");
-    // batch.delete(laRef);
-
-    // // Commit the batch
-    // batch.commit().then(function() {
-    //   // ...
-
-    // });
   };
 
   return (
