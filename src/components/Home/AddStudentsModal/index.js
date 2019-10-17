@@ -71,14 +71,26 @@ export default function AddStudentsModal(props) {
             )}
           </div>
           <p className="divider"></p>
+
           <Button
             className="submitButton"
             variant="contained"
             color="secondary"
             type="submit"
             size="large"
+            disabled={!preSubmitStudent} //Bra knep!
           >
             Lägg till elever
+          </Button>
+          <Button
+            className="submitButton"
+            variant="contained"
+            color="primary"
+            type="submit"
+            size="large"
+            onClick={setStudentsModalState}
+          >
+            Tillbaka
           </Button>
         </form>
       </div>

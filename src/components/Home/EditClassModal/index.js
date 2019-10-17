@@ -18,6 +18,7 @@ import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
 import PopUpHeader from "../../../constants/PopUpHeader";
 import NotificationButton from "../../../constants/NotificationButton";
+import { Context } from "../../../context";
 
 const INITIAL_STATE = {
   className: "",
@@ -27,11 +28,15 @@ const INITIAL_STATE = {
 
 export default function EditClassModal(props) {
   const { editClassModalState, closeModal, selectedClassUid } = props;
+  const [{ userUid }] = useContext(Context);
 
   //State variablerna är lokala för componenten
 
   //THIS STATE HOLDS ALL DETAILS OF THE CLASS
   const [classDetails, setClassDetails] = useState(INITIAL_STATE);
+  const [errorState, setErrorState] = useState(null);
+  const [modificationState, setModificationState] = useState(false);
+
   //
   //
   //
@@ -67,42 +72,6 @@ export default function EditClassModal(props) {
       });
   }, [selectedClassUid]);
 
-  //   var docRef = db.collection("cities").doc("SF");
-
-  // docRef.get().then(function(doc) {
-  //     if (doc.exists) {
-  //         console.log("Document data:", doc.data());
-  //     } else {
-  //         // doc.data() will be undefined in this case
-  //         console.log("No such document!");
-  //     }
-  // }).catch(function(error) {
-  //     console.log("Error getting document:", error);
-  // });
-
-  //THIS STATE HOLDS THE CURRENT DATE SELECTION FOR CLASSES
-  // const [preSubmitDates, setPreSubmitDates] = useState("");
-  //
-  //
-  //
-  //
-  //
-  // useEffect(() => {
-  //   if (classDetails === INITIAL_STATE) {
-  //     return;
-  //   } else {
-  //     localStorage.setItem("classDetails", JSON.stringify(classDetails));
-  //   }
-  // }, [classDetails]);
-
-  // useEffect(() => {
-  //   const details = localStorage.getItem("classDetails");
-  //   if (details) {
-  //     setClassDetails(JSON.parse(details));
-  //   }
-  // }, []);
-  // [] i detta fallet beter sig som componentDidMount(). Tomt = renderar om på alla ändringar.
-
   //ADDERA OCH DELETE STUDENTS FUNKTIONER.
 
   const addStudentToClass = (event, studentName) => {
@@ -111,6 +80,9 @@ export default function EditClassModal(props) {
       students: [...classDetails.students, studentName]
     });
     setPreSubmitStudent("");
+    if (modificationState === false) {
+      setModificationState(true);
+    }
     event.preventDefault();
   };
 
@@ -119,6 +91,9 @@ export default function EditClassModal(props) {
       ...classDetails,
       students: classDetails.students.filter((_, i) => i !== index)
     });
+    if (modificationState === false) {
+      setModificationState(true);
+    }
   };
 
   const addNameToClass = event => {
@@ -126,6 +101,10 @@ export default function EditClassModal(props) {
       ...classDetails,
       [event.target.name]: event.target.value
     });
+    if (modificationState === false) {
+      setModificationState(true);
+    }
+    setErrorState(false);
     console.log(classDetails);
   };
 
@@ -137,6 +116,24 @@ export default function EditClassModal(props) {
       ...classDetails,
       lectureDates: calenderFunction(pickedDate, dates)
     });
+    if (modificationState === false) {
+      setModificationState(true);
+    }
+  };
+
+  const promptUnsaved = () => {
+    if (modificationState) {
+      let answer = window.confirm(
+        "Du har osparade ändringar, vill du ändå lämna?"
+      );
+      if (answer) {
+        closeModal();
+      } else {
+        return;
+      }
+    } else {
+      closeModal();
+    }
   };
 
   const sendChangesToDB = () => {
@@ -145,62 +142,42 @@ export default function EditClassModal(props) {
     let sendLecturesDates = classDetails.lectureDates;
     console.log("SEND TO DB STARTADE");
 
+    if (sendClassName === "") {
+      return setErrorState("Klassnamn saknas");
+    } else {
+      let batch = firebase.db.batch();
 
+      //set() skriver över om man inte har med merge
+      let changeInClassDetails = firebase.db
+        .collection("classDetails")
+        .doc(selectedClassUid);
 
-    //set() skriver över om man inte har med merge
-    firebase.db
-      .collection("classDetails")
-      .doc(selectedClassUid)
-      .set({
+      batch.set(changeInClassDetails, {
         className: sendClassName,
         lectureDates: sendLecturesDates,
         students: sendStudents
       });
-      
 
+      let changeUserClassName = firebase.db
+        .collection("users")
+        .doc(userUid)
+        .collection("myClasses")
+        .doc(selectedClassUid);
 
-    // firebase
-    //   .user(userUid) //Går in på nuletande inloggade personen via Context
-    //   .collection("myClasses")
-    //   .add({
-    //     name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
-    //   })
-    //   .then(function(docRef) {
-    //     let classUid = docRef.id; // hämtar ut för den klassen som just lades till
-    //     let batch = firebase.db.batch(); //Batch är ny grej för firestore.
+      batch.set(changeUserClassName, {
+        className: sendClassName
+      });
 
-    //     let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
-    //       .classDetails(classUid);
-
-    //     batch.set(nameInMyClasses, {
-    //       name: sendClassName,
-    //       students: sendStudents,
-    //       dates: sendLecturesDates
-    //     }); // Lägger till klassnamn
-
-    //     // sendLecturesDates.forEach(lectureTime => {
-    //     //   let addLectures = firebase
-    //     //     .lecture(classUid)
-    //     //     .collection("dates")
-    //     //     .doc();
-    //     //   batch.set(addLectures, {
-    //     //     time: lectureTime
-    //     //   });
-    //     // });
-
-    //     batch
-    //       .commit()
-    //       .then(function() {
-    //         console.log("GICK IVÄG");
-    //       })
-    //       .catch(function(error) {
-    //         console.error("NÅGOT GICK FEL ", error);
-    //       });
-    //   })
-    //   .catch(function(error) {
-    //     console.error("Error adding document: ", error);
-    //   });
-    // console.log("SEND TO DB SLUTADE");
+      batch
+        .commit()
+        .then(function() {
+          closeModal();
+        })
+        .catch(function(error) {
+          setErrorState("Vi har just nu tekniska problem");
+          console.error("ERROR MEDDELANDE: ", error);
+        });
+    }
   };
 
   return (
@@ -226,7 +203,7 @@ export default function EditClassModal(props) {
         ></AddStudentsModal>
       ) : null}
 
-      <Modal open={editClassModalState} onClose={closeModal}>
+      <Modal open={editClassModalState} onClose={() => promptUnsaved()}>
         <div className="add_class_container">
           <PopUpHeader
             color="#3f51b5"
@@ -258,6 +235,7 @@ export default function EditClassModal(props) {
               quantity={classDetails.students.length}
               onClick={() => setStudentsModalState(true)}
             ></NotificationButton>
+            {errorState ? <p style={{ color: "red" }}>{errorState}</p> : null}
             <p className="divider"></p>
             <Button
               className="submitButton"
@@ -267,6 +245,7 @@ export default function EditClassModal(props) {
               margin="normal"
               size="large"
               onClick={sendChangesToDB}
+              disabled={!modificationState || !classDetails.className} //Bra knep!
             >
               REDIGERA KLASS
             </Button>

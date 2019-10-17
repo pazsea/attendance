@@ -122,7 +122,7 @@ export default function MainContainer(props) {
                   size="medium"
                   key={"button class " + schoolClass.id}
                 >
-                  {schoolClass.name}
+                  {schoolClass.className}
                 </Button>
                 <Fab
                   color="secondary"

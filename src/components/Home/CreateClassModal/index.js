@@ -32,6 +32,9 @@ export default function CreateClassModal(props) {
 
   //THIS STATE HOLDS ALL DETAILS OF THE CLASS
   const [classDetails, setClassDetails] = useState(INITIAL_STATE);
+  const [errorState, setErrorState] = useState(null);
+  const [modificationState, setModificationState] = useState(false);
+
   //
   //
   //
@@ -73,6 +76,7 @@ export default function CreateClassModal(props) {
       setClassDetails(JSON.parse(details));
     }
   }, []);
+
   // [] i detta fallet beter sig som componentDidMount(). Tomt = renderar om på alla ändringar.
 
   //ADDERA OCH DELETE STUDENTS FUNKTIONER.
@@ -83,6 +87,9 @@ export default function CreateClassModal(props) {
       students: [...classDetails.students, studentName]
     });
     setPreSubmitStudent("");
+    if (modificationState === false) {
+      setModificationState(true);
+    }
     event.preventDefault();
   };
 
@@ -91,6 +98,9 @@ export default function CreateClassModal(props) {
       ...classDetails,
       students: classDetails.students.filter((_, i) => i !== index)
     });
+    if (modificationState === false) {
+      setModificationState(true);
+    }
   };
 
   const addNameToClass = event => {
@@ -98,6 +108,10 @@ export default function CreateClassModal(props) {
       ...classDetails,
       [event.target.name]: event.target.value
     });
+    if (modificationState === false) {
+      setModificationState(true);
+    }
+    setErrorState(false);
     console.log(classDetails);
   };
 
@@ -109,55 +123,78 @@ export default function CreateClassModal(props) {
       ...classDetails,
       lectureDates: calenderFunction(pickedDate, dates)
     });
+    if (modificationState === false) {
+      setModificationState(true);
+    }
   };
 
+  const promptUnsaved = () => {
+    if (modificationState) {
+      let answer = window.confirm(
+        "Du har osparade ändringar, vill du ändå lämna?"
+      );
+      if (answer) {
+        closeModal();
+      } else {
+        return;
+      }
+    } else {
+      closeModal();
+    }
+  };
   const sendToDB = () => {
     let sendStudents = classDetails.students;
     let sendClassName = classDetails.className;
     let sendLecturesDates = classDetails.lectureDates;
     console.log("SEND TO DB STARTADE");
-    firebase
-      .user(userUid) //Går in på nuletande inloggade personen via Context
-      .collection("myClasses")
-      .add({
-        name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
-      })
-      .then(function(docRef) {
-        let classUid = docRef.id; // hämtar ut för den klassen som just lades till
-        let batch = firebase.db.batch(); //Batch är ny grej för firestore.
+    if (sendClassName === "") {
+      return setErrorState("Klassnamn saknas");
+    } else {
+      firebase
+        .user(userUid) //Går in på nuletande inloggade personen via Context
+        .collection("myClasses")
+        .add({
+          className: [classDetails.className] //Lägger till ett unikt ID med klassnamn
+        })
+        .then(function(docRef) {
+          let classUid = docRef.id; // hämtar ut för den klassen som just lades till
+          let batch = firebase.db.batch(); //Batch är ny grej för firestore.
 
-        let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
-          .classDetails(classUid);
+          let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
+            .classDetails(classUid);
 
-        batch.set(nameInMyClasses, {
-          className: sendClassName,
-          students: sendStudents,
-          lectureDates: sendLecturesDates
-        }); // Lägger till klassnamn
+          batch.set(nameInMyClasses, {
+            className: sendClassName,
+            students: sendStudents,
+            lectureDates: sendLecturesDates
+          }); // Lägger till klassnamn
 
-        // sendLecturesDates.forEach(lectureTime => {
-        //   let addLectures = firebase
-        //     .lecture(classUid)
-        //     .collection("dates")
-        //     .doc();
-        //   batch.set(addLectures, {
-        //     time: lectureTime
-        //   });
-        // });
+          // sendLecturesDates.forEach(lectureTime => {
+          //   let addLectures = firebase
+          //     .lecture(classUid)
+          //     .collection("dates")
+          //     .doc();
+          //   batch.set(addLectures, {
+          //     time: lectureTime
+          //   });
+          // });
 
-        batch
-          .commit()
-          .then(function() {
-            console.log("GICK IVÄG");
-          })
-          .catch(function(error) {
-            console.error("NÅGOT GICK FEL ", error);
-          });
-      })
-      .catch(function(error) {
-        console.error("Error adding document: ", error);
-      });
-    console.log("SEND TO DB SLUTADE");
+          batch
+            .commit()
+            .then(function() {
+              localStorage.removeItem("classDetails");
+              closeModal();
+            })
+            .catch(function(error) {
+              setErrorState("Vi har just nu tekniska problem");
+              console.error("Felmeddelande: ", error);
+            });
+        })
+        .catch(function(error) {
+          setErrorState("Vi har just nu tekniska problem");
+          console.error("Fel när data skulle skickas till databas: ", error);
+        });
+    }
   };
 
   return (
@@ -183,7 +220,7 @@ export default function CreateClassModal(props) {
         ></AddStudentsModal>
       ) : null}
 
-      <Modal open={createClassModalState} onClose={closeModal}>
+      <Modal open={createClassModalState} onClose={() => promptUnsaved()}>
         <div className="add_class_container">
           <PopUpHeader
             color="#3f51b5"
@@ -215,6 +252,7 @@ export default function CreateClassModal(props) {
               quantity={classDetails.students.length}
               onClick={() => setStudentsModalState(true)}
             ></NotificationButton>
+            {errorState ? <p style={{ color: "red" }}>{errorState}</p> : null}
             <p className="divider"></p>
             <Button
               className="submitButton"
@@ -224,6 +262,7 @@ export default function CreateClassModal(props) {
               margin="normal"
               size="large"
               onClick={sendToDB}
+              disabled={!classDetails.className} //Bra knep!
             >
               SKAPA KLASS
             </Button>
