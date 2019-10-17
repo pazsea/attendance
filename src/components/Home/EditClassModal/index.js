@@ -18,6 +18,7 @@ import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
 import PopUpHeader from "../../../constants/PopUpHeader";
 import NotificationButton from "../../../constants/NotificationButton";
+import { Context } from "../../../context";
 
 const INITIAL_STATE = {
   className: "",
@@ -27,6 +28,7 @@ const INITIAL_STATE = {
 
 export default function EditClassModal(props) {
   const { editClassModalState, closeModal, selectedClassUid } = props;
+  const [{ userUid }] = useContext(Context);
 
   //State variablerna är lokala för componenten
 
@@ -145,62 +147,37 @@ export default function EditClassModal(props) {
     let sendLecturesDates = classDetails.lectureDates;
     console.log("SEND TO DB STARTADE");
 
-
+    let batch = firebase.db.batch();
 
     //set() skriver över om man inte har med merge
-    firebase.db
+    let changeInClassDetails = firebase.db
       .collection("classDetails")
-      .doc(selectedClassUid)
-      .set({
-        className: sendClassName,
-        lectureDates: sendLecturesDates,
-        students: sendStudents
+      .doc(selectedClassUid);
+
+    batch.set(changeInClassDetails, {
+      className: sendClassName,
+      lectureDates: sendLecturesDates,
+      students: sendStudents
+    });
+
+    let changeUserClassName = firebase.db
+      .collection("users")
+      .doc(userUid)
+      .collection("myClasses")
+      .doc(selectedClassUid);
+
+    batch.set(changeUserClassName, {
+      className: sendClassName
+    });
+
+    batch
+      .commit()
+      .then(function() {
+        console.log("GICK IVÄG");
+      })
+      .catch(function(error) {
+        console.error("NÅGOT GICK FEL ", error);
       });
-      
-
-
-    // firebase
-    //   .user(userUid) //Går in på nuletande inloggade personen via Context
-    //   .collection("myClasses")
-    //   .add({
-    //     name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
-    //   })
-    //   .then(function(docRef) {
-    //     let classUid = docRef.id; // hämtar ut för den klassen som just lades till
-    //     let batch = firebase.db.batch(); //Batch är ny grej för firestore.
-
-    //     let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
-    //       .classDetails(classUid);
-
-    //     batch.set(nameInMyClasses, {
-    //       name: sendClassName,
-    //       students: sendStudents,
-    //       dates: sendLecturesDates
-    //     }); // Lägger till klassnamn
-
-    //     // sendLecturesDates.forEach(lectureTime => {
-    //     //   let addLectures = firebase
-    //     //     .lecture(classUid)
-    //     //     .collection("dates")
-    //     //     .doc();
-    //     //   batch.set(addLectures, {
-    //     //     time: lectureTime
-    //     //   });
-    //     // });
-
-    //     batch
-    //       .commit()
-    //       .then(function() {
-    //         console.log("GICK IVÄG");
-    //       })
-    //       .catch(function(error) {
-    //         console.error("NÅGOT GICK FEL ", error);
-    //       });
-    //   })
-    //   .catch(function(error) {
-    //     console.error("Error adding document: ", error);
-    //   });
-    // console.log("SEND TO DB SLUTADE");
   };
 
   return (

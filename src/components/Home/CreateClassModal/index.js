@@ -120,7 +120,7 @@ export default function CreateClassModal(props) {
       .user(userUid) //Går in på nuletande inloggade personen via Context
       .collection("myClasses")
       .add({
-        name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
+        className: [classDetails.className] //Lägger till ett unikt ID med klassnamn
       })
       .then(function(docRef) {
         let classUid = docRef.id; // hämtar ut för den klassen som just lades till
