@@ -71,7 +71,7 @@ const App = () => {
       </div>
     </Router>
   ) : (
-    <Loading></Loading>
+    <Loading text="Startar applikation"></Loading>
   );
 };
 

@@ -5,7 +5,7 @@ import Modal from "@material-ui/core/Modal";
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 
 // ----  { Styles } ----
-import "./add_class_modal.scss";
+import "./edit_class_modal.scss";
 
 // ----  { Backend } ----
 import firebase from "../../Firebase";
@@ -18,8 +18,6 @@ import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
 import PopUpHeader from "../../../constants/PopUpHeader";
 import NotificationButton from "../../../constants/NotificationButton";
-import { Context } from "../../../context";
-import { array } from "prop-types";
 
 const INITIAL_STATE = {
   className: "",
@@ -27,9 +25,10 @@ const INITIAL_STATE = {
   lectureDates: []
 };
 
-export default function AddClassForm(props) {
-  const { addClassModalState, closeModal } = props;
-  const [{ userUid }] = useContext(Context);
+export default function EditClassModal(props) {
+  const { editClassModalState, closeModal, selectedClassUid } = props;
+
+  //State variablerna är lokala för componenten
 
   //THIS STATE HOLDS ALL DETAILS OF THE CLASS
   const [classDetails, setClassDetails] = useState(INITIAL_STATE);
@@ -53,6 +52,34 @@ export default function AddClassForm(props) {
   //
   //
   //
+
+  // get hämtar(en eller flera idn) medan snapshot fungerar som en lyssnare.
+  useEffect(() => {
+    console.log("FIREBASE STARTAR HÄMTNING");
+    //FIREBASE HÄMTNING SOM UPPDATERAR CLASSDETAILS STATET
+    firebase.db
+      .collection("classDetails")
+      .doc(selectedClassUid)
+      .get()
+      .then(snapshot => {
+        const details = snapshot.data(); //data är ett objekt..
+        setClassDetails(details);
+      });
+  }, [selectedClassUid]);
+
+  //   var docRef = db.collection("cities").doc("SF");
+
+  // docRef.get().then(function(doc) {
+  //     if (doc.exists) {
+  //         console.log("Document data:", doc.data());
+  //     } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document!");
+  //     }
+  // }).catch(function(error) {
+  //     console.log("Error getting document:", error);
+  // });
+
   //THIS STATE HOLDS THE CURRENT DATE SELECTION FOR CLASSES
   // const [preSubmitDates, setPreSubmitDates] = useState("");
   //
@@ -60,20 +87,20 @@ export default function AddClassForm(props) {
   //
   //
   //
-  useEffect(() => {
-    if (classDetails === INITIAL_STATE) {
-      return;
-    } else {
-      localStorage.setItem("classDetails", JSON.stringify(classDetails));
-    }
-  }, [classDetails]);
+  // useEffect(() => {
+  //   if (classDetails === INITIAL_STATE) {
+  //     return;
+  //   } else {
+  //     localStorage.setItem("classDetails", JSON.stringify(classDetails));
+  //   }
+  // }, [classDetails]);
 
-  useEffect(() => {
-    const details = localStorage.getItem("classDetails");
-    if (details) {
-      setClassDetails(JSON.parse(details));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const details = localStorage.getItem("classDetails");
+  //   if (details) {
+  //     setClassDetails(JSON.parse(details));
+  //   }
+  // }, []);
   // [] i detta fallet beter sig som componentDidMount(). Tomt = renderar om på alla ändringar.
 
   //ADDERA OCH DELETE STUDENTS FUNKTIONER.
@@ -112,53 +139,68 @@ export default function AddClassForm(props) {
     });
   };
 
-  const sendToDB = () => {
+  const sendChangesToDB = () => {
     let sendStudents = classDetails.students;
     let sendClassName = classDetails.className;
     let sendLecturesDates = classDetails.lectureDates;
     console.log("SEND TO DB STARTADE");
-    firebase
-      .user(userUid) //Går in på nuletande inloggade personen via Context
-      .collection("myClasses")
-      .add({
-        name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
-      })
-      .then(function(docRef) {
-        let classUid = docRef.id; // hämtar ut för den klassen som just lades till
-        let batch = firebase.db.batch(); //Batch är ny grej för firestore.
 
-        let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
-          .classDetails(classUid);
 
-        batch.set(nameInMyClasses, {
-          name: sendClassName,
-          students: sendStudents,
-          dates: sendLecturesDates
-        }); // Lägger till klassnamn
 
-        // sendLecturesDates.forEach(lectureTime => {
-        //   let addLectures = firebase
-        //     .lecture(classUid)
-        //     .collection("dates")
-        //     .doc();
-        //   batch.set(addLectures, {
-        //     time: lectureTime
-        //   });
-        // });
-
-        batch
-          .commit()
-          .then(function() {
-            console.log("GICK IVÄG");
-          })
-          .catch(function(error) {
-            console.error("NÅGOT GICK FEL ", error);
-          });
-      })
-      .catch(function(error) {
-        console.error("Error adding document: ", error);
+    //set() skriver över om man inte har med merge
+    firebase.db
+      .collection("classDetails")
+      .doc(selectedClassUid)
+      .set({
+        className: sendClassName,
+        lectureDates: sendLecturesDates,
+        students: sendStudents
       });
-    console.log("SEND TO DB SLUTADE");
+      
+
+
+    // firebase
+    //   .user(userUid) //Går in på nuletande inloggade personen via Context
+    //   .collection("myClasses")
+    //   .add({
+    //     name: [classDetails.className] //Lägger till ett unikt ID med klassnamn
+    //   })
+    //   .then(function(docRef) {
+    //     let classUid = docRef.id; // hämtar ut för den klassen som just lades till
+    //     let batch = firebase.db.batch(); //Batch är ny grej för firestore.
+
+    //     let nameInMyClasses = firebase // MyClasses för för de klasser jag skapat
+    //       .classDetails(classUid);
+
+    //     batch.set(nameInMyClasses, {
+    //       name: sendClassName,
+    //       students: sendStudents,
+    //       dates: sendLecturesDates
+    //     }); // Lägger till klassnamn
+
+    //     // sendLecturesDates.forEach(lectureTime => {
+    //     //   let addLectures = firebase
+    //     //     .lecture(classUid)
+    //     //     .collection("dates")
+    //     //     .doc();
+    //     //   batch.set(addLectures, {
+    //     //     time: lectureTime
+    //     //   });
+    //     // });
+
+    //     batch
+    //       .commit()
+    //       .then(function() {
+    //         console.log("GICK IVÄG");
+    //       })
+    //       .catch(function(error) {
+    //         console.error("NÅGOT GICK FEL ", error);
+    //       });
+    //   })
+    //   .catch(function(error) {
+    //     console.error("Error adding document: ", error);
+    //   });
+    // console.log("SEND TO DB SLUTADE");
   };
 
   return (
@@ -184,7 +226,7 @@ export default function AddClassForm(props) {
         ></AddStudentsModal>
       ) : null}
 
-      <Modal open={addClassModalState} onClose={closeModal}>
+      <Modal open={editClassModalState} onClose={closeModal}>
         <div className="add_class_container">
           <PopUpHeader
             color="#3f51b5"
@@ -224,9 +266,9 @@ export default function AddClassForm(props) {
               type="submit"
               margin="normal"
               size="large"
-              onClick={sendToDB}
+              onClick={sendChangesToDB}
             >
-              SKAPA KLASS
+              REDIGERA KLASS
             </Button>
           </form>
         </div>
@@ -234,8 +276,3 @@ export default function AddClassForm(props) {
     </React.Fragment>
   );
 }
-
-// SKAPA KLASS
-// 1. EN UID I USERS > "MY UID" > MY CLASSES > "CLASS UID" = TRUE
-// 2. EN UID I CLASSES > CLASS NAME + STUDENTS = TRUE ARRAY + LECTURES = TRUE ARRAY
-// 3. EN UID I LECTURES + TIME JS OCH ATTENDANCE

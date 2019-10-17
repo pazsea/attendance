@@ -7,7 +7,7 @@ import { Context } from "../../context";
 import firebase from "../Firebase";
 
 // ----  { Render Components } -----
-import ClassesContainer from "./ClassesContainer";
+import MainContainer from "./MainContainer";
 
 const Home = () => {
   const [{ userUid }] = useContext(Context);
@@ -17,6 +17,7 @@ const Home = () => {
     myClasses: null
   });
 
+  // Här sker vår state subscription
   useEffect(() => {
     console.log("USE EFFECT RUNS");
     const unsubcribe = firebase
@@ -46,7 +47,7 @@ const Home = () => {
 
   return (
     <div>
-      <ClassesContainer myClasses={myClasses}></ClassesContainer>
+      <MainContainer myClasses={myClasses}></MainContainer>
     </div>
   );
 };

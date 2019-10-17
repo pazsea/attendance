@@ -44,11 +44,11 @@ export default function AddStudentsModal(props) {
         >
           <TextField
             id="outlined-email-input"
-            label="Student namn"
+            label="Studentnamn"
             type="text"
             name="studentNamn"
             required
-            placeholder="Student namn"
+            placeholder="Studentnamn"
             margin="normal"
             variant="outlined"
             onChange={event => setPreSubmitStudent(event.target.value)}

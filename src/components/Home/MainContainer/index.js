@@ -1,7 +1,7 @@
 //HOOKA UP DETTA TILL FIREBASE OCH DÖP OM ALLA CLASSNAMES
 
 // ----  { Libraries } ----
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import * as ROUTES from "../../../constants/routes";
 
 // ----  { Styles } ----
-import "./classes_container.scss";
+import "./main_container.scss";
 
 // ----  { Backend } ----
 
@@ -20,8 +20,10 @@ import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Fab from "@material-ui/core/Fab";
-import AddClassForm from "../AddClassForm";
 import { Context } from "../../../context";
+import Loading from "../../Loading";
+import CreateClassModal from "../CreateClassModal";
+import EditClassModal from "../EditClassModal";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -40,13 +42,21 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export default function ClassesContainer(props) {
+export default function MainContainer(props) {
   const {
     myClasses: { loading, myClasses }
   } = props;
   const classes = useStyles();
-  const [addClassModalState, setAddClassModal] = useState(false);
+  const [createClassModalState, setCreateModalState] = useState(false);
+  const [editClassModalState, setEditClassModalState] = useState({
+    showModal: false,
+    selectedClassUid: null
+  });
+
   const [{ userUid }] = useContext(Context);
+  useEffect(() => {
+    console.log("EDIT STATET JUST NU " + editClassModalState);
+  }, [editClassModalState]);
 
   const deleteFromDB = classUid => {
     let batch = firebase.db.batch();
@@ -71,24 +81,37 @@ export default function ClassesContainer(props) {
       });
   };
 
+  const editThisClass = classUid => {
+    setEditClassModalState({
+      showModal: true,
+      selectedClassUid: classUid
+    });
+  };
+
   return (
     <React.Fragment>
-      {addClassModalState ? (
-        <AddClassForm
-          addClassModalState={addClassModalState}
-          closeModal={() => setAddClassModal(false)}
-          openModal={() => setAddClassModal(true)}
-        ></AddClassForm>
+      {createClassModalState ? (
+        <CreateClassModal
+          createClassModalState={createClassModalState}
+          closeModal={() => setCreateModalState(false)}
+          openModal={() => setCreateModalState(true)}
+        ></CreateClassModal>
+      ) : null}
+      {editClassModalState.showModal ? (
+        <EditClassModal
+          editClassModalState={editClassModalState.showModal}
+          selectedClassUid={editClassModalState.selectedClassUid}
+          closeModal={() => setEditClassModalState(false)}
+          openModal={() => setEditClassModalState(true)}
+        ></EditClassModal>
       ) : null}
 
       <Container className="container" maxWidth="md">
         <Typography component="div">
           {loading ? (
-            <div>
-              <div>Hämtar klasser.....</div>
-            </div>
+            <Loading text="Hämtar in dina klasser"></Loading>
           ) : myClasses ? (
-            myClasses.map((schoolClass, index) => (
+            myClasses.map(schoolClass => (
               <div className="classesDiv" key={"div " + schoolClass.id}>
                 <Button
                   variant="contained"
@@ -106,6 +129,7 @@ export default function ClassesContainer(props) {
                   aria-label="edit"
                   className={classes.fab}
                   key={"fab " + schoolClass.id}
+                  onClick={() => editThisClass(schoolClass.id)}
                 >
                   <Icon>edit</Icon>
                 </Fab>
@@ -129,7 +153,7 @@ export default function ClassesContainer(props) {
             aria-label="add"
             style={{ width: "60px", height: "60px" }}
             // className={{ root: "addClassesDiv" }}
-            onClick={() => setAddClassModal(true)}
+            onClick={() => setCreateModalState(true)}
           >
             <Icon style={{ fontSize: 40 }}>add</Icon>
           </Fab>

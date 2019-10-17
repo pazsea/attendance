@@ -14,12 +14,12 @@ const useStyles = makeStyles({
   }
 });
 
-const Loading = () => {
+const Loading = ({ text }) => {
   const classes = useStyles();
   return (
     <div className="progress_bar">
       <div className={classes.root}>
-        <p>Laddar....</p>
+        <p>{text}....</p>
         <LinearProgress varian="query" />
       </div>
     </div>
