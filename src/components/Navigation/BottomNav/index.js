@@ -27,7 +27,7 @@ const BottomNav = () => {
         <Home></Home> Hem
       </NavLink>
       <NavLink
-        // to={ROUTES.HOME}
+        to={ROUTES.ATTENDANCE}
         activeStyle={{
           color: "white"
         }}
@@ -36,7 +36,7 @@ const BottomNav = () => {
         Närvaro
       </NavLink>
       <NavLink
-        // to={ROUTES.HOME}
+        to={ROUTES.EXPORT}
         activeStyle={{
           color: "white"
         }}
@@ -45,7 +45,7 @@ const BottomNav = () => {
         Export
       </NavLink>
       <NavLink
-        // to={ROUTES.HOME}
+        to={ROUTES.MORE}
         activeStyle={{
           color: "white"
         }}

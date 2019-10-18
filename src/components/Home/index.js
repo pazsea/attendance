@@ -8,7 +8,6 @@ import firebase from "../Firebase";
 
 // ----  { Render Components } -----
 import MainContainer from "./MainContainer";
-import SentMessage from "../SentMessage";
 
 const Home = () => {
   const [{ userUid }] = useContext(Context);
@@ -20,7 +19,7 @@ const Home = () => {
 
   // Här sker vår state subscription
   useEffect(() => {
-    console.log("USE EFFECT RUNS");
+    // console.log("USE EFFECT RUNS");
     const unsubcribe = firebase
       .user(userUid)
       .collection("myClasses")
@@ -49,7 +48,6 @@ const Home = () => {
   return (
     <div>
       <MainContainer myClasses={myClasses}></MainContainer>
-      {/* <SentMessage></SentMessage> */}
     </div>
   );
 };

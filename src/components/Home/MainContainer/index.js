@@ -1,7 +1,7 @@
 //HOOKA UP DETTA TILL FIREBASE OCH DÖP OM ALLA CLASSNAMES
 
 // ----  { Libraries } ----
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 // import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
@@ -35,9 +35,6 @@ export default function MainContainer(props) {
   });
 
   const [{ userUid }] = useContext(Context);
-  useEffect(() => {
-    console.log("EDIT STATET JUST NU " + editClassModalState);
-  }, [editClassModalState]);
 
   const deleteFromDB = classUid => {
     let batch = firebase.db.batch();

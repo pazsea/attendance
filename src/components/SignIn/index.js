@@ -20,7 +20,7 @@ import TextField from "@material-ui/core/TextField";
 const SignInPage = props => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userDetailsState, setUserDetails] = useContext(Context);
+  const [, setUserDetails] = useContext(Context);
 
   async function login() {
     try {

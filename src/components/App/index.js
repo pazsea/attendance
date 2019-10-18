@@ -2,7 +2,7 @@
 // LADDNINGS IKONER, LÄGG TILL NOT LOGGED IN IKONER I KOMPONENTEN
 
 // ----  { Libraries } ----
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Context } from "../../context";
 
@@ -22,7 +22,6 @@ import HomePage from "../Home";
 import AdminPage from "../Admin";
 import SignInPage from "../SignIn";
 import NotLoggedIn from "../NotLoggedIn";
-import SimpleBottomNavigation from "../Navigation/BottomNavigation";
 import BottomNav from "../Navigation/BottomNav";
 
 // import AccountPage from "../Account";
@@ -56,9 +55,6 @@ const App = () => {
             component={loggedIn ? HomePage : NotLoggedIn}
           />
           <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-          {/* <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} /> */}
-
-          {/* <Route path={ROUTES.ACCOUNT} component={AccountPage} /> */}
         </Switch>
         {loggedIn ? <BottomNav></BottomNav> : null}
       </div>
