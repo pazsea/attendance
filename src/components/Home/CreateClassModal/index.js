@@ -17,10 +17,11 @@ import TextField from "@material-ui/core/TextField";
 import AddLecturesModal from "../AddLecturesModal";
 import AddStudentsModal from "../AddStudentsModal";
 import PopUpHeader from "../../../constants/PopUpHeader";
+import SentMessage from "../../SentMessage";
 import NotificationButton from "../../../constants/NotificationButton";
 import { Context } from "../../../context";
 
-const INITIAL_STATE = {
+const INITIAL_CLASSDETAILS_STATE = {
   className: "",
   students: [],
   lectureDates: []
@@ -31,11 +32,18 @@ export default function CreateClassModal(props) {
   const [{ userUid }] = useContext(Context);
 
   //THIS STATE HOLDS ALL DETAILS OF THE CLASS
-  const [classDetails, setClassDetails] = useState(INITIAL_STATE);
-  const [errorState, setErrorState] = useState(null);
-  const [modificationState, setModificationState] = useState(false);
+  const [classDetails, setClassDetails] = useState(INITIAL_CLASSDETAILS_STATE);
+  // const [errorState, setErrorState] = useState(null);
+  // const [modificationState, setModificationState] = useState(false);
 
-  //
+  const [statusState, setStatusState] = useState({
+    modificationState: false,
+    errorState: null,
+    loading: true,
+    sentStatus: false
+  });
+
+  // GÖR ETT SENT STATE FÖR AALLLLTT!
   //
   //
   //
@@ -62,8 +70,13 @@ export default function CreateClassModal(props) {
   //
   //
   //
+
   useEffect(() => {
-    if (classDetails === INITIAL_STATE) {
+    console.log(statusState);
+  }, [statusState]);
+
+  useEffect(() => {
+    if (classDetails === INITIAL_CLASSDETAILS_STATE) {
       return;
     } else {
       localStorage.setItem("classDetails", JSON.stringify(classDetails));
@@ -87,8 +100,11 @@ export default function CreateClassModal(props) {
       students: [...classDetails.students, studentName]
     });
     setPreSubmitStudent("");
-    if (modificationState === false) {
-      setModificationState(true);
+    if (statusState.modificationState === false) {
+      setStatusState({
+        ...statusState,
+        modificationState: true
+      });
     }
     event.preventDefault();
   };
@@ -98,8 +114,11 @@ export default function CreateClassModal(props) {
       ...classDetails,
       students: classDetails.students.filter((_, i) => i !== index)
     });
-    if (modificationState === false) {
-      setModificationState(true);
+    if (statusState.modificationState === false) {
+      setStatusState({
+        ...statusState,
+        modificationState: true
+      });
     }
   };
 
@@ -108,10 +127,20 @@ export default function CreateClassModal(props) {
       ...classDetails,
       [event.target.name]: event.target.value
     });
-    if (modificationState === false) {
-      setModificationState(true);
+    if (statusState.modificationState === false) {
+      console.log("DU KOMMER IN");
+      setStatusState({
+        ...statusState,
+        modificationState: true,
+        errorState: false
+      });
+    } else {
+      setStatusState({
+        ...statusState,
+        errorState: false
+      });
     }
-    setErrorState(false);
+
     console.log(classDetails);
   };
 
@@ -123,13 +152,16 @@ export default function CreateClassModal(props) {
       ...classDetails,
       lectureDates: calenderFunction(pickedDate, dates)
     });
-    if (modificationState === false) {
-      setModificationState(true);
+    if (statusState.modificationState === false) {
+      setStatusState({
+        ...statusState,
+        modificationState: true
+      });
     }
   };
 
   const promptUnsaved = () => {
-    if (modificationState) {
+    if (statusState.modificationState) {
       let answer = window.confirm(
         "Du har osparade ändringar, vill du ändå lämna?"
       );
@@ -148,7 +180,10 @@ export default function CreateClassModal(props) {
     let sendLecturesDates = classDetails.lectureDates;
     console.log("SEND TO DB STARTADE");
     if (sendClassName === "") {
-      return setErrorState("Klassnamn saknas");
+      return setStatusState({
+        ...statusState,
+        errorState: "Klassnamn saknas."
+      });
     } else {
       firebase
         .user(userUid) //Går in på nuletande inloggade personen via Context
@@ -182,16 +217,28 @@ export default function CreateClassModal(props) {
           batch
             .commit()
             .then(function() {
-              localStorage.removeItem("classDetails");
-              closeModal();
+              setStatusState({
+                ...statusState,
+                sentStatus: true
+              });
+              setTimeout(() => {
+                localStorage.removeItem("classDetails");
+                closeModal();
+              }, 2000);
             })
             .catch(function(error) {
-              setErrorState("Vi har just nu tekniska problem");
+              setStatusState({
+                ...statusState,
+                errorState: "Vi har just nu tekniska problem."
+              });
               console.error("Felmeddelande: ", error);
             });
         })
         .catch(function(error) {
-          setErrorState("Vi har just nu tekniska problem");
+          setStatusState({
+            ...statusState,
+            errorState: "Vi har just nu tekniska problem."
+          });
           console.error("Fel när data skulle skickas till databas: ", error);
         });
     }
@@ -227,6 +274,9 @@ export default function CreateClassModal(props) {
             headerTitle="SKAPA KLASS"
             close={closeModal}
           ></PopUpHeader>
+          {statusState.sentStatus ? (
+            <SentMessage text="Klass skapad"></SentMessage>
+          ) : null}
 
           <form className="add_class_form" onSubmit={e => e.preventDefault()}>
             <TextField
@@ -252,7 +302,9 @@ export default function CreateClassModal(props) {
               quantity={classDetails.students.length}
               onClick={() => setStudentsModalState(true)}
             ></NotificationButton>
-            {errorState ? <p style={{ color: "red" }}>{errorState}</p> : null}
+            {statusState.errorState ? (
+              <p style={{ color: "red" }}>{statusState.errorState}</p>
+            ) : null}
             <p className="divider"></p>
             <Button
               className="submitButton"
@@ -272,8 +324,3 @@ export default function CreateClassModal(props) {
     </React.Fragment>
   );
 }
-
-// SKAPA KLASS
-// 1. EN UID I USERS > "MY UID" > MY CLASSES > "CLASS UID" = TRUE
-// 2. EN UID I CLASSES > CLASS NAME + STUDENTS = TRUE ARRAY + LECTURES = TRUE ARRAY
-// 3. EN UID I LECTURES + TIME JS OCH ATTENDANCE

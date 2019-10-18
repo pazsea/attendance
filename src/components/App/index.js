@@ -10,7 +10,6 @@ import { Context } from "../../context";
 import * as ROUTES from "../../constants/routes";
 
 // ----  { Styles } ----
-import "./app.scss";
 
 // ----  { Backend } ----
 import firebase from "../Firebase";
@@ -24,22 +23,20 @@ import AdminPage from "../Admin";
 import SignInPage from "../SignIn";
 import NotLoggedIn from "../NotLoggedIn";
 import SimpleBottomNavigation from "../Navigation/BottomNavigation";
-import Loading from "../Loading";
+import BottomNav from "../Navigation/BottomNav";
+
 // import AccountPage from "../Account";
 // import PasswordForgetPage from "../PasswordForget";
 // import SignInPage from "../SignIn";
 
 const App = () => {
-  const [firebaseInitialized, setFirebaseInitialized] = useState(false);
   const [{ loggedIn }] = useContext(Context);
 
   useEffect(() => {
-    firebase.isInitialized().then(val => {
-      setFirebaseInitialized(val);
-    });
+    firebase.isInitialized();
   });
 
-  return firebaseInitialized !== false ? (
+  return (
     <Router>
       <div>
         <Navigation />
@@ -63,15 +60,9 @@ const App = () => {
 
           {/* <Route path={ROUTES.ACCOUNT} component={AccountPage} /> */}
         </Switch>
-        {loggedIn ? (
-          <div className="bottom_navigation">
-            <SimpleBottomNavigation></SimpleBottomNavigation>
-          </div>
-        ) : null}
+        {loggedIn ? <BottomNav></BottomNav> : null}
       </div>
     </Router>
-  ) : (
-    <Loading text="Startar applikation"></Loading>
   );
 };
 

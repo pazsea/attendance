@@ -2,7 +2,7 @@
 
 // ----  { Libraries } ----
 import React, { useState, useContext, useEffect } from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+// import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 
@@ -94,6 +94,7 @@ export default function MainContainer(props) {
           ) : myClasses ? (
             myClasses.map(({ className, id }) => (
               <ClassContainer
+                key={id}
                 className={className}
                 id={id}
                 editThisClass={editThisClass}

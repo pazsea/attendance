@@ -8,6 +8,7 @@ import firebase from "../Firebase";
 
 // ----  { Render Components } -----
 import MainContainer from "./MainContainer";
+import SentMessage from "../SentMessage";
 
 const Home = () => {
   const [{ userUid }] = useContext(Context);
@@ -48,6 +49,7 @@ const Home = () => {
   return (
     <div>
       <MainContainer myClasses={myClasses}></MainContainer>
+      {/* <SentMessage></SentMessage> */}
     </div>
   );
 };
