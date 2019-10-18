@@ -18,9 +18,9 @@
 .add_lectures_form {
   display: flex;
   flex-direction: column;
-  padding: 2% 5% 0 5%;
-  height: 92%;
-  .divider {
+  padding: 2% 5% 4% 5%;
+  height: 100%;
+  p {
     flex-grow: 1;
   }
 

@@ -72,10 +72,6 @@ export default function CreateClassModal(props) {
   //
 
   useEffect(() => {
-    console.log(statusState);
-  }, [statusState]);
-
-  useEffect(() => {
     if (classDetails === INITIAL_CLASSDETAILS_STATE) {
       return;
     } else {
@@ -292,11 +288,11 @@ export default function CreateClassModal(props) {
             />
 
             <NotificationButton
-              text="Lägg till föreläsningsdatum"
+              text="Välj föreläsningsdatum"
               quantity={classDetails.lectureDates.length}
               onClick={() => setLectureModalState(true)}
             ></NotificationButton>
-            <p></p>
+
             <NotificationButton
               text="Lägg till elever"
               quantity={classDetails.students.length}

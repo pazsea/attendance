@@ -37,7 +37,7 @@ export default function AddLectureModal(props) {
         <form className="add_lectures_form" onSubmit={e => e.preventDefault()}>
           <MultipleDatesCalendar
             // width={window.innerWidth <= 650 ? window.innerWidth : 600}
-            height={window.innerHeight - 290}
+            height={window.innerHeight - 350}
             max={dateMax}
             min={dateMin}
             width="100%"
@@ -62,11 +62,23 @@ export default function AddLectureModal(props) {
           ></MultipleDatesCalendar>
 
           <p className="divider"></p>
+
+          {/* <Button
+            className="submitButton"
+            variant="contained"
+            color="primary"
+            type="button"
+            size="large"
+            onClick={setLectureModalState}
+          >
+            Tillbaka
+          </Button> */}
+
           <Button
             className="submitButton"
             variant="contained"
             color="secondary"
-            type="submit"
+            type="button"
             size="large"
             onClick={setLectureModalState}
           >

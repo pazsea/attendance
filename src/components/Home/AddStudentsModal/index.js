@@ -80,7 +80,7 @@ export default function AddStudentsModal(props) {
             size="large"
             disabled={!preSubmitStudent} //Bra knep!
           >
-            Lägg till elever
+            Lägg till elev
           </Button>
           <Button
             className="submitButton"

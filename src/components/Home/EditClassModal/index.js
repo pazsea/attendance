@@ -207,7 +207,7 @@ export default function EditClassModal(props) {
         <div className="add_class_container">
           <PopUpHeader
             color="#3f51b5"
-            headerTitle="SKAPA KLASS"
+            headerTitle="REDIGERA KLASS"
             close={closeModal}
           ></PopUpHeader>
 
@@ -218,18 +218,17 @@ export default function EditClassModal(props) {
               name="className"
               type="text"
               required
-              margin="normal"
+              margin="dense"
               variant="outlined"
               value={classDetails.className}
               onChange={addNameToClass}
             />
 
             <NotificationButton
-              text="Lägg till föreläsningsdatum"
+              text="Välj föreläsningsdatum"
               quantity={classDetails.lectureDates.length}
               onClick={() => setLectureModalState(true)}
             ></NotificationButton>
-            <p></p>
             <NotificationButton
               text="Lägg till elever"
               quantity={classDetails.students.length}
@@ -242,7 +241,7 @@ export default function EditClassModal(props) {
               variant="contained"
               color="secondary"
               type="submit"
-              margin="normal"
+              margin="dense"
               size="large"
               onClick={sendChangesToDB}
               disabled={!modificationState || !classDetails.className} //Bra knep!

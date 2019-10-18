@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 
 const QuantitySpan = styled.span`
   position: absolute;
-  right: 2em;
+  right: 1em;
   border: 1px solid white;
   border-radius: 50%;
   background: ${props => (props.quantity === 0 ? "none" : "goldenrod")};
