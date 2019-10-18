@@ -1,19 +1,38 @@
 .sign_in_form {
   display: flex;
-  width: 80%;
-  margin: 5% auto 0 auto;
+  font-size: 16px;
+  margin: 2em auto auto auto;
   flex-direction: column;
-  padding: 2%;
-  height: 70vh;
-  // border: 1px solid red;
+  padding: 2em;
+  width: 85%;
+  height: 80vh;
+  border: 1px solid lightgrey;
+  border-radius: 0.12em;
+
+  @media (min-width: 768px) {
+    width: 35%;
+  }
+
+  img {
+    width: 200px;
+    align-self: center;
+  }
+
+  .divider {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 0 auto 0;
+  }
 
   p {
     text-align: center;
   }
-
-  .divider {
-    height: 50px;
-    text-align: center;
-    margin: 0 0 auto 0;
-  }
 }
+
+// Extra small devices (phones, less than 768px): No media query since this is the default in Bootstrap
+
+// Small devices (tablets, 768px and up): @media (min-width: @screen-sm-min) { ... }
+
+// Medium devices (desktops, 992px and up): @media (min-width: @screen-md-min) { ... }
+
+// Large devices (large desktops, 1200px and up): @media (min-width: @screen-lg-min) { ... }
