@@ -24,6 +24,12 @@ class Firebase {
   user = uid => this.db.doc(`users/${uid}`);
   users = () => this.db.collection("users");
 
+  classDetails = uid => this.db.doc(`classDetails/${uid}`);
+  rootClassDetails = () => this.db.collection(`classDetails/`);
+
+  attendance = uid => this.db.doc(`attendance/${uid}`);
+  rootAttendance = () => this.db.collection(`attendance/`);
+
   login(email, password) {
     return this.auth.signInWithEmailAndPassword(email, password);
   }

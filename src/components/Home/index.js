@@ -7,40 +7,49 @@ import { Context } from "../../context";
 import firebase from "../Firebase";
 
 // ----  { Render Components } -----
-import ClassesContainer from "./ClassesContainer";
+import MainContainer from "./MainContainer";
+import SentMessage from "../SentMessage";
 
 const Home = () => {
-  const [{ uid }] = useContext(Context);
+  const [{ userUid }] = useContext(Context);
 
-  const [loading, setLoading] = useState(true);
-  const [myClasses, setMyClasses] = useState(false);
-  // console.log("UTANFÖR " + uid);
+  const [myClasses, setMyClasses] = useState({
+    loading: true,
+    myClasses: null
+  });
 
-  // useEffect(() => {
-  //   const unsubcribe = firebase
-  //     .user(uid)
-  //     .collection("myClasses")
-  //     .onSnapshot(snapshot => {
-  //       const val = snapshot.docs;
-  //       if (val.length > 0) {
-  //         const newData = val.map(doc => ({
-  //           id: doc.id,
-  //           ...doc.data()
-  //         }));
-  //         setMyClasses(newData);
-  //       }
-  //       setLoading(false);
-  //     });
-
-  //   return () => unsubcribe;
-  // }, [uid]);
+  // Här sker vår state subscription
+  useEffect(() => {
+    console.log("USE EFFECT RUNS");
+    const unsubcribe = firebase
+      .user(userUid)
+      .collection("myClasses")
+      .onSnapshot(snapshot => {
+        const empty = snapshot.empty;
+        const val = snapshot.docs;
+        if (empty) {
+          setMyClasses({
+            loading: false,
+            myClasses: null
+          });
+        } else {
+          const newData = val.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setMyClasses({
+            loading: false,
+            myClasses: newData
+          });
+        }
+      });
+    return () => unsubcribe();
+  }, [userUid]);
 
   return (
     <div>
-      <ClassesContainer
-        loading={loading}
-        myClasses={myClasses}
-      ></ClassesContainer>
+      <MainContainer myClasses={myClasses}></MainContainer>
+      {/* <SentMessage></SentMessage> */}
     </div>
   );
 };

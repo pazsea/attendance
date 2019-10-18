@@ -1,17 +1,30 @@
 .signup_form {
-  width: 80%;
-  margin: 5% auto 0 auto;
   display: flex;
+  font-size: 16px;
+  margin: 2em auto auto auto;
   flex-direction: column;
-  padding: 2%;
-  height: 70vh;
-}
+  padding: 2em;
+  width: 85%;
+  height: 80vh;
+  border: 1px solid lightgrey;
+  border-radius: 0.12em;
 
-p {
-  text-align: center;
-}
+  @media (min-width: 768px) {
+    width: 35%;
+  }
 
-.divider {
-  text-align: center;
-  margin: 0 0 auto 0;
+  img {
+    width: 200px;
+    align-self: center;
+  }
+
+  .divider {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 0 auto 0;
+  }
+
+  p {
+    text-align: center;
+  }
 }

@@ -1,17 +1,18 @@
 // ----  { Libraries } ----
-import React, { useState } from "react";
+import React from "react";
 import Modal from "@material-ui/core/Modal";
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 // ----  { Styles } ----
 import "./add_students_modal.scss";
 // ----  { Backend } ----
-import firebase from "../../Firebase";
+
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Avatar from "@material-ui/core/Avatar";
+// import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
-import Icon from "@material-ui/core/Icon";
+// import Icon from "@material-ui/core/Icon";
+import PopUpHeader from "../../../constants/PopUpHeader";
 // import FaceIcon from "@material-ui/icons/Face";
 
 export default function AddStudentsModal(props) {
@@ -31,7 +32,11 @@ export default function AddStudentsModal(props) {
   return (
     <Modal open={studentsModalState} onClose={setStudentsModalState}>
       <div className="add_students_container">
-        <h2 id="simple-modal-title">Lägg till elever</h2>
+        <PopUpHeader
+          color="#559FFF"
+          headerTitle="LÄGG TILL ELEVER"
+          close={setStudentsModalState}
+        ></PopUpHeader>
 
         <form
           className="add_students_form_column"
@@ -39,11 +44,11 @@ export default function AddStudentsModal(props) {
         >
           <TextField
             id="outlined-email-input"
-            label="Student namn"
+            label="Studentnamn"
             type="text"
             name="studentNamn"
             required
-            placeholder="Student namn"
+            placeholder="Studentnamn"
             margin="normal"
             variant="outlined"
             onChange={event => setPreSubmitStudent(event.target.value)}
@@ -66,14 +71,26 @@ export default function AddStudentsModal(props) {
             )}
           </div>
           <p className="divider"></p>
+
           <Button
             className="submitButton"
             variant="contained"
             color="secondary"
             type="submit"
             size="large"
+            disabled={!preSubmitStudent} //Bra knep!
           >
-            Lägg till elever
+            Lägg till elev
+          </Button>
+          <Button
+            className="submitButton"
+            variant="contained"
+            color="primary"
+            type="submit"
+            size="large"
+            onClick={setStudentsModalState}
+          >
+            Tillbaka
           </Button>
         </form>
       </div>

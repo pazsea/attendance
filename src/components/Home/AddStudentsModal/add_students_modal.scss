@@ -16,8 +16,14 @@
 .add_students_form_column {
   display: flex;
   flex-direction: column;
-  padding: 0 5%;
+  padding: 2% 5% 0 5%;
   height: 85%;
+
+  .divider {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 0 auto 0;
+  }
 
   button {
     margin: 1% auto;
