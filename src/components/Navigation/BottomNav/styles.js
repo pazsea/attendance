@@ -3,7 +3,10 @@ import styled from "styled-components";
 export const SCBottomNavContainer = styled.div`
   display: grid;
   font-size: 18px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(
+    ${({ unauthorized }) => (unauthorized ? 2 : 4)},
+    1fr
+  );
   font-weight: 600;
   text-align: center;
   position: fixed;
@@ -12,7 +15,7 @@ export const SCBottomNavContainer = styled.div`
   height: 4.5em;
   color: rgba(0, 0, 0, 0.54);
 
-  @media (min-width: 992px) {
+  @media (min-width: 769px) {
     display: none;
   }
 

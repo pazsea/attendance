@@ -15,45 +15,71 @@ import { ListCheck } from "styled-icons/boxicons-regular";
 // ----  { Backend } ----
 // ----  { Render Components } -----
 
-const BottomNav = () => {
+const BottomNav = ({ unauthorized }) => {
   return (
-    <SCBottomNavContainer>
-      <NavLink
-        to={ROUTES.HOME}
-        activeStyle={{
-          color: "white"
-        }}
-      >
-        <Home></Home> Hem
-      </NavLink>
-      <NavLink
-        to={ROUTES.ATTENDANCE}
-        activeStyle={{
-          color: "white"
-        }}
-      >
-        <ListCheck></ListCheck>
-        Närvaro
-      </NavLink>
-      <NavLink
-        to={ROUTES.EXPORT}
-        activeStyle={{
-          color: "white"
-        }}
-      >
-        <Export></Export>
-        Export
-      </NavLink>
-      <NavLink
-        to={ROUTES.MORE}
-        activeStyle={{
-          color: "white"
-        }}
-      >
-        <More></More>
-        Mer
-      </NavLink>
-    </SCBottomNavContainer>
+    <>
+      {unauthorized ? (
+        <SCBottomNavContainer unauthorized>
+          <NavLink
+            to={ROUTES.MYATTENDANCE}
+            exact
+            path={ROUTES.MYATTENDANCE}
+            activeStyle={{
+              color: "white"
+            }}
+          >
+            <Home></Home> Anmäl närvaro
+          </NavLink>
+          <NavLink
+            to={ROUTES.CLASSATTENDANCE}
+            activeStyle={{
+              color: "white"
+            }}
+          >
+            <ListCheck></ListCheck>
+            Klass närvaro
+          </NavLink>{" "}
+        </SCBottomNavContainer>
+      ) : (
+        <SCBottomNavContainer>
+          <NavLink
+            to={ROUTES.HOME}
+            activeStyle={{
+              color: "white"
+            }}
+          >
+            <Home></Home> Hem
+          </NavLink>
+          <NavLink
+            to={ROUTES.ATTENDANCE}
+            activeStyle={{
+              color: "white"
+            }}
+          >
+            <ListCheck></ListCheck>
+            Närvaro
+          </NavLink>
+          <NavLink
+            to={ROUTES.EXPORT}
+            activeStyle={{
+              color: "white"
+            }}
+          >
+            <Export></Export>
+            Export
+          </NavLink>
+          <NavLink
+            to={ROUTES.MORE}
+            activeStyle={{
+              color: "white"
+            }}
+          >
+            <More></More>
+            Mer
+          </NavLink>
+        </SCBottomNavContainer>
+      )}
+    </>
   );
 };
 

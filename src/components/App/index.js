@@ -16,9 +16,11 @@ import firebase from "../Firebase";
 
 // ---- { Render Components } -----
 import Navigation from "../Navigation";
-import LandingPage from "../Landing";
+import MyAttendance from "../MyAttendance";
 import SignUpPage from "../SignUp";
 import HomePage from "../Home";
+import ClassAttendance from "../ClassAttendance";
+
 import AdminPage from "../Admin";
 import SignInPage from "../SignIn";
 import NotLoggedIn from "../NotLoggedIn";
@@ -42,10 +44,11 @@ const App = () => {
         <Switch>
           <Route
             exact
-            path={ROUTES.LANDING}
-            component={loggedIn ? HomePage : LandingPage}
+            path={ROUTES.MYATTENDANCE}
+            component={loggedIn ? HomePage : MyAttendance}
           />
           <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+          <Route path={ROUTES.CLASSATTENDANCE} component={ClassAttendance} />
           <Route
             path={ROUTES.ADMIN}
             component={loggedIn ? AdminPage : NotLoggedIn}

@@ -1,6 +1,6 @@
 // ----  { Libraries } ----
 import React, { useContext } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import { Context } from "../../context";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -64,20 +64,20 @@ const Navigation = props => {
             </bold>
           </Typography> */}
         <div className="navbar_links_desktop">
-          <Button color="inherit" to={ROUTES.HOME} component={Link}>
+          <Button color="inherit" to={ROUTES.HOME} component={NavLink}>
             Hem
           </Button>
-          <Button color="inherit" to={ROUTES.HOME} component={Link}>
+          <Button color="inherit" to={ROUTES.HOME} component={NavLink}>
             Närvaro
           </Button>
-          <Button color="inherit" to={ROUTES.HOME} component={Link}>
+          <Button color="inherit" to={ROUTES.HOME} component={NavLink}>
             Export
           </Button>
         </div>
 
         <Button
           color="secondary"
-          component={Link}
+          component={NavLink}
           variant="contained"
           onClick={logout}
           to={ROUTES.HOME}
@@ -96,15 +96,34 @@ const Navigation = props => {
           <span className="span_logo"> KYH</span>
         </Typography>
         <div className="navbar_links">
-          <Button color="inherit" to={ROUTES.LANDING} component={Link}>
-            Närvaro
+          <Button
+            color="inherit"
+            activeStyle={{
+              color: "white"
+            }}
+            to={ROUTES.MYATTENDANCE}
+            exact
+            path={ROUTES.MYATTENDANCE}
+            component={NavLink}
+          >
+            Min Närvaro
+          </Button>
+          <Button
+            color="inherit"
+            activeStyle={{
+              color: "white"
+            }}
+            to={ROUTES.CLASSATTENDANCE}
+            component={NavLink}
+          >
+            Klassens Närvaro
           </Button>
         </div>
         <Button
           variant="outlined"
           color="inherit"
           to={ROUTES.SIGN_IN}
-          component={Link}
+          component={NavLink}
         >
           Logga in
         </Button>

@@ -10,8 +10,13 @@
 
 .navbar_links {
   display: flex;
-  flex-grow: 0.2;
-  justify-content: space-around;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 600;
+  flex-grow: 0.1;
+  justify-content: space-evenly;
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .span_logo {
