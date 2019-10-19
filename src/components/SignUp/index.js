@@ -38,7 +38,7 @@ const SignUpPage = props => {
         loggedIn: true
       });
       // await firebase.addQuote(quote);
-      props.history.replace("/home");
+      props.history.replace(ROUTES.ADMINMYCLASSES);
     } catch (error) {
       alert(error.message);
     }

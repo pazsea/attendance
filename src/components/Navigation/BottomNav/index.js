@@ -43,15 +43,15 @@ const BottomNav = ({ unauthorized }) => {
       ) : (
         <SCBottomNavContainer>
           <NavLink
-            to={ROUTES.HOME}
+            to={ROUTES.ADMINMYCLASSES}
             activeStyle={{
               color: "white"
             }}
           >
-            <Home></Home> Hem
+            <Home></Home> Klasser
           </NavLink>
           <NavLink
-            to={ROUTES.ATTENDANCE}
+            to={ROUTES.ADMINCLASSATTENDANCE}
             activeStyle={{
               color: "white"
             }}
@@ -60,7 +60,7 @@ const BottomNav = ({ unauthorized }) => {
             Närvaro
           </NavLink>
           <NavLink
-            to={ROUTES.EXPORT}
+            to={ROUTES.ADMINEXPORT}
             activeStyle={{
               color: "white"
             }}
@@ -69,7 +69,7 @@ const BottomNav = ({ unauthorized }) => {
             Export
           </NavLink>
           <NavLink
-            to={ROUTES.MORE}
+            to={ROUTES.ADMINMORE}
             activeStyle={{
               color: "white"
             }}

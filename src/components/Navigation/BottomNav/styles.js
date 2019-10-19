@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const SCBottomNavContainer = styled.div`
   display: grid;
   font-size: 18px;
+  background: #3f51b5;
   grid-template-columns: repeat(
     ${({ unauthorized }) => (unauthorized ? 2 : 4)},
     1fr

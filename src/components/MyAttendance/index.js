@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import BottomNav from "../Navigation/BottomNav";
 
 const MyAttendance = props => {

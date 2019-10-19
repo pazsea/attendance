@@ -18,14 +18,18 @@ import firebase from "../Firebase";
 import Navigation from "../Navigation";
 import MyAttendance from "../MyAttendance";
 import SignUpPage from "../SignUp";
-import HomePage from "../Home";
+
 import ClassAttendance from "../ClassAttendance";
 
-import AdminPage from "../Admin";
 import SignInPage from "../SignIn";
 import NotLoggedIn from "../NotLoggedIn";
 import BottomNav from "../Navigation/BottomNav";
 
+import AdminClassAttendance from "../AdminClassAttendance";
+import AdminExport from "../AdminExport";
+
+import AdminMyClasses from "../AdminMyClasses";
+import AdminMore from "../AdminMore";
 // import AccountPage from "../Account";
 // import PasswordForgetPage from "../PasswordForget";
 // import SignInPage from "../SignIn";
@@ -45,19 +49,32 @@ const App = () => {
           <Route
             exact
             path={ROUTES.MYATTENDANCE}
-            component={loggedIn ? HomePage : MyAttendance}
+            component={loggedIn ? AdminMyClasses : MyAttendance}
           />
-          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-          <Route path={ROUTES.CLASSATTENDANCE} component={ClassAttendance} />
-          <Route
+
+          {/* <Route
             path={ROUTES.ADMIN}
             component={loggedIn ? AdminPage : NotLoggedIn}
+          /> */}
+          <Route
+            path={ROUTES.ADMINMYCLASSES}
+            component={loggedIn ? AdminMyClasses : NotLoggedIn}
           />
           <Route
-            path={ROUTES.HOME}
-            component={loggedIn ? HomePage : NotLoggedIn}
+            path={ROUTES.ADMINCLASSATTENDANCE}
+            component={loggedIn ? AdminClassAttendance : NotLoggedIn}
+          />
+          <Route
+            path={ROUTES.ADMINEXPORT}
+            component={loggedIn ? AdminExport : NotLoggedIn}
+          />
+          <Route
+            path={ROUTES.ADMINMORE}
+            component={loggedIn ? AdminMore : NotLoggedIn}
           />
           <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+          <Route path={ROUTES.CLASSATTENDANCE} component={ClassAttendance} />
         </Switch>
         {loggedIn ? <BottomNav></BottomNav> : null}
       </div>

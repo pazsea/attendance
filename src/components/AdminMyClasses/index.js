@@ -9,7 +9,7 @@ import firebase from "../Firebase";
 // ----  { Render Components } -----
 import MainContainer from "./MainContainer";
 
-const Home = () => {
+const AdminMyClasses = () => {
   const [{ userUid }] = useContext(Context);
 
   const [myClasses, setMyClasses] = useState({
@@ -52,4 +52,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default AdminMyClasses;
