@@ -44,7 +44,7 @@ const ClassContainer = ({ className, id, editThisClass, deleteFromDB }) => {
         variant="contained"
         color="primary"
         classes={{ root: "classesButton", label: "classesLabel" }}
-        to={ROUTES.HOME}
+        to={ROUTES.CLASSATTENDANCE}
         component={Link}
         size="medium"
         key={"button class " + id}

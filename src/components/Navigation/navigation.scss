@@ -1,7 +1,9 @@
 .navbar_links_desktop {
   display: flex;
+  font-weight: 600;
   flex-grow: 0.2;
-  justify-content: space-around;
+  justify-content: space-evenly;
+  color: rgba(0, 0, 0, 0.6);
 
   @media (max-width: 992px) {
     display: none;
@@ -21,4 +23,6 @@
 
 .span_logo {
   margin-left: 2%;
+  text-decoration: none;
+  color: white;
 }

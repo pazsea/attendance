@@ -29,7 +29,7 @@ const SignInPage = props => {
         userUid: firebase.getCurrentUid(),
         loggedIn: true
       });
-      props.history.replace("/home");
+      props.history.replace(ROUTES.ADMINMYCLASSES);
     } catch (error) {
       alert(error.message);
     }

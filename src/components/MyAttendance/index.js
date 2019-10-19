@@ -1,13 +1,7 @@
-import React, { useState } from "react";
-import BottomNav from "../Navigation/BottomNav";
+import React from "react";
 
 const MyAttendance = props => {
-  return (
-    <div>
-      Min Närvaro
-      <BottomNav unauthorized></BottomNav>
-    </div>
-  );
+  return <div>Min Närvaro</div>;
 };
 
 export default MyAttendance;

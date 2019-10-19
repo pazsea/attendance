@@ -64,13 +64,34 @@ const Navigation = props => {
             </bold>
           </Typography> */}
         <div className="navbar_links_desktop">
-          <Button color="inherit" to={ROUTES.HOME} component={NavLink}>
-            Hem
+          <Button
+            color="inherit"
+            activeStyle={{
+              color: "white"
+            }}
+            to={ROUTES.ADMINMYCLASSES}
+            component={NavLink}
+          >
+            Klasser
           </Button>
-          <Button color="inherit" to={ROUTES.HOME} component={NavLink}>
+          <Button
+            color="inherit"
+            activeStyle={{
+              color: "white"
+            }}
+            to={ROUTES.ADMINCLASSATTENDANCE}
+            component={NavLink}
+          >
             Närvaro
           </Button>
-          <Button color="inherit" to={ROUTES.HOME} component={NavLink}>
+          <Button
+            color="inherit"
+            to={ROUTES.ADMINEXPORT}
+            activeStyle={{
+              color: "white"
+            }}
+            component={NavLink}
+          >
             Export
           </Button>
         </div>
@@ -80,7 +101,7 @@ const Navigation = props => {
           component={NavLink}
           variant="contained"
           onClick={logout}
-          to={ROUTES.HOME}
+          to={ROUTES.MYATTENDANCE}
         >
           Logga ut
         </Button>
@@ -93,7 +114,9 @@ const Navigation = props => {
           <Icon variant="rounded" fontSize="default">
             school
           </Icon>
-          <span className="span_logo"> KYH</span>
+          <NavLink to={ROUTES.MYATTENDANCE} className="span_logo">
+            KYH
+          </NavLink>
         </Typography>
         <div className="navbar_links">
           <Button
