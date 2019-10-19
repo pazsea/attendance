@@ -1,13 +1,7 @@
 import React from "react";
-import BottomNav from "../Navigation/BottomNav";
 
 const ClassAttendance = () => {
-  return (
-    <div>
-      KLASS NÄRVARO
-      <BottomNav unauthorized></BottomNav>
-    </div>
-  );
+  return <div>KLASS NÄRVARO</div>;
 };
 
 export default ClassAttendance;

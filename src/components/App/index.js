@@ -76,7 +76,11 @@ const App = () => {
           <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
           <Route path={ROUTES.CLASSATTENDANCE} component={ClassAttendance} />
         </Switch>
-        {loggedIn ? <BottomNav></BottomNav> : null}
+        {loggedIn ? (
+          <BottomNav></BottomNav>
+        ) : (
+          <BottomNav unauthorized></BottomNav>
+        )}
       </div>
     </Router>
   );
