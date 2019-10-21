@@ -11,6 +11,7 @@
     "react": "^16.9.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.9.0",
+    "react-dropdown": "^1.6.4",
     "react-infinite-calendar": "^2.3.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
