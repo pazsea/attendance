@@ -220,7 +220,7 @@ export default function CreateClassModal(props) {
               setTimeout(() => {
                 localStorage.removeItem("classDetails");
                 closeModal();
-              }, 2000);
+              }, 1500);
             })
             .catch(function(error) {
               setStatusState({
@@ -270,9 +270,6 @@ export default function CreateClassModal(props) {
             headerTitle="SKAPA KLASS"
             close={closeModal}
           ></PopUpHeader>
-          {statusState.sentStatus ? (
-            <SentMessage text="Klass skapad"></SentMessage>
-          ) : null}
 
           <form className="add_class_form" onSubmit={e => e.preventDefault()}>
             <TextField
@@ -301,6 +298,9 @@ export default function CreateClassModal(props) {
             {statusState.errorState ? (
               <p style={{ color: "red" }}>{statusState.errorState}</p>
             ) : null}
+            {statusState.sentStatus ? (
+              <SentMessage text="Klass skapad"></SentMessage>
+            ) : null}
             <p className="divider"></p>
             <Button
               className="submitButton"
@@ -310,7 +310,7 @@ export default function CreateClassModal(props) {
               margin="normal"
               size="large"
               onClick={sendToDB}
-              disabled={!classDetails.className} //Bra knep!
+              disabled={!classDetails.className || statusState.sentStatus} //Bra knep!
             >
               SKAPA KLASS
             </Button>
