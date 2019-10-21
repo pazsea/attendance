@@ -25,20 +25,20 @@ const CustomCheckCircle = styled(CheckCircle)`
 const SentMessage = ({ text }) => {
   return (
     <>
-      {/* <div
+      <div
         style={{
           display: "flex",
-          height: "100vh",
+          height: "100%",
           width: "100%",
           background: "rgba(0, 0, 0, 0.5)",
           zIndex: "100",
           position: "absolute"
         }}
-      > */}
+      >
         <SentMessageDiv>
           {text} <CustomCheckCircle></CustomCheckCircle>
         </SentMessageDiv>
-      {/* </div> */}
+      </div>
     </>
   );
 };

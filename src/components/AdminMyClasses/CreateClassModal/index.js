@@ -43,7 +43,7 @@ export default function CreateClassModal(props) {
     sentStatus: false
   });
 
-  // GÖR ETT SENT STATE FÖR AALLLLTT!
+  // GÖR ETT SENT STATE FÖR !
   //
   //
   //
@@ -124,7 +124,6 @@ export default function CreateClassModal(props) {
       [event.target.name]: event.target.value
     });
     if (statusState.modificationState === false) {
-      console.log("DU KOMMER IN");
       setStatusState({
         ...statusState,
         modificationState: true,
@@ -137,7 +136,7 @@ export default function CreateClassModal(props) {
       });
     }
 
-    console.log(classDetails);
+
   };
 
   //FUNKTION FÖR ATT LÄGGA TILL NYA DATUM I LECTURE DATES ARRAYEN SAMT TA BORT
@@ -174,7 +173,6 @@ export default function CreateClassModal(props) {
     let sendStudents = classDetails.students;
     let sendClassName = classDetails.className;
     let sendLecturesDates = classDetails.lectureDates;
-    console.log("SEND TO DB STARTADE");
     if (sendClassName === "") {
       return setStatusState({
         ...statusState,
@@ -265,6 +263,9 @@ export default function CreateClassModal(props) {
 
       <Modal open={createClassModalState} onClose={() => promptUnsaved()}>
         <div className="add_class_container">
+          {statusState.sentStatus ? (
+            <SentMessage text="Klass skapad"></SentMessage>
+          ) : null}
           <PopUpHeader
             color="#3f51b5"
             headerTitle="SKAPA KLASS"
@@ -298,9 +299,7 @@ export default function CreateClassModal(props) {
             {statusState.errorState ? (
               <p style={{ color: "red" }}>{statusState.errorState}</p>
             ) : null}
-            {statusState.sentStatus ? (
-              <SentMessage text="Klass skapad"></SentMessage>
-            ) : null}
+
             <p className="divider"></p>
             <Button
               className="submitButton"

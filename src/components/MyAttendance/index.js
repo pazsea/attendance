@@ -1,13 +1,25 @@
+// ----  { Libraries } ----
 import React, { useState, useEffect } from "react";
 import Dropdown from "react-dropdown";
+
+// ----  { Routes, ActionTypes etc. Custom variables. } ----
+
+// ----  { Styles } ----
 import { SCMyAttendanceContainer } from "./styles";
-import Loading from "../Loading";
-import firebase from "../Firebase";
-import "react-dropdown/style.css";
 import KyhLogo from "../../images/logos/kyh_logo.png";
+import "react-dropdown/style.css";
+// ----  { Backend } ----
+import firebase from "../Firebase";
+// ----  { Render Components } -----
+import Loading from "../Loading";
 import Button from "@material-ui/core/Button";
 
 // Landingsida för icke inloggade
+
+//VALID CLASS STATE behöver ha:
+// CLASSUID
+// NAMNEN PÅ STUDENTERNA 
+// GÖR EN TRANSACTIONS där du läser in vilka studenter det finns.
 
 const MyAttendance = props => {
   const [validClassState, setValidClassState] = useState({
@@ -39,7 +51,7 @@ const MyAttendance = props => {
         hasLecturesToday: false
       });
     }
-    console.log(consistentDates);
+    // console.log(consistentDates);
     // currentDate ===  myAttendanceState.selectedClass.lectureDates
   }, [myAttendanceState.selectedClass]);
 
@@ -49,11 +61,11 @@ const MyAttendance = props => {
       let empty = snapshot.empty;
       let val = snapshot.docs;
       if (empty) {
-        setMyAttendanceState({
-          ...myAttendanceState,
+        setMyAttendanceState(prevState => ({
+          ...prevState,
           noClassesMessage: "Inga klasser hittade från databasen...",
           loading: false
-        });
+        }));
       } else {
         const dataReduce = val.reduce((acc, doc) => {
           return [
@@ -91,6 +103,7 @@ const MyAttendance = props => {
   };
 
   const sendToDB = () => {
+    console.log("SEND TO DB FUNCTION NOT BUILD");
     //Skicka till CLASSDETAILS PATHEN men VALID CLASSUID
     //Skapa attendance COLLECTION i pathen med rätt tid som
   };
@@ -100,6 +113,8 @@ const MyAttendance = props => {
     selectedClass: { label, students },
     noClassesMessage
   } = myAttendanceState;
+
+  const { hasLecturesToday } = validClassState;
 
   return (
     <SCMyAttendanceContainer>
@@ -115,9 +130,11 @@ const MyAttendance = props => {
             options={availableClasses}
           />
           {noClassesMessage ? <p>{noClassesMessage} </p> : null}
-
-          {students ? students.map((name, i) => <li key={i}>{name}</li>) : null}
-
+          <div>
+            {students
+              ? students.map((name, i) => <li key={i}>{name}</li>)
+              : null}
+          </div>
           <Button
             className="submitButton"
             variant="contained"
@@ -126,7 +143,7 @@ const MyAttendance = props => {
             margin="normal"
             size="large"
             onClick={sendToDB}
-            disabled={!validClassState.hasLecturesToday}
+            disabled={!hasLecturesToday}
           >
             Anmäl närvaro
           </Button>
