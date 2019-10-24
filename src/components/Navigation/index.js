@@ -139,7 +139,7 @@ const Navigation = props => {
             to={ROUTES.CLASSATTENDANCE}
             component={NavLink}
           >
-            Klassens Närvaro
+            Dagens närvaro
           </Button>
         </div>
         <Button

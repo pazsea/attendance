@@ -37,7 +37,7 @@ const BottomNav = ({ unauthorized }) => {
             }}
           >
             <ListCheck></ListCheck>
-            Klass närvaro
+            Dagens närvaro
           </NavLink>{" "}
         </SCBottomNavContainer>
       ) : (
