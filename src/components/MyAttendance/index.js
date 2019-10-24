@@ -1,13 +1,17 @@
 // ----  { Libraries } ----
 import React, { useState, useEffect } from "react";
 import Dropdown from "react-dropdown";
-
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
 
 // ----  { Styles } ----
-import { SCMyAttendanceContainer } from "./styles";
+import {
+  SCMyAttendanceContainer,
+  SCStudentNameContainer,
+  CheckIcon
+} from "./styles";
 import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
+
 // ----  { Backend } ----
 import firebase from "../Firebase";
 // ----  { Render Components } -----
@@ -18,36 +22,44 @@ import Button from "@material-ui/core/Button";
 
 //VALID CLASS STATE behöver ha:
 // CLASSUID
-// NAMNEN PÅ STUDENTERNA 
+// NAMNEN PÅ STUDENTERNA
 // GÖR EN TRANSACTIONS där du läser in vilka studenter det finns.
 
 const MyAttendance = props => {
-  const [validClassState, setValidClassState] = useState({
+  const [attendingStudentState, setAttendingStudentState] = useState({
     hasLecturesToday: false
   });
 
   const [myAttendanceState, setMyAttendanceState] = useState({
     selectedClass: {
       label: "Välj klass...",
-      lectureDates: []
+      lectureDates: [],
+      value: null //
     },
     availableClasses: [],
     loading: false
   });
 
+  // const {
+  //   availableClasses,
+  //   selectedClass: { label, students },
+  //   noClassesMessage
+  // } = myAttendanceState;
+
   useEffect(() => {
     const currentDate = new Date().setHours(0, 0, 0, 0);
 
-    const consistentDates = myAttendanceState.selectedClass.lectureDates.includes(
+    const currentDateIncluded = myAttendanceState.selectedClass.lectureDates.includes(
       currentDate
     );
 
-    if (consistentDates) {
-      setValidClassState({
-        hasLecturesToday: true
+    if (currentDateIncluded) {
+      setAttendingStudentState({
+        hasLecturesToday: true,
+        currentDate: currentDate
       });
     } else {
-      setValidClassState({
+      setAttendingStudentState({
         hasLecturesToday: false
       });
     }
@@ -102,11 +114,76 @@ const MyAttendance = props => {
     });
   };
 
-  const sendToDB = () => {
-    console.log("SEND TO DB FUNCTION NOT BUILD");
-    //Skicka till CLASSDETAILS PATHEN men VALID CLASSUID
-    //Skapa attendance COLLECTION i pathen med rätt tid som
-  };
+  // Skicka namnet på personen som registrerar sin närvaro till firebase.
+  // Spara dagens datum och elevens namn till local storage. (Checkas vid rendernig)
+
+  async function addAttendant(e, selectedName) {
+    console.log("HELLOOOO");
+    e.preventDefault();
+    const date = JSON.stringify(attendingStudentState.currentDate);
+    const classUid = myAttendanceState.selectedClass.value;
+    const databasePath = firebase
+      .classDetails(classUid)
+      .collection("attendance")
+      .doc(date);
+
+    const studentNames = await firebase
+      .classDetails(classUid)
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          return doc.data().students;
+          // console.log("Document data:", doc.data().students);
+        } else {
+          // doc.data() will be undefined in this case
+          return null;
+        }
+      })
+      .catch(function(error) {
+        //Lägg till ett error state när du implementerar funktionen på riktigt.
+      });
+    // console.log("HÄR KOMMER DATA " + data);
+    if (studentNames) {
+      firebase.db
+        //Gusta läs på om
+        .runTransaction(function(transaction) {
+          return transaction.get(databasePath).then(function(attendanceDoc) {
+            if (!attendanceDoc.exists) {
+              // const batch = firebase.batch();
+              studentNames.forEach(studentName => {
+                if (studentName === selectedName) {
+                  databasePath.set(
+                    {
+                      [selectedName]: true
+                    },
+                    { merge: true }
+                  );
+                } else {
+                  databasePath.set(
+                    {
+                      [studentName]: false
+                    },
+                    { merge: true }
+                  );
+                }
+              });
+            } else {
+              transaction.update(databasePath, {
+                [selectedName]: true
+              });
+            }
+          });
+        })
+        .then(function() {
+          console.log("FUNKADE");
+        })
+        .catch(function(err) {
+          console.error(err);
+        });
+    } else {
+      //STATE DATABAS HITTADE INGA STUDENTER.
+    }
+  }
 
   const {
     availableClasses,
@@ -114,7 +191,7 @@ const MyAttendance = props => {
     noClassesMessage
   } = myAttendanceState;
 
-  const { hasLecturesToday } = validClassState;
+  const { hasLecturesToday } = attendingStudentState;
 
   return (
     <SCMyAttendanceContainer>
@@ -130,23 +207,18 @@ const MyAttendance = props => {
             options={availableClasses}
           />
           {noClassesMessage ? <p>{noClassesMessage} </p> : null}
-          <div>
+          {/* <div> */}
+          <SCStudentNameContainer>
             {students
-              ? students.map((name, i) => <li key={i}>{name}</li>)
+              ? students.map((name, i) => (
+                  <Button key={i} onClick={e => addAttendant(e, name)}>
+                    {name}
+                    <CheckIcon />
+                  </Button>
+                ))
               : null}
-          </div>
-          <Button
-            className="submitButton"
-            variant="contained"
-            color="secondary"
-            type="submit"
-            margin="normal"
-            size="large"
-            onClick={sendToDB}
-            disabled={!hasLecturesToday}
-          >
-            Anmäl närvaro
-          </Button>
+          </SCStudentNameContainer>
+          {/* </div> */}
         </>
       )}
     </SCMyAttendanceContainer>
@@ -159,15 +231,7 @@ export default MyAttendance;
 // DU HAR INGA FÖRELÄSNINGAR IDAG I FE18UX
 
 // container med alla studentnamn
+
 // state pickedStudentnam
 // Patrick med x
 // new Date(1569535200000)
-
-// const data = new Date().setHours(0,0,0,0)
-// That will set the time to 00:00:00.000 of your current timezone, if you want to work in UTC time, you can use the setUTCHours method.
-// https://stackoverflow.com/questions/3894048/what-is-the-best-way-to-initialize-a-javascript-date-to-midnight
-//[1569535200000, 1569535200000, 1569535200000]
-// Anmäl närvaro
-// 20190909
-// moment().format("MMM Do YY");
-// moment().format('L');      // 2019-10-21

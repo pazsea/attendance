@@ -13,7 +13,7 @@ import {
 // ----  { Render Components } -----
 import Button from "@material-ui/core/Button";
 
-// ----  { Styles } ----
+// ----  { Styles } ----z
 import "./add_lectures_modal.scss";
 import "./styles.css"; // Make sure to import the default stylesheet
 
