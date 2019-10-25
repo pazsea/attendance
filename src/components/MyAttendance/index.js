@@ -132,7 +132,7 @@ const MyAttendance = () => {
     let date = JSON.stringify(attendingStudentState.currentDate);
     let classUid = myClassesState.selectedClass.value;
 
-    let databasePath = await firebase
+    const dataPath = firebase
       .classDetails(classUid)
       .collection("attendance")
       .doc(date);
@@ -152,64 +152,114 @@ const MyAttendance = () => {
       .catch(function(error) {
         //Lägg till ett error state när du implementerar funktionen på riktigt.
       });
-    // console.log("HÄR KOMMER DATA " + data);
-    if (studentNames) {
-      firebase.db
-        //Gustav läs på om
-        .runTransaction(function(transaction) {
-          return transaction.get(databasePath).then(function(attendanceDoc) {
-            if (!attendanceDoc.exists) {
-              studentNames.forEach(studentName => {
-                if (studentName === selectedName) {
-                  databasePath.set(
-                    {
-                      [selectedName]: true
-                    },
-                    { merge: true }
-                  );
-                } else {
-                  databasePath.set(
-                    {
-                      [studentName]: false
-                    },
-                    { merge: true }
-                  );
-                }
-              });
+
+    await dataPath
+      .get()
+      .then(docSnapshot => {
+        if (docSnapshot.exists) {
+          dataPath.update({
+            [selectedName]: true
+          });
+        } else {
+          studentNames.forEach(studentName => {
+            if (studentName === selectedName) {
+              dataPath.set(
+                {
+                  [selectedName]: true
+                },
+                { merge: true }
+              );
             } else {
-              transaction.update(databasePath, {
-                [selectedName]: true
-              });
+              dataPath.set(
+                {
+                  [studentName]: false
+                },
+                { merge: true }
+              );
             }
           });
-        })
-        .then(function() {
-          localStorage.setItem(
-            "attendingState",
-            JSON.stringify({
-              attendingName: selectedName,
-              attendingClassName: className,
-              attendingClassUid: classUid,
-              attendingDate: date
-            })
-          );
-          setAttendingStudentState(prevState => ({
-            ...prevState,
-            isAlreadyAttending: true,
-            attendingState: {
-              attendingName: selectedName,
-              attendingClassName: className,
-              attendingClassUid: classUid,
-              attendingDate: date
-            }
-          }));
-        })
-        .catch(function(err) {
-          console.error(err);
-        });
-    } else {
-      //STATE DATABAS HITTADE INGA STUDENTER.
-    }
+        }
+      })
+      .then(function() {
+        localStorage.setItem(
+          "attendingState",
+          JSON.stringify({
+            attendingName: selectedName,
+            attendingClassName: className,
+            attendingClassUid: classUid,
+            attendingDate: date
+          })
+        );
+        setAttendingStudentState(prevState => ({
+          ...prevState,
+          isAlreadyAttending: true,
+          attendingState: {
+            attendingName: selectedName,
+            attendingClassName: className,
+            attendingClassUid: classUid,
+            attendingDate: date
+          }
+        }));
+      });
+
+    // console.log("HÄR KOMMER DATA " + data);
+    // if (studentNames) {
+    //   firebase.db
+    //     //Gustav läs på om
+    //     .runTransaction(function(transaction) {
+    //       return transaction.get(databasePath).then(function(attendanceDoc) {
+    //         if (!attendanceDoc.exists) {
+    //           studentNames.forEach(studentName => {
+    //             if (studentName === selectedName) {
+    //               databasePath.set(
+    //                 {
+    //                   [selectedName]: true
+    //                 },
+    //                 { merge: true }
+    //               );
+    //             } else {
+    //               databasePath.set(
+    //                 {
+    //                   [studentName]: false
+    //                 },
+    //                 { merge: true }
+    //               );
+    //             }
+    //           });
+    //         } else if (attendanceDoc.exist) {
+    //           transaction.update(databasePath, {
+    //             [selectedName]: true
+    //           });
+    //         }
+    //       });
+    //     })
+    //     .then(function() {
+    //       localStorage.setItem(
+    //         "attendingState",
+    //         JSON.stringify({
+    //           attendingName: selectedName,
+    //           attendingClassName: className,
+    //           attendingClassUid: classUid,
+    //           attendingDate: date
+    //         })
+    //       );
+    //       setAttendingStudentState(prevState => ({
+    //         ...prevState,
+    //         isAlreadyAttending: true,
+    //         attendingState: {
+    //           attendingName: selectedName,
+    //           attendingClassName: className,
+    //           attendingClassUid: classUid,
+    //           attendingDate: date
+    //         }
+    //       }));
+    //     })
+    //     .catch(function(err) {
+    //       console.error(err);
+    //     });
+    // } else {
+    //   //STATE DATABAS HITTADE INGA STUDENTER.
+    // }
   }
 
   const {
@@ -236,8 +286,10 @@ const MyAttendance = () => {
           <h3>Du har redan anmält din närvaro:</h3>
 
           <div className="studentStatusDiv">
-            Namn: {attendingName}<br></br>
-            Klass: {attendingClassName}<br></br>
+            Namn: {attendingName}
+            <br></br>
+            Klass: {attendingClassName}
+            <br></br>
             Datum: {new Date(Number(attendingDate))
               .toISOString()
               .slice(0, 10)}{" "}
