@@ -53,14 +53,18 @@ const MyAttendance = () => {
 
   //Kollar om man användare redan anmält sig närvarande.
   useEffect(() => {
-    const attendingState = localStorage.getItem("attendingState");
+    const attendingStateStorage = localStorage.getItem("attendingState");
+    const storageObject = JSON.parse(attendingStateStorage);
+    const currentDate = new Date().setHours(0, 0, 0, 0);
 
-    if (attendingState) {
+    if (attendingStateStorage && storageObject === currentDate) {
       setAttendingStudentState(prevState => ({
         ...prevState,
         isAlreadyAttending: true,
-        attendingState: JSON.parse(attendingState)
+        attendingState: JSON.parse(attendingStateStorage)
       }));
+    } else {
+      localStorage.removeItem("attendingState");
     }
   }, []);
 
