@@ -287,10 +287,7 @@ const MyAttendance = () => {
               .toISOString()
               .slice(0, 10)}{" "}
           </div>
-          <Button onClick={() => removeAttendant()}>
-            Ångra närvaro?
-            {/* <CheckIcon /> */}
-          </Button>
+          <Button onClick={() => removeAttendant()}>Ångra närvaro?</Button>
         </SCAlreadyAttending>
       ) : (
         <>
@@ -301,18 +298,24 @@ const MyAttendance = () => {
             onChange={handleChange}
             options={availableClasses}
           />
-          {errorClasses ? <p>{errorClasses} </p> : null}
+          {errorClasses ? (
+            <p style={{ fontWeight: "600", textAlign: "center" }}>
+              {errorClasses}{" "}
+            </p>
+          ) : null}
 
           <SCStudentNameContainer>
             {hasLecturesToday ? (
               students.map((name, i) => (
                 <Button key={i} onClick={() => addAttendant(name)}>
                   {name}
-                  <CheckIcon />
+                  {/* <CheckIcon /> */}
                 </Button>
               ))
             ) : (
-              <p>{errorAttendance} </p>
+              <p style={{ fontWeight: "600", textAlign: "center" }}>
+                {errorAttendance}{" "}
+              </p>
             )}
           </SCStudentNameContainer>
         </>

@@ -96,7 +96,7 @@ export const SCAlreadyAttending = styled.div`
       background: mediumseagreen;
     }
     @media (min-width: 768px) {
-      width: 50%;
+      width: 40%;
     }
   }
 
