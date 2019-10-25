@@ -23,6 +23,7 @@ const INITIAL_ATTENDINGSTUDENT_STATE = {
   isAlreadyAttending: false,
   hasLecturesToday: false,
   currentDate: null,
+  errorAttendance: null,
   attendingState: {
     attendingName: false,
     attendingClassName: false,
@@ -34,38 +35,23 @@ const INITIAL_ATTENDINGSTUDENT_STATE = {
 const INITIAL_CLASSES_STATE = {
   selectedClass: {
     label: "Välj klass...",
-    lectureDates: [],
+    lectureDates: null,
     students: null,
     value: null
   },
   availableClasses: [],
-  loading: false
+  loading: true,
+  errorClasses: null
 };
 
 const MyAttendance = () => {
-  const [attendingStudentState, setAttendingStudentState] = useState({
-    isAlreadyAttending: false,
-    hasLecturesToday: false,
-    currentDate: null,
-    attendingState: {
-      attendingName: false,
-      attendingClassName: false,
-      attendingDate: false,
-      attendingClassUid: false
-    }
-  });
+  const [attendingStudentState, setAttendingStudentState] = useState(
+    INITIAL_ATTENDINGSTUDENT_STATE
+  );
 
-  const [myClassesState, setMyClassesState] = useState({
-    selectedClass: {
-      label: "Välj klass...",
-      lectureDates: [],
-      students: null,
-      value: null
-    },
-    availableClasses: [],
-    loading: false
-  });
+  const [myClassesState, setMyClassesState] = useState(INITIAL_CLASSES_STATE);
 
+  //Kollar om man användare redan anmält sig närvarande.
   useEffect(() => {
     const attendingState = localStorage.getItem("attendingState");
 
@@ -79,35 +65,15 @@ const MyAttendance = () => {
   }, []);
 
   useEffect(() => {
-    const currentDate = new Date().setHours(0, 0, 0, 0);
-    const currentDateIncluded = myClassesState.selectedClass.lectureDates.includes(
-      currentDate
-    );
-
-    if (currentDateIncluded) {
-      setAttendingStudentState(prevState => ({
-        ...prevState,
-        hasLecturesToday: true,
-        currentDate: currentDate
-      }));
-    } else {
-      setAttendingStudentState(prevState => ({
-        ...prevState,
-        hasLecturesToday: false
-      }));
-    }
-  }, [myClassesState.selectedClass]);
-
-  useEffect(() => {
-    console.log("YIIIKES");
-    // onSnapshot startar en lyssnare.'
+    console.log("Starting listener from firebase");
+    // GUSTAV: onSnapshot startar en lyssnare.'
     const unsubcribe = firebase.rootClassDetails().onSnapshot(snapshot => {
       let empty = snapshot.empty;
       let val = snapshot.docs;
       if (empty) {
         setMyClassesState(prevState => ({
           ...prevState,
-          noClassesMessage: "Inga klasser hittade från databasen...",
+          errorClasses: "Inga klasser hittade från databasen...",
           loading: false
         }));
       } else {
@@ -122,7 +88,6 @@ const MyAttendance = () => {
             }
           ];
         }, []);
-
         setMyClassesState(prevState => ({
           ...prevState,
           availableClasses: dataReduce,
@@ -130,12 +95,40 @@ const MyAttendance = () => {
         }));
       }
     });
-    //Om vi använt get så hade vi inte behövt denna callback.
+    // GUSTAV: Om vi använt get så hade vi inte behövt denna callback.
     return () => unsubcribe();
   }, [attendingStudentState.isAlreadyAttending]);
 
+  //Checking if current date is included in the selected class lecture dates.
+  useEffect(() => {
+    console.log(
+      "Checking if current date is included in picked class lecture dates.."
+    );
+    if (myClassesState.selectedClass.lectureDates) {
+      const currentDate = new Date().setHours(0, 0, 0, 0);
+      const currentDateIncluded = myClassesState.selectedClass.lectureDates.includes(
+        currentDate
+      );
+
+      if (currentDateIncluded) {
+        setAttendingStudentState(prevState => ({
+          ...prevState,
+          hasLecturesToday: true,
+          currentDate: currentDate
+        }));
+      } else {
+        setAttendingStudentState(prevState => ({
+          ...prevState,
+          hasLecturesToday: false,
+          errorAttendance: "Denna klass har inga föreläsningar idag.."
+        }));
+      }
+    }
+  }, [myClassesState.selectedClass.lectureDates]);
+
+  //GUSTAV: Tar fram den valda klassens
   const handleChange = selectedOption => {
-    // Tar fram de klasserna med samma namn som det man tryckt på.
+    //GUSTAV: Tar fram de klasserna med samma namn som det man tryckt på.
     var findSelectedClass = myClassesState.availableClasses.filter(obj => {
       return obj.value === selectedOption.value;
     });
@@ -146,12 +139,10 @@ const MyAttendance = () => {
     });
   };
 
-  // Skicka namnet på personen som registrerar sin närvaro till firebase.
-  // Spara dagens datum och elevens namn till local storage. (Checkas vid rendernig)
+  //GUSTAV: Skicka namnet på personen som registrerar sin närvaro till firebase.
+  //GUSTAV: Spara dagens datum och elevens namn till local storage. (Checkas vid rendernig)
 
-  async function addAttendant(e, selectedName) {
-    e.preventDefault();
-    // const className= attendingStudentState.
+  async function addAttendant(selectedName) {
     let className = myClassesState.selectedClass.label;
     let date = JSON.stringify(attendingStudentState.currentDate);
     let classUid = myClassesState.selectedClass.value;
@@ -167,14 +158,16 @@ const MyAttendance = () => {
       .then(doc => {
         if (doc.exists) {
           return doc.data().students;
-          // console.log("Document data:", doc.data().students);
         } else {
-          // doc.data() will be undefined in this case
           return null;
         }
       })
       .catch(function(error) {
-        //Lägg till ett error state när du implementerar funktionen på riktigt.
+        setAttendingStudentState(prevState => ({
+          ...prevState,
+          hasLecturesToday: false,
+          errorAttendance: error
+        }));
       });
 
     await dataPath
@@ -250,12 +243,14 @@ const MyAttendance = () => {
   const {
     availableClasses,
     selectedClass: { label, students },
-    noClassesMessage
+    errorClasses,
+    loading
   } = myClassesState;
 
   const {
     hasLecturesToday,
     isAlreadyAttending,
+    errorAttendance,
     attendingState: {
       attendingClassName,
       attendingName,
@@ -266,7 +261,9 @@ const MyAttendance = () => {
 
   return (
     <SCMyAttendanceContainer>
-      {isAlreadyAttending ? (
+      {loading ? (
+        <Loading text="Hämtar in alla klasser...."></Loading>
+      ) : isAlreadyAttending ? (
         <SCAlreadyAttending>
           <img src={KyhLogo} alt="KYH Logo"></img>
           <h3>Du har redan anmält din närvaro:</h3>
@@ -285,8 +282,6 @@ const MyAttendance = () => {
             {/* <CheckIcon /> */}
           </Button>
         </SCAlreadyAttending>
-      ) : myClassesState.loading ? (
-        <Loading text="Laddar klasser..."></Loading>
       ) : (
         <>
           <img src={KyhLogo} alt="KYH Logo"></img>
@@ -296,17 +291,19 @@ const MyAttendance = () => {
             onChange={handleChange}
             options={availableClasses}
           />
-          {noClassesMessage ? <p>{noClassesMessage} </p> : null}
+          {errorClasses ? <p>{errorClasses} </p> : null}
 
           <SCStudentNameContainer>
-            {students && hasLecturesToday
-              ? students.map((name, i) => (
-                  <Button key={i} onClick={e => addAttendant(e, name)}>
-                    {name}
-                    <CheckIcon />
-                  </Button>
-                ))
-              : null}
+            {hasLecturesToday ? (
+              students.map((name, i) => (
+                <Button key={i} onClick={() => addAttendant(name)}>
+                  {name}
+                  <CheckIcon />
+                </Button>
+              ))
+            ) : (
+              <p>{errorAttendance} </p>
+            )}
           </SCStudentNameContainer>
         </>
       )}
@@ -315,12 +312,3 @@ const MyAttendance = () => {
 };
 
 export default MyAttendance;
-
-// state noLecturesToday
-// DU HAR INGA FÖRELÄSNINGAR IDAG I FE18UX
-
-// container med alla studentnamn
-
-// state pickedStudentnam
-// Patrick med x
-// new Date(1569535200000)
