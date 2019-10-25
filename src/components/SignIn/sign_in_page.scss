@@ -3,19 +3,28 @@
   font-size: 16px;
   margin: 2em auto auto auto;
   flex-direction: column;
-  padding: 2em;
+  padding: 1em;
   width: 85%;
-  height: 80vh;
-  border: 1px solid lightgrey;
+  height: 70vh;
+
   border-radius: 0.12em;
 
   @media (min-width: 768px) {
-    width: 35%;
+    width: 70%;
+    height: 80vh;
+  }
+
+  @media (min-width: 992px) {
+    width: 40%;
   }
 
   img {
-    width: 200px;
     align-self: center;
+    width: 70%;
+
+    @media (min-width: 768px) {
+      width: 45%;
+    }
   }
 
   .divider {
