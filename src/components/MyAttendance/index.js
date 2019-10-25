@@ -7,7 +7,8 @@ import Dropdown from "react-dropdown";
 import {
   SCMyAttendanceContainer,
   SCStudentNameContainer,
-  CheckIcon
+  CheckIcon,
+  SCAlreadyAttending
 } from "./styles";
 import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
@@ -18,62 +19,69 @@ import firebase from "../Firebase";
 import Loading from "../Loading";
 import Button from "@material-ui/core/Button";
 
-// Landingsida för icke inloggade
-
-//VALID CLASS STATE behöver ha:
-// CLASSUID
-// NAMNEN PÅ STUDENTERNA
-// GÖR EN TRANSACTIONS där du läser in vilka studenter det finns.
-
-const MyAttendance = props => {
+const MyAttendance = () => {
   const [attendingStudentState, setAttendingStudentState] = useState({
-    hasLecturesToday: false
+    isAlreadyAttending: false,
+    hasLecturesToday: false,
+    currentDate: null,
+    attendingState: {
+      attendingName: false,
+      attendingClassName: false,
+      attendingDate: false,
+      attendingClassUid: false
+    }
   });
 
-  const [myAttendanceState, setMyAttendanceState] = useState({
+  const [myClassesState, setMyClassesState] = useState({
     selectedClass: {
       label: "Välj klass...",
       lectureDates: [],
-      value: null //
+      students: null,
+      value: null
     },
     availableClasses: [],
     loading: false
   });
 
-  // const {
-  //   availableClasses,
-  //   selectedClass: { label, students },
-  //   noClassesMessage
-  // } = myAttendanceState;
+  useEffect(() => {
+    const attendingState = localStorage.getItem("attendingState");
+
+    if (attendingState) {
+      setAttendingStudentState(prevState => ({
+        ...prevState,
+        isAlreadyAttending: true,
+        attendingState: JSON.parse(attendingState)
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     const currentDate = new Date().setHours(0, 0, 0, 0);
-
-    const currentDateIncluded = myAttendanceState.selectedClass.lectureDates.includes(
+    const currentDateIncluded = myClassesState.selectedClass.lectureDates.includes(
       currentDate
     );
 
     if (currentDateIncluded) {
-      setAttendingStudentState({
+      setAttendingStudentState(prevState => ({
+        ...prevState,
         hasLecturesToday: true,
         currentDate: currentDate
-      });
+      }));
     } else {
-      setAttendingStudentState({
+      setAttendingStudentState(prevState => ({
+        ...prevState,
         hasLecturesToday: false
-      });
+      }));
     }
-    // console.log(consistentDates);
-    // currentDate ===  myAttendanceState.selectedClass.lectureDates
-  }, [myAttendanceState.selectedClass]);
+  }, [myClassesState.selectedClass]);
 
   useEffect(() => {
-    // onSnapshot startar en lyssnare.
+    // onSnapshot startar en lyssnare.'
     const unsubcribe = firebase.rootClassDetails().onSnapshot(snapshot => {
       let empty = snapshot.empty;
       let val = snapshot.docs;
       if (empty) {
-        setMyAttendanceState(prevState => ({
+        setMyClassesState(prevState => ({
           ...prevState,
           noClassesMessage: "Inga klasser hittade från databasen...",
           loading: false
@@ -91,7 +99,7 @@ const MyAttendance = props => {
           ];
         }, []);
 
-        setMyAttendanceState(prevState => ({
+        setMyClassesState(prevState => ({
           ...prevState,
           availableClasses: dataReduce,
           loading: false
@@ -104,12 +112,12 @@ const MyAttendance = props => {
 
   const handleChange = selectedOption => {
     // Tar fram de klasserna med samma namn som det man tryckt på.
-    var findSelectedClass = myAttendanceState.availableClasses.filter(obj => {
+    var findSelectedClass = myClassesState.availableClasses.filter(obj => {
       return obj.value === selectedOption.value;
     });
-    // console.log({ ...findSelectedClass[0] });
-    setMyAttendanceState({
-      ...myAttendanceState,
+    console.log({ ...findSelectedClass[0] });
+    setMyClassesState({
+      ...myClassesState,
       selectedClass: { ...findSelectedClass[0] }
     });
   };
@@ -118,11 +126,13 @@ const MyAttendance = props => {
   // Spara dagens datum och elevens namn till local storage. (Checkas vid rendernig)
 
   async function addAttendant(e, selectedName) {
-    console.log("HELLOOOO");
     e.preventDefault();
-    const date = JSON.stringify(attendingStudentState.currentDate);
-    const classUid = myAttendanceState.selectedClass.value;
-    const databasePath = firebase
+    // const className= attendingStudentState.
+    let className = myClassesState.selectedClass.label;
+    let date = JSON.stringify(attendingStudentState.currentDate);
+    let classUid = myClassesState.selectedClass.value;
+
+    let databasePath = await firebase
       .classDetails(classUid)
       .collection("attendance")
       .doc(date);
@@ -145,11 +155,10 @@ const MyAttendance = props => {
     // console.log("HÄR KOMMER DATA " + data);
     if (studentNames) {
       firebase.db
-        //Gusta läs på om
+        //Gustav läs på om
         .runTransaction(function(transaction) {
           return transaction.get(databasePath).then(function(attendanceDoc) {
             if (!attendanceDoc.exists) {
-              // const batch = firebase.batch();
               studentNames.forEach(studentName => {
                 if (studentName === selectedName) {
                   databasePath.set(
@@ -175,7 +184,25 @@ const MyAttendance = props => {
           });
         })
         .then(function() {
-          console.log("FUNKADE");
+          localStorage.setItem(
+            "attendingState",
+            JSON.stringify({
+              attendingName: selectedName,
+              attendingClassName: className,
+              attendingClassUid: classUid,
+              attendingDate: date
+            })
+          );
+          setAttendingStudentState(prevState => ({
+            ...prevState,
+            isAlreadyAttending: true,
+            attendingState: {
+              attendingName: selectedName,
+              attendingClassName: className,
+              attendingClassUid: classUid,
+              attendingDate: date
+            }
+          }));
         })
         .catch(function(err) {
           console.error(err);
@@ -189,13 +216,38 @@ const MyAttendance = props => {
     availableClasses,
     selectedClass: { label, students },
     noClassesMessage
-  } = myAttendanceState;
+  } = myClassesState;
 
-  const { hasLecturesToday } = attendingStudentState;
+  const {
+    isAlreadyAttending,
+    attendingState: {
+      attendingClassName,
+      attendingName,
+      attendingClassUid,
+      attendingDate
+    }
+  } = attendingStudentState;
 
   return (
     <SCMyAttendanceContainer>
-      {myAttendanceState.loading ? (
+      {isAlreadyAttending ? (
+        <SCAlreadyAttending>
+          <img src={KyhLogo} alt="KYH Logo"></img>
+          <h3>Du har redan anmält din närvaro:</h3>
+
+          <div className="studentStatusDiv">
+            Namn: {attendingName}<br></br>
+            Klass: {attendingClassName}<br></br>
+            Datum: {new Date(Number(attendingDate))
+              .toISOString()
+              .slice(0, 10)}{" "}
+          </div>
+          <Button>
+            Ångra närvaro?
+            {/* <CheckIcon /> */}
+          </Button>
+        </SCAlreadyAttending>
+      ) : myClassesState.loading ? (
         <Loading text="Laddar klasser..."></Loading>
       ) : (
         <>
@@ -207,7 +259,7 @@ const MyAttendance = props => {
             options={availableClasses}
           />
           {noClassesMessage ? <p>{noClassesMessage} </p> : null}
-          {/* <div> */}
+
           <SCStudentNameContainer>
             {students
               ? students.map((name, i) => (
@@ -218,7 +270,6 @@ const MyAttendance = props => {
                 ))
               : null}
           </SCStudentNameContainer>
-          {/* </div> */}
         </>
       )}
     </SCMyAttendanceContainer>
