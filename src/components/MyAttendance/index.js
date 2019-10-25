@@ -19,6 +19,29 @@ import firebase from "../Firebase";
 import Loading from "../Loading";
 import Button from "@material-ui/core/Button";
 
+const INITIAL_ATTENDINGSTUDENT_STATE = {
+  isAlreadyAttending: false,
+  hasLecturesToday: false,
+  currentDate: null,
+  attendingState: {
+    attendingName: false,
+    attendingClassName: false,
+    attendingDate: false,
+    attendingClassUid: false
+  }
+};
+
+const INITIAL_CLASSES_STATE = {
+  selectedClass: {
+    label: "Välj klass...",
+    lectureDates: [],
+    students: null,
+    value: null
+  },
+  availableClasses: [],
+  loading: false
+};
+
 const MyAttendance = () => {
   const [attendingStudentState, setAttendingStudentState] = useState({
     isAlreadyAttending: false,
@@ -76,6 +99,7 @@ const MyAttendance = () => {
   }, [myClassesState.selectedClass]);
 
   useEffect(() => {
+    console.log("YIIIKES");
     // onSnapshot startar en lyssnare.'
     const unsubcribe = firebase.rootClassDetails().onSnapshot(snapshot => {
       let empty = snapshot.empty;
@@ -108,14 +132,14 @@ const MyAttendance = () => {
     });
     //Om vi använt get så hade vi inte behövt denna callback.
     return () => unsubcribe();
-  }, []);
+  }, [attendingStudentState.isAlreadyAttending]);
 
   const handleChange = selectedOption => {
     // Tar fram de klasserna med samma namn som det man tryckt på.
     var findSelectedClass = myClassesState.availableClasses.filter(obj => {
       return obj.value === selectedOption.value;
     });
-    console.log({ ...findSelectedClass[0] });
+    // console.log({ ...findSelectedClass[0] });
     setMyClassesState({
       ...myClassesState,
       selectedClass: { ...findSelectedClass[0] }
@@ -201,65 +225,26 @@ const MyAttendance = () => {
           }
         }));
       });
+  }
 
-    // console.log("HÄR KOMMER DATA " + data);
-    // if (studentNames) {
-    //   firebase.db
-    //     //Gustav läs på om
-    //     .runTransaction(function(transaction) {
-    //       return transaction.get(databasePath).then(function(attendanceDoc) {
-    //         if (!attendanceDoc.exists) {
-    //           studentNames.forEach(studentName => {
-    //             if (studentName === selectedName) {
-    //               databasePath.set(
-    //                 {
-    //                   [selectedName]: true
-    //                 },
-    //                 { merge: true }
-    //               );
-    //             } else {
-    //               databasePath.set(
-    //                 {
-    //                   [studentName]: false
-    //                 },
-    //                 { merge: true }
-    //               );
-    //             }
-    //           });
-    //         } else if (attendanceDoc.exist) {
-    //           transaction.update(databasePath, {
-    //             [selectedName]: true
-    //           });
-    //         }
-    //       });
-    //     })
-    //     .then(function() {
-    //       localStorage.setItem(
-    //         "attendingState",
-    //         JSON.stringify({
-    //           attendingName: selectedName,
-    //           attendingClassName: className,
-    //           attendingClassUid: classUid,
-    //           attendingDate: date
-    //         })
-    //       );
-    //       setAttendingStudentState(prevState => ({
-    //         ...prevState,
-    //         isAlreadyAttending: true,
-    //         attendingState: {
-    //           attendingName: selectedName,
-    //           attendingClassName: className,
-    //           attendingClassUid: classUid,
-    //           attendingDate: date
-    //         }
-    //       }));
-    //     })
-    //     .catch(function(err) {
-    //       console.error(err);
-    //     });
-    // } else {
-    //   //STATE DATABAS HITTADE INGA STUDENTER.
-    // }
+  function removeAttendant() {
+    const dataPath = firebase
+      .classDetails(attendingClassUid)
+      .collection("attendance")
+      .doc(attendingDate);
+
+    dataPath
+      .update({
+        [attendingName]: false
+      })
+      .then(function() {
+        localStorage.removeItem("attendingState");
+        setAttendingStudentState(INITIAL_ATTENDINGSTUDENT_STATE);
+        setMyClassesState(INITIAL_CLASSES_STATE);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   const {
@@ -269,6 +254,7 @@ const MyAttendance = () => {
   } = myClassesState;
 
   const {
+    hasLecturesToday,
     isAlreadyAttending,
     attendingState: {
       attendingClassName,
@@ -294,7 +280,7 @@ const MyAttendance = () => {
               .toISOString()
               .slice(0, 10)}{" "}
           </div>
-          <Button>
+          <Button onClick={() => removeAttendant()}>
             Ångra närvaro?
             {/* <CheckIcon /> */}
           </Button>
@@ -313,7 +299,7 @@ const MyAttendance = () => {
           {noClassesMessage ? <p>{noClassesMessage} </p> : null}
 
           <SCStudentNameContainer>
-            {students
+            {students && hasLecturesToday
               ? students.map((name, i) => (
                   <Button key={i} onClick={e => addAttendant(e, name)}>
                     {name}
