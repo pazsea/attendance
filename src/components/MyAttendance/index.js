@@ -57,7 +57,12 @@ const MyAttendance = () => {
     const storageObject = JSON.parse(attendingStateStorage);
     const currentDate = new Date().setHours(0, 0, 0, 0);
 
-    if (attendingStateStorage && storageObject === currentDate) {
+    // console.log(storageObjectDate + " " + currentDate);
+    if (
+      attendingStateStorage &&
+      Number(storageObject.attendingDate) === currentDate
+    ) {
+      console.log(storageObject.attendingDate);
       setAttendingStudentState(prevState => ({
         ...prevState,
         isAlreadyAttending: true,
@@ -270,14 +275,15 @@ const MyAttendance = () => {
       ) : isAlreadyAttending ? (
         <SCAlreadyAttending>
           <img src={KyhLogo} alt="KYH Logo"></img>
-          <h3>Du har redan anmält din närvaro:</h3>
+          <h3>Anmäld närvaro:</h3>
 
           <div className="studentStatusDiv">
             Namn: {attendingName}
             <br></br>
             Klass: {attendingClassName}
             <br></br>
-            Datum: {new Date(Number(attendingDate))
+            Datum:{" "}
+            {new Date(Number(attendingDate) + 10000000)
               .toISOString()
               .slice(0, 10)}{" "}
           </div>
