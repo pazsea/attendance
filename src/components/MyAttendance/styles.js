@@ -6,17 +6,20 @@ export const SCMyAttendanceContainer = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 16px;
-  /* Användes när vi använde flex: grid */
-  /* row-gap: 1em; */
-  margin: 2em auto auto auto;
-  width: 85%;
-  height: 65vh;
-  /* border: 1px solid lightgrey; */
+  margin: 0 auto;
+  width: 100%;
+  height: 80vh;
   padding: 2em;
   border-radius: 0.12em;
+
   img {
     margin: 0 auto;
-    width: 200px;
+    width: 70%;
+
+    @media (min-width: 768px) {
+      width: 30%;
+      margin: 0 auto 2em auto;
+    }
   }
 
   @media (min-width: 576 px) {
@@ -25,8 +28,8 @@ export const SCMyAttendanceContainer = styled.div`
   }
 
   @media (min-width: 768px) {
-    width: 60%;
-    height: 70vh;
+    width: 50%;
+    height: 80vh;
   }
 `;
 
@@ -38,7 +41,7 @@ export const SCStudentNameContainer = styled.div`
   flex-grow: 1;
   margin: 1em 0 1em 0;
   height: 20vh;
-  width: 70%;
+  width: 100%;
   overflow-y: auto;
 
   button {
@@ -59,4 +62,55 @@ export const CheckIcon = styled(Check)`
   width: 1.7em;
   position: absolute;
   right: 1em;
+`;
+
+export const SCAlreadyAttending = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 16px;
+  width: 100% !important;
+  margin: 0 auto auto auto;
+  /* border: 1px solid lightgrey; */
+  padding: 1em;
+  border-radius: 0.12em;
+  img {
+    margin: 0 auto;
+    width: 70%;
+
+    @media (min-width: 768px) {
+      width: 30%;
+      margin: 0 auto 2em auto;
+    }
+  }
+
+  button {
+    display: flex;
+    align-self: center;
+    width: 80%;
+    background: darkred;
+    margin-top: 1em;
+    color: white;
+    padding: 0.5em 2em;
+    :hover {
+      background: mediumseagreen;
+    }
+    @media (min-width: 768px) {
+      width: 40%;
+    }
+  }
+
+  .studentStatusDiv {
+    display: grid;
+    flex-grow: 1;
+  }
+  @media (min-width: 576 px) {
+    width: 50%;
+    height: 70vh;
+  }
+
+  @media (min-width: 768px) {
+    width: 60%;
+    height: 70vh;
+  }
 `;
