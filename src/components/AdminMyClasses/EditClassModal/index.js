@@ -28,7 +28,9 @@ const INITIAL_STATE = {
 
 export default function EditClassModal(props) {
   const { editClassModalState, closeModal, selectedClassUid } = props;
-  const [{ userUid }] = useContext(Context);
+  const {
+    userDetailsObject: [{ userUid }]
+  } = useContext(Context);
 
   //State variablerna är lokala för componenten
 
