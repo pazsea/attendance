@@ -55,14 +55,38 @@ const MyAttendance = () => {
   useEffect(() => {
     const attendingStateStorage = localStorage.getItem("attendingState");
     const storageObject = JSON.parse(attendingStateStorage);
-    const currentDate = new Date().setHours(0, 0, 0, 0);
+
+    const currentDateStartTime = new Date().setHours(0, 0, 0, 0);
+    const currentDateEndTime = new Date().setHours(23, 59, 59, 0);
+    console.log(currentDateStartTime);
+    console.log(currentDateEndTime);
+
+    // Try edit message
+
+    // const validDate = () => {
+    //   var acceptedDate = false;
+    //   myClassesState.selectedClass.lectureDates.forEach(function(
+    //     dateInArray
+    //   ) {
+    //     if (
+    //       dateInArray >= currentDateStartTime &&
+    //       dateInArray <= currentDateEndTime
+    //     ) {
+    //       return (acceptedDate = JSON.stringify(dateInArray));
+    //     }
+    //   });
+    //   return acceptedDate;
+    // };
+    // console.log(validDate());
 
     // console.log(storageObjectDate + " " + currentDate);
+
+
     if (
       attendingStateStorage &&
-      Number(storageObject.attendingDate) === currentDate
+      Number(storageObject.attendingDate) >= currentDateStartTime &&
+      Number(storageObject.attendingDate) <= currentDateEndTime
     ) {
-      console.log(storageObject.attendingDate);
       setAttendingStudentState(prevState => ({
         ...prevState,
         isAlreadyAttending: true,
@@ -70,6 +94,7 @@ const MyAttendance = () => {
       }));
     } else {
       localStorage.removeItem("attendingState");
+      // console.log("REMOVE LS")
     }
   }, []);
 
@@ -114,16 +139,33 @@ const MyAttendance = () => {
       "Checking if current date is included in picked class lecture dates.."
     );
     if (myClassesState.selectedClass.lectureDates) {
-      const currentDate = new Date().setHours(0, 0, 0, 0);
-      const currentDateIncluded = myClassesState.selectedClass.lectureDates.includes(
-        currentDate
-      );
+      const currentDateStartTime = new Date().setHours(0, 0, 0, 0);
+      const currentDateEndTime = new Date().setHours(23, 59, 59, 0);
+      console.log(currentDateStartTime);
+      console.log(currentDateEndTime);
 
-      if (currentDateIncluded) {
+      // Try edit message
+
+      const validDate = () => {
+        var acceptedDate = false;
+        myClassesState.selectedClass.lectureDates.forEach(function(
+          dateInArray
+        ) {
+          if (
+            dateInArray >= currentDateStartTime &&
+            dateInArray <= currentDateEndTime
+          ) {
+            return (acceptedDate = JSON.stringify(dateInArray));
+          }
+        });
+        return acceptedDate;
+      };
+
+      if (validDate()) {
         setAttendingStudentState(prevState => ({
           ...prevState,
           hasLecturesToday: true,
-          currentDate: currentDate
+          currentDate: validDate()
         }));
       } else {
         setAttendingStudentState(prevState => ({
@@ -153,7 +195,7 @@ const MyAttendance = () => {
 
   async function addAttendant(selectedName) {
     let className = myClassesState.selectedClass.label;
-    let date = JSON.stringify(attendingStudentState.currentDate);
+    let date = attendingStudentState.currentDate;
     let classUid = myClassesState.selectedClass.value;
 
     const dataPath = firebase
