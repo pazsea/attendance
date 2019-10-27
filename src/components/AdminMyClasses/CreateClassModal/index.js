@@ -29,7 +29,9 @@ const INITIAL_CLASSDETAILS_STATE = {
 
 export default function CreateClassModal(props) {
   const { createClassModalState, closeModal } = props;
-  const [{ userUid }] = useContext(Context);
+  const {
+    userDetailsObject: [{ userUid }]
+  } = useContext(Context);
 
   //THIS STATE HOLDS ALL DETAILS OF THE CLASS
   const [classDetails, setClassDetails] = useState(INITIAL_CLASSDETAILS_STATE);
@@ -135,8 +137,6 @@ export default function CreateClassModal(props) {
         errorState: false
       });
     }
-
-
   };
 
   //FUNKTION FÖR ATT LÄGGA TILL NYA DATUM I LECTURE DATES ARRAYEN SAMT TA BORT

@@ -35,7 +35,9 @@ import AdminMore from "../AdminMore";
 // import SignInPage from "../SignIn";
 
 const App = () => {
-  const [{ loggedIn }] = useContext(Context);
+  const {
+    userDetailsObject: [{ loggedIn }]
+  } = useContext(Context);
 
   useEffect(() => {
     firebase.isInitialized();

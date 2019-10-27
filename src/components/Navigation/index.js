@@ -40,7 +40,9 @@ const useStyles = makeStyles(theme => ({
 
 const Navigation = props => {
   const classes = useStyles();
-  const [{ loggedIn }, setUserDetails] = useContext(Context);
+  const {
+    userDetailsObject: [{ loggedIn }, setUserDetails]
+  } = useContext(Context);
   async function logout() {
     await firebase.logout();
     setUserDetails([]);

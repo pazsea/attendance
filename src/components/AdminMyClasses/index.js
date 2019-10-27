@@ -10,7 +10,9 @@ import firebase from "../Firebase";
 import MainContainer from "./MainContainer";
 
 const AdminMyClasses = () => {
-  const [{ userUid }] = useContext(Context);
+  const {
+    userDetailsObject: [{ userUid }]
+  } = useContext(Context);
 
   const [myClasses, setMyClasses] = useState({
     loading: true,
