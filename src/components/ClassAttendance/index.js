@@ -81,23 +81,24 @@ const MyAttendance = () => {
             return (acceptedDate = JSON.stringify(dateInArray));
           }
         });
-        return "Returneras från validDate " + acceptedDate;
+        return acceptedDate;
       };
-      console.log("validdate() " + validDate());
 
       if (validDate()) {
+        console.log("validdate() " + validDate());
+        // det här returneras korrekt- Finns den i firebase? Ja
+
         const path = firebase
           .classDetails(myClassesState.selectedClass.value)
           .collection("attendance")
           .doc(validDate());
 
-        console.log(validDate());
-
         //hämta classUid --> "attendance" --> dagensdatum --> studenter
-        const unsubcribe = path.onSnapshot(snapshot => {
+        const unsubcribe = path.get().then(snapshot => {
           let empty = snapshot.empty;
           let exists = snapshot.exists;
-          let val = snapshot.docs;
+          let val = snapshot;
+          console.log(snapshot);
 
           if (empty || !exists) {
             setMyClassesState(prevState => ({
@@ -106,7 +107,20 @@ const MyAttendance = () => {
               loading: false
             }));
           } else {
-            console.log("val.data " + val.data());
+            // Object keys // object values kolla in.
+            // console.log(
+            //   val.data().map(data => {
+            //     console.log(data);
+            //   })
+            // );
+            // const array = [];
+            // array.push(val.data());
+            // console.log(array);
+            // setAttendingInClassState(prevState => ({
+            //   ...prevState,
+            //   attendanceToday: [val.data()],
+            //   loading: false
+            // }));
           }
         });
 
@@ -123,7 +137,7 @@ const MyAttendance = () => {
         }));
       }
     } //LÄGG TILL UNSUBCRIBE. SLUTA LYSSNA
-  }, [myClassesState.selectedClass.lectureDates]);
+  }, [myClassesState.selectedClass]);
 
   useEffect(() => {
     console.log("Starting firebase listener");
@@ -174,15 +188,15 @@ const MyAttendance = () => {
     });
   };
 
-  //Deconstructing av state?
+  //Deconstructing av state??
   const {
     availableClasses,
-    selectedClass: { label, students },
+    selectedClass: { label },
     errorClasses,
     loading
   } = myClassesState;
 
-  const { hasLecturesToday, isAlreadyAttending } = attendingInClassState;
+  const { attendanceToday, isAlreadyAttending } = attendingInClassState;
 
   // Om loading är true = Visa loading komponent.
   // Om loading är false och om isAlreadyAttending är true
@@ -215,8 +229,8 @@ const MyAttendance = () => {
           ) : null}
 
           <SCStudentNameContainer>
-            {hasLecturesToday ? (
-              students.map((name, i) => <Button key={i}>{name}</Button>)
+            {attendanceToday ? (
+              attendanceToday.map((name, i) => <Button key={i}>{name}</Button>)
             ) : (
               <p style={{ fontWeight: "600", textAlign: "center" }}></p>
             )}
