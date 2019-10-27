@@ -34,7 +34,9 @@ export default function MainContainer(props) {
     selectedClassUid: null
   });
 
-  const [{ userUid }] = useContext(Context);
+  const {
+    userDetailsObject: [{ userUid }]
+  } = useContext(Context);
 
   const deleteFromDB = classUid => {
     let batch = firebase.db.batch();

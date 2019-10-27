@@ -3,8 +3,10 @@ import React, { useState, createContext, useEffect } from "react";
 export const Context = createContext();
 
 export const ContextProvider = props => {
-  // const [state, setState] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
+  const [globalClassDetails, setGlobalClassDetails] = useState({
+    selectedClass: null
+  });
 
   useEffect(() => {
     const data = localStorage.getItem("user");
@@ -17,11 +19,12 @@ export const ContextProvider = props => {
     localStorage.setItem("user", JSON.stringify(userDetails));
   });
 
-  return (
-    <Context.Provider value={[userDetails, setUserDetails]}>
-      {props.children}
-    </Context.Provider>
-  );
+  const store = {
+    userDetailsObject: [userDetails, setUserDetails],
+    classDetailsObject: [globalClassDetails, setGlobalClassDetails]
+  };
+
+  return <Context.Provider value={store}>{props.children}</Context.Provider>;
 };
 
 export default ContextProvider;

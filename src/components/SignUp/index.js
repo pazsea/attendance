@@ -23,7 +23,9 @@ const SignUpPage = props => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [, setUserDetails] = useContext(Context);
+  const {
+    userDetailsObject: [, setUserDetails]
+  } = useContext(Context);
 
   async function onSubmit() {
     const fullName = firstName + " " + surname;
