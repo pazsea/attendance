@@ -1,7 +1,7 @@
 //HOOKA UP DETTA TILL FIREBASE OCH DÖP OM ALLA CLASSNAMES
 
 // ----  { Libraries } ----
-import React from "react";
+import React, { useContext } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
@@ -18,6 +18,7 @@ import "./class_container.scss";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Fab from "@material-ui/core/Fab";
+import { Context } from "../../context";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -38,13 +39,17 @@ const useStyles = makeStyles(theme =>
 
 const ClassContainer = ({ className, id, editThisClass, deleteFromDB }) => {
   const classes = useStyles();
+  const {
+    classDetailsObject: [, setGlobalClassDetails]
+  } = useContext(Context);
   return (
     <div className="classesDiv" key={"div " + id}>
       <Button
         variant="contained"
         color="primary"
         classes={{ root: "classesButton", label: "classesLabel" }}
-        to={ROUTES.CLASSATTENDANCE}
+        to={ROUTES.ADMINCLASSATTENDANCE}
+        onClick={() => setGlobalClassDetails({ selectedClass: id })}
         component={Link}
         size="medium"
         key={"button class " + id}
