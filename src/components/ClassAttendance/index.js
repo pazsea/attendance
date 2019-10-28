@@ -135,9 +135,12 @@ const MyAttendance = () => {
           }
         });
       } else {
+        //BUGGEN som behövdes fixas. Om det inte var någon föreläsning idag så måste states med student i föregående förläsning tas bort.
         setAttendingInClassState(prevState => ({
           ...prevState,
           hasLecturesToday: false,
+          attendanceToday: null,
+          filteredAttendanceList: null,
           errorAttendance: "Denna klass har inga föreläsningar idag.."
         }));
       }
@@ -186,7 +189,7 @@ const MyAttendance = () => {
     var findSelectedClass = myClassesState.availableClasses.filter(obj => {
       return obj.value === selectedOption.value;
     });
-    // console.log({ ...findSelectedClass[0] });
+    console.log({ ...findSelectedClass[0] });
     setMyClassesState({
       ...myClassesState,
       selectedClass: { ...findSelectedClass[0] }
@@ -296,6 +299,7 @@ const MyAttendance = () => {
               <button onClick={filterTrue}>Närvarande</button>
             </div>
           </div>
+
           <Dropdown
             placeholder="Välj klass..."
             value={label}
