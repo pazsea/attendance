@@ -81,7 +81,6 @@ const MyAttendance = () => {
 
     // console.log(storageObjectDate + " " + currentDate);
 
-
     if (
       attendingStateStorage &&
       Number(storageObject.attendingDate) >= currentDateStartTime &&
@@ -104,6 +103,7 @@ const MyAttendance = () => {
     const unsubcribe = firebase.rootClassDetails().onSnapshot(snapshot => {
       let empty = snapshot.empty;
       let val = snapshot.docs;
+      val.map(doc => console.log(doc.data()));
       if (empty) {
         setMyClassesState(prevState => ({
           ...prevState,

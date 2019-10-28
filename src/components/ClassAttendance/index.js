@@ -3,13 +3,14 @@ import Dropdown from "react-dropdown";
 import {
   SCClassAttendanceContainer,
   SCStudentNameContainer,
-  SCAlreadyAttending
+  SCAlreadyAttending,
+  SCButton
 } from "./styles";
 import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
 import firebase from "../Firebase";
 import Loading from "../Loading";
-import Button from "@material-ui/core/Button";
+import { Fair } from "styled-icons/crypto";
 
 const INITIAL_CLASSES_STATE = {
   selectedClass: {
@@ -26,7 +27,9 @@ const INITIAL_CLASSES_STATE = {
 const INITIAL_ATTENDING_CLASS_STATE = {
   isAlreadyAttending: false,
   hasLecturesToday: false,
-  currentDate: null
+  currentDate: null,
+  loading: true,
+  attendanceToday: null
 };
 
 //  Hämta hem alla klasser. Lagra dem i ett state, bäst vore availbleClasses
@@ -37,7 +40,7 @@ const INITIAL_ATTENDING_CLASS_STATE = {
 // När man valt klass kollar vi om dagens datum finns med i lectures-arrayen.
 
 // Om True, hämta classUid --> "attendance" --> dagensdatum --> studenter
-// Lagra alla studenter i ett attendingInClass.acc
+// Lagra alla studenter i ett attendingInClass.attendanceToday
 
 // Om False, set något state som visare "Ingen föreläsning idag."
 
@@ -55,6 +58,14 @@ const MyAttendance = () => {
     INITIAL_ATTENDING_CLASS_STATE
   );
 
+  useEffect(() => {
+    if (attendingInClassState.attendanceToday) {
+      attendingInClassState.attendanceToday.map(obj => {
+        console.log(obj.name);
+      });
+    }
+  }, [attendingInClassState.attendanceToday]);
+
   //Checking if current date is included in the selected class lecture dates.
   useEffect(() => {
     console.log(
@@ -64,8 +75,8 @@ const MyAttendance = () => {
     if (myClassesState.selectedClass.lectureDates) {
       const currentDateStartTime = new Date().setHours(0, 0, 0, 0);
       const currentDateEndTime = new Date().setHours(23, 59, 59, 0);
-      console.log("currentDateStartTime " + currentDateStartTime);
-      console.log("currentDateEndTime " + currentDateEndTime);
+      // console.log("currentDateStartTime " + currentDateStartTime);
+      // console.log("currentDateEndTime " + currentDateEndTime);
 
       // Try edit message
 
@@ -81,23 +92,22 @@ const MyAttendance = () => {
             return (acceptedDate = JSON.stringify(dateInArray));
           }
         });
-        return "Returneras från validDate " + acceptedDate;
+        return acceptedDate;
       };
-      console.log("validdate() " + validDate());
 
       if (validDate()) {
+        console.log("validdate() " + validDate());
+
         const path = firebase
           .classDetails(myClassesState.selectedClass.value)
           .collection("attendance")
           .doc(validDate());
 
-        console.log(validDate());
-
         //hämta classUid --> "attendance" --> dagensdatum --> studenter
-        const unsubcribe = path.onSnapshot(snapshot => {
-          let empty = snapshot.empty;
-          let exists = snapshot.exists;
-          let val = snapshot.docs;
+        path.get().then(snapshot => {
+          let empty = snapshot.empty; //attribut från snapshot
+          let exists = snapshot.exists; //attribut från snapsho t
+          let val = snapshot;
 
           if (empty || !exists) {
             setMyClassesState(prevState => ({
@@ -106,15 +116,21 @@ const MyAttendance = () => {
               loading: false
             }));
           } else {
-            console.log("val.data " + val.data());
+            const valKeys = Object.keys(val.data());
+            const valObject = val.data();
+
+            const result = valKeys.map(name => ({
+              name: name,
+              attendance: valObject[name]
+            }));
+
+            setAttendingInClassState(prevState => ({
+              ...prevState,
+              attendanceToday: result,
+              loading: false
+            }));
           }
         });
-
-        // setAttendingInClassState(prevState => ({
-        //   ...prevState,
-        //   hasLecturesToday: true,
-        //   currentDate: currentDate
-        // }));
       } else {
         setAttendingInClassState(prevState => ({
           ...prevState,
@@ -123,7 +139,7 @@ const MyAttendance = () => {
         }));
       }
     } //LÄGG TILL UNSUBCRIBE. SLUTA LYSSNA
-  }, [myClassesState.selectedClass.lectureDates]);
+  }, [myClassesState.selectedClass]);
 
   useEffect(() => {
     console.log("Starting firebase listener");
@@ -174,15 +190,15 @@ const MyAttendance = () => {
     });
   };
 
-  //Deconstructing av state?
+  //Deconstructing av state??
   const {
     availableClasses,
-    selectedClass: { label, students },
+    selectedClass: { label },
     errorClasses,
     loading
   } = myClassesState;
 
-  const { hasLecturesToday, isAlreadyAttending } = attendingInClassState;
+  const { attendanceToday, isAlreadyAttending } = attendingInClassState;
 
   // Om loading är true = Visa loading komponent.
   // Om loading är false och om isAlreadyAttending är true
@@ -215,8 +231,12 @@ const MyAttendance = () => {
           ) : null}
 
           <SCStudentNameContainer>
-            {hasLecturesToday ? (
-              students.map((name, i) => <Button key={i}>{name}</Button>)
+            {attendanceToday ? (
+              attendanceToday.map((object, i) => (
+                <SCButton attending={object.attendance} key={i}>
+                  {object.name}
+                </SCButton>
+              ))
             ) : (
               <p style={{ fontWeight: "600", textAlign: "center" }}></p>
             )}
@@ -228,3 +248,15 @@ const MyAttendance = () => {
 };
 
 export default MyAttendance;
+
+// const result = valKeys.map(name => ({
+//   name: name,
+//   attendance: valObject[name]
+// }));
+
+// I have a planned attendance to tomorrows lesson = alla elever
+// I'll be attending = deltar in this lecture today.  = alla elever
+
+// How do you feel about being in class from a mindfulness perspective?
+// I am present at this lecture today = de elever som är där
+// I am not present at this lex = de elever som inte är där
