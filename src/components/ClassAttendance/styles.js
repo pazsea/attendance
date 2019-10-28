@@ -45,18 +45,53 @@ export const SCStudentNameContainer = styled.div`
   overflow-y: auto;
 
   button {
-    display: flex;
-    flex-direction: row;
+    /* display: flex;
+    flex-direction: row; */
     width: 100%;
-    background: darkorange;
     margin-top: 1em;
-    color: white;
     padding: 0.5em 2em;
-    :hover {
-      background: mediumseagreen;
-    }
   }
 `;
+
+export const SCButton = styled.button`
+  /* Taget från .MuiButton-root */
+  /* ${props => (props.attending ? "palevioletred" : "white")}; */
+  
+  color: white;
+  width: 100%;
+  background: ${({ attending }) => (attending ? "forestgreen" : "darkred")};;
+  padding: 6px 16px;
+  font-size: 0.875rem;
+  min-width: 64px;
+  box-sizing: border-box;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  line-height: 1.75;
+  border-radius: 4px;
+  letter-spacing: 0.02857em;
+  text-transform: uppercase;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  outline: 0;
+  position: relative;
+  align-items: center;
+  user-select: none;
+  border-radius: 0;
+  vertical-align: middle;
+  /* -moz-appearance: none; */
+  justify-content: center;
+  text-decoration: none;
+  /* background-color: transparent; */
+
+  /* -webkit-tap-highlight-color: transparent; */
+`;
+
 export const CheckIcon = styled(Check)`
   color: white;
   width: 1.7em;
