@@ -8,12 +8,28 @@ export const ContextProvider = props => {
     selectedClass: null
   });
 
+  // useEffect(() => {
+  //   console.log("KLASS " + globalClassDetails.selectedClass);
+  // }, [globalClassDetails.selectedClass]);
+
   useEffect(() => {
-    const data = localStorage.getItem("user");
-    if (data) {
-      setUserDetails(JSON.parse(data));
+    const userData = localStorage.getItem("user");
+    const globalClassData = localStorage.getItem("globalClassDetails");
+
+    if (userData) {
+      setUserDetails(JSON.parse(userData));
+    }
+    if (globalClassData) {
+      setGlobalClassDetails(JSON.parse(globalClassData));
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "globalClassDetails",
+      JSON.stringify(globalClassDetails)
+    );
+  });
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(userDetails));

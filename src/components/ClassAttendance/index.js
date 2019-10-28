@@ -4,13 +4,13 @@ import {
   SCClassAttendanceContainer,
   SCStudentNameContainer,
   SCAlreadyAttending,
-  SCButton
+  SCButton,
+  SCArrowDownIcon
 } from "./styles";
 import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
 import firebase from "../Firebase";
 import Loading from "../Loading";
-import { Fair } from "styled-icons/crypto";
 
 const INITIAL_CLASSES_STATE = {
   selectedClass: {
@@ -51,6 +51,7 @@ const MyAttendance = () => {
   // const [attendingStudentState, setAttendingStudentState] = useState(
   //   INITIAL_ATTENDINGSTUDENT_STATE
   // );
+  const [navigationState, setNavigationState] = useState(false);
 
   const [myClassesState, setMyClassesState] = useState(INITIAL_CLASSES_STATE);
 
@@ -204,7 +205,7 @@ const MyAttendance = () => {
   // Om loading är false och om isAlreadyAttending är true
 
   return (
-    <SCClassAttendanceContainer>
+    <SCClassAttendanceContainer navigationState={navigationState}>
       {loading ? (
         <Loading text="Hämtar in alla klasser...."></Loading>
       ) : isAlreadyAttending ? (
@@ -217,7 +218,26 @@ const MyAttendance = () => {
       ) : (
         //isAlreadyAttending = false
         <>
-          <img src={KyhLogo} alt="KYH Logo"></img>
+          <div className="adminClassInfo">
+            <span>
+              <h1>26 MAJ 2019</h1>
+              <p>FE16 närvarostatus</p>
+              <p>8/12 närvarande</p>
+            </span>
+          </div>
+          <div
+            className="adminClassNav"
+            onClick={() => setNavigationState(!navigationState)}
+          >
+            <p>
+              Nurvarande sortering <SCArrowDownIcon></SCArrowDownIcon>
+            </p>
+            <div className="sortingSelections">
+              <button>Allas närvaro</button>
+              <button>Frånvarande</button>
+              <button>Närvarande</button>
+            </div>
+          </div>
           <Dropdown
             placeholder="Välj klass..."
             value={label}

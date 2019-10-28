@@ -1,5 +1,11 @@
 import styled from "styled-components/macro";
 import { Check } from "styled-icons/boxicons-regular/Check";
+import { ArrowDown } from "styled-icons/feather";
+
+export const SCArrowDownIcon = styled(ArrowDown)`
+  width: 20px;
+  color: white;
+`;
 
 export const SCClassAttendanceContainer = styled.div`
   /* Mobile first Bootstrap mediaqieries */
@@ -11,6 +17,57 @@ export const SCClassAttendanceContainer = styled.div`
   height: 80vh;
   padding: 2em;
   border-radius: 0.12em;
+
+  .adminClassInfo {
+    display: flex;
+    justify-content: center;
+    background: #3f51b5;
+    border-radius: 10px 10px 0 0;
+    padding: 0.1em 1em;
+
+    span {
+      color: white;
+      text-align: center;
+      h1 {
+        font-size: 1.3em;
+      }
+      p {
+        font-size: 0.8em;
+      }
+    }
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 2em;
+      }
+      p {
+        font-size: 1em;
+      }
+    }
+  }
+
+  .adminClassNav {
+    color: white;
+    text-align: center;
+    background: #3f51b5;
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    font-size: 0.8em;
+    @media (min-width: 768px) {
+      font-size: 1em;
+    }
+  }
+
+  .sortingSelections {
+    display: ${({ navigationState }) => (navigationState ? "flex" : "none")};
+    flex-direction: column;
+    button {
+      border: none;
+      background: none;
+      color: white;
+      padding: 0.5em 0;
+      cursor: pointer;
+    }
+  }
 
   img {
     margin: 0 auto;
