@@ -29,7 +29,11 @@ const INITIAL_ATTENDING_CLASS_STATE = {
   hasLecturesToday: false,
   currentDate: null,
   loading: true,
-  attendanceToday: null
+  attendanceToday: null,
+  filteredAttendanceList: null,
+  errorAttendance: null,
+  presentFiltered: false,
+  abscentFiltered: false
 };
 
 //  Hämta hem alla klasser. Lagra dem i ett state, bäst vore availbleClasses
@@ -58,14 +62,6 @@ const MyAttendance = () => {
   const [attendingInClassState, setAttendingInClassState] = useState(
     INITIAL_ATTENDING_CLASS_STATE
   );
-
-  useEffect(() => {
-    if (attendingInClassState.attendanceToday) {
-      attendingInClassState.attendanceToday.map(obj => {
-        console.log(obj.name);
-      });
-    }
-  }, [attendingInClassState.attendanceToday]);
 
   //Checking if current date is included in the selected class lecture dates.
   useEffect(() => {
@@ -105,7 +101,7 @@ const MyAttendance = () => {
           .doc(validDate());
 
         //hämta classUid --> "attendance" --> dagensdatum --> studenter
-        path.get().then(snapshot => {
+        path.onSnapshot(snapshot => {
           let empty = snapshot.empty; //attribut från snapshot
           let exists = snapshot.exists; //attribut från snapsho t
           let val = snapshot;
@@ -125,17 +121,26 @@ const MyAttendance = () => {
               attendance: valObject[name]
             }));
 
+            const sortedResult = result
+              .sort(function(objectA, objectB) {
+                return objectA.attendance - objectB.attendance;
+              })
+              .reverse();
+
             setAttendingInClassState(prevState => ({
               ...prevState,
-              attendanceToday: result,
+              attendanceToday: sortedResult,
               loading: false
             }));
           }
         });
       } else {
+        //BUGGEN som behövdes fixas. Om det inte var någon föreläsning idag så måste states med student i föregående förläsning tas bort.
         setAttendingInClassState(prevState => ({
           ...prevState,
           hasLecturesToday: false,
+          attendanceToday: null,
+          filteredAttendanceList: null,
           errorAttendance: "Denna klass har inga föreläsningar idag.."
         }));
       }
@@ -184,12 +189,64 @@ const MyAttendance = () => {
     var findSelectedClass = myClassesState.availableClasses.filter(obj => {
       return obj.value === selectedOption.value;
     });
-    // console.log({ ...findSelectedClass[0] });
+    console.log({ ...findSelectedClass[0] });
     setMyClassesState({
       ...myClassesState,
       selectedClass: { ...findSelectedClass[0] }
     });
   };
+
+  const filterFalse = () => {
+    if (attendingInClassState.attendanceToday) {
+      if (attendingInClassState.abscentFiltered) {
+        setAttendingInClassState(prevState => ({
+          ...prevState,
+          filteredAttendanceList: null,
+          abscentFiltered: false,
+          presentFiltered: false
+        }));
+      } else {
+        const filterAttendingFalse = attendingInClassState.attendanceToday.filter(
+          function(student) {
+            return student.attendance === false;
+          }
+        );
+        setAttendingInClassState(prevState => ({
+          ...prevState,
+          filteredAttendanceList: filterAttendingFalse,
+          abscentFiltered: true,
+          presentFiltered: false
+        }));
+      }
+    }
+  };
+
+  const filterTrue = () => {
+    if (attendingInClassState.attendanceToday) {
+      if (attendingInClassState.presentFiltered) {
+        setAttendingInClassState(prevState => ({
+          ...prevState,
+          filteredAttendanceList: null,
+          presentFiltered: false,
+          abscentFiltered: false
+        }));
+      } else {
+        const filterAttendingTrue = attendingInClassState.attendanceToday.filter(
+          function(student) {
+            return student.attendance === true;
+          }
+        );
+        setAttendingInClassState(prevState => ({
+          ...prevState,
+          filteredAttendanceList: filterAttendingTrue,
+          presentFiltered: true,
+          abscentFiltered: false
+        }));
+      }
+    }
+  };
+
+  // const presentSorted
 
   //Deconstructing av state??
   const {
@@ -199,7 +256,12 @@ const MyAttendance = () => {
     loading
   } = myClassesState;
 
-  const { attendanceToday, isAlreadyAttending } = attendingInClassState;
+  const {
+    attendanceToday,
+    filteredAttendanceList,
+    isAlreadyAttending,
+    errorAttendance
+  } = attendingInClassState;
 
   // Om loading är true = Visa loading komponent.
   // Om loading är false och om isAlreadyAttending är true
@@ -222,43 +284,56 @@ const MyAttendance = () => {
             <span>
               <h1>26 MAJ 2019</h1>
               <p>FE16 närvarostatus</p>
-              <p>8/12 närvarande</p>
             </span>
           </div>
           <div
             className="adminClassNav"
             onClick={() => setNavigationState(!navigationState)}
           >
+            {/* Till senare: Kanske underline på valt sorteringsalternativ */}
             <p>
-              Nurvarande sortering <SCArrowDownIcon></SCArrowDownIcon>
+              Sortera <SCArrowDownIcon></SCArrowDownIcon>
             </p>
             <div className="sortingSelections">
-              <button>Allas närvaro</button>
-              <button>Frånvarande</button>
-              <button>Närvarande</button>
+              <button onClick={filterFalse}>Frånvarande</button>
+              <button onClick={filterTrue}>Närvarande</button>
             </div>
           </div>
+
           <Dropdown
             placeholder="Välj klass..."
             value={label}
             onChange={handleChange}
             options={availableClasses}
           />
+
           {errorClasses ? (
             <p style={{ fontWeight: "600", textAlign: "center" }}>
               {errorClasses}
             </p>
-          ) : null}
+          ) : (
+            <p style={{ fontWeight: "600", textAlign: "center" }}>
+              8/12 närvarande
+            </p>
+          )}
 
           <SCStudentNameContainer>
-            {attendanceToday ? (
+            {filteredAttendanceList ? (
+              filteredAttendanceList.map((object, i) => (
+                <SCButton attending={object.attendance} key={i}>
+                  {object.name}
+                </SCButton>
+              ))
+            ) : attendanceToday ? (
               attendanceToday.map((object, i) => (
                 <SCButton attending={object.attendance} key={i}>
                   {object.name}
                 </SCButton>
               ))
             ) : (
-              <p style={{ fontWeight: "600", textAlign: "center" }}></p>
+              <p style={{ fontWeight: "600", textAlign: "center" }}>
+                {errorAttendance}
+              </p>
             )}
           </SCStudentNameContainer>
         </>
@@ -268,15 +343,3 @@ const MyAttendance = () => {
 };
 
 export default MyAttendance;
-
-// const result = valKeys.map(name => ({
-//   name: name,
-//   attendance: valObject[name]
-// }));
-
-// I have a planned attendance to tomorrows lesson = alla elever
-// I'll be attending = deltar in this lecture today.  = alla elever
-
-// How do you feel about being in class from a mindfulness perspective?
-// I am present at this lecture today = de elever som är där
-// I am not present at this lex = de elever som inte är där
