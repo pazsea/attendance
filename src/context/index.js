@@ -5,7 +5,8 @@ export const Context = createContext();
 export const ContextProvider = props => {
   const [userDetails, setUserDetails] = useState([]);
   const [globalClassDetails, setGlobalClassDetails] = useState({
-    selectedClass: null
+    selectedClassUid: null,
+    className: null
   });
 
   // useEffect(() => {

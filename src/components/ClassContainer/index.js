@@ -49,7 +49,9 @@ const ClassContainer = ({ className, id, editThisClass, deleteFromDB }) => {
         color="primary"
         classes={{ root: "classesButton", label: "classesLabel" }}
         to={ROUTES.ADMINCLASSATTENDANCE}
-        onClick={() => setGlobalClassDetails({ selectedClass: id })}
+        onClick={() =>
+          setGlobalClassDetails({ selectedClassUid: id, className: className })
+        }
         component={Link}
         size="medium"
         key={"button class " + id}
