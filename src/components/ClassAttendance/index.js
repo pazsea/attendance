@@ -7,10 +7,13 @@ import {
   SCButton,
   SCArrowDownIcon
 } from "./styles";
+import DateTitle from "../../constants/datetitle";
 import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
 import firebase from "../Firebase";
 import Loading from "../Loading";
+import moment from "moment";
+console.log(moment.locale());
 
 const INITIAL_CLASSES_STATE = {
   selectedClass: {
@@ -246,7 +249,19 @@ const MyAttendance = () => {
     }
   };
 
-  // const presentSorted
+  // function DateTitle() {
+  // Om klassens datum är samma som dagens datum visa datum.
+
+  //Alla datum för klassen
+  // const lectureDate = myClassesState.selectedClass.lectureDates;
+
+  // var now = new Date();
+  // now.customFormat("#DD#/#MM#/#YYYY# ");
+
+  // return <h1>{JSON.stringify(date)}</h1>;
+  // return <h1>{now.customFormat}</h1>;
+
+  // }
 
   //Deconstructing av state??
   const {
@@ -282,7 +297,10 @@ const MyAttendance = () => {
         <>
           <div className="adminClassInfo">
             <span>
-              <h1>26 MAJ 2019</h1>
+              {/* <h1>26 MAJ 2019</h1> */}
+              <h1>{moment().format("ll")}</h1>
+
+              {/* <DateTitle /> */}
               <p>FE16 närvarostatus</p>
             </span>
           </div>
