@@ -189,6 +189,7 @@ const MyAttendance = () => {
       return obj.value === selectedOption.value;
     });
     console.log({ ...findSelectedClass[0] });
+
     setMyClassesState({
       ...myClassesState,
       selectedClass: { ...findSelectedClass[0] }
@@ -264,6 +265,7 @@ const MyAttendance = () => {
 
   // Om loading är true = Visa loading komponent.
   // Om loading är false och om isAlreadyAttending är true
+  // console.log("Gustav log " + attendingInClassState.);
 
   return (
     <SCClassAttendanceContainer navigationState={navigationState}>
@@ -314,13 +316,22 @@ const MyAttendance = () => {
             <>
               {attendingInClassState.studentAttendanceToday ? (
                 <p style={{ fontWeight: "600", textAlign: "center" }}>
-                  {"X av " +
+                  {/* Logiken borde fungera om man är på rätt ställe.
+                   Funkar bra i playcode  testdata men jag hittar inte in till våra studenters boolean
+                   så jag kan räkna dom.
+                   I nuläget får jag 7 av 7 studenter.  */}
+                  {Object.values(
+                    attendingInClassState.studentAttendanceToday
+                  ).filter(v => v).length +
+                    " X av " +
                     attendingInClassState.studentAttendanceToday.length +
                     " studenter närvarande idag"}
                 </p>
               ) : null}
             </>
           )}
+
+          {/* const short = Object.values(data).filter((v) => v).length; */}
 
           <SCStudentNameContainer>
             {filteredAttendanceList ? (
