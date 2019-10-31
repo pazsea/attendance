@@ -4,7 +4,8 @@ import {
   SCAdminClassContainer,
   SCArrowLeftIcon,
   SCArrowRightIcon,
-  SCArrowDownIcon
+  SCArrowDownIcon,
+  SCSPanButton
 } from "./styles";
 
 import Loading from "../Loading";
@@ -13,8 +14,9 @@ import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import firebase from "../Firebase";
 
-// Måste göra ett case om firebase inte hitta några lectures
-// Måste göra knapparna höger och vänster.
+// Ändra så att switchen är om studenten är false, Även Button färgen.
+// Gör funktion när switchen dras.
+// Fixa sorteringen...sadasd
 
 const AdminClassAttendance = () => {
   const {
@@ -22,30 +24,41 @@ const AdminClassAttendance = () => {
   } = useContext(Context);
 
   const [noLectureState, setNoLectureState] = useState(false);
-
-  const [lectureState, setLectureState] = useState({
-    // selectedLecture: {
-    //   className: null,
-    //   students: null,
-    //   date: null,
-    //   lectureTimeUid: null
-    // },
-    selectedLectureIndex: null,
-    allLectures: null
+  const [selectedLecture, setSelectedLecture] = useState(null);
+  const [filteredAttendanceState, setFilterAttendanceState] = useState({
+    filteredAttendanceStateStudents: null,
+    abscentFiltered: false,
+    presentFiltered: false
   });
+
+  const [lectureIndex, setLectureIndex] = useState({
+    maxIndex: null,
+    currentIndex: null
+  });
+
+  const [allLectures, setAllLectures] = useState(null);
 
   const [navigationState, setNavigationState] = useState(false);
 
-  useEffect(() => {
-    if (!lectureState.selectedLectureIndex && lectureState.allLectures) {
-      console.log("LOOOP");
+  // useEffect(() => {
+  //   console.log(lectureIndex);
+  // }, [lectureIndex]);
 
-      setLectureState(prevState => ({
-        ...prevState,
-        selectedLectureIndex: prevState.allLectures.length - 1
-      }));
+  useEffect(() => {
+    if (allLectures) {
+      console.log("Set Class to closest to your date");
+      setLectureIndex({
+        maxIndex: Number(allLectures.length - 1),
+        currentIndex: Number(allLectures.length - 1)
+      });
+      setSelectedLecture(allLectures[Number(allLectures.length - 1)]);
+
+      // setLectureState(prevState => ({
+      //   ...prevState,
+      //   selectedLectureIndex: prevState.allLectures.length - 1
+      // }));
     }
-  }, [lectureState]);
+  }, [allLectures]);
 
   useEffect(() => {
     console.log("startar");
@@ -78,13 +91,8 @@ const AdminClassAttendance = () => {
               }
             ];
           }, []);
-          setLectureState(prevState => ({
-            ...prevState,
-            allLectures: orderedDocsToState
-          }));
+          setAllLectures(orderedDocsToState);
         }
-
-        // let result = snap.docs.map(doc => doc);
       });
 
     return () => {
@@ -92,67 +100,160 @@ const AdminClassAttendance = () => {
     };
   }, [selectedClassUid, className]);
 
-  const { selectedLectureIndex, allLectures } = lectureState;
+  const changeLecture = value => {
+    const { maxIndex, currentIndex } = lectureIndex;
+
+    if (value === "increment" && maxIndex === currentIndex) {
+      setLectureIndex(prevState => ({
+        ...prevState,
+        currentIndex: 0
+      }));
+      setSelectedLecture(allLectures[0]);
+    } else if (value === "increment") {
+      setLectureIndex(prevState => ({
+        ...prevState,
+        currentIndex: Number(currentIndex + 1)
+      }));
+      setSelectedLecture(allLectures[Number(currentIndex + 1)]);
+    } else if (value === "decrement" && currentIndex === 0) {
+      setLectureIndex(prevState => ({
+        ...prevState,
+        currentIndex: maxIndex
+      }));
+      setSelectedLecture(allLectures[maxIndex]);
+    } else {
+      setLectureIndex(prevState => ({
+        ...prevState,
+        currentIndex: currentIndex - 1
+      }));
+      setSelectedLecture(allLectures[currentIndex - 1]);
+    }
+  };
+
+  const filterFalse = () => {
+    if (allLectures) {
+      if (filteredAttendanceState.abscentFiltered) {
+        setFilterAttendanceState(prevState => ({
+          ...prevState,
+          filteredStudents: null,
+          abscentFiltered: false,
+          presentFiltered: false
+        }));
+      } else {
+        const filterAttendingFalse = selectedLecture.students.filter(function(
+          student
+        ) {
+          return student.attendance === false;
+        });
+        setFilterAttendanceState(prevState => ({
+          ...prevState,
+          filteredStudents: filterAttendingFalse,
+          abscentFiltered: true,
+          presentFiltered: false
+        }));
+      }
+    }
+  };
+
+  const filterTrue = () => {
+    if (allLectures) {
+      if (filteredAttendanceState.presentFiltered) {
+        setFilterAttendanceState(prevState => ({
+          ...prevState,
+          filteredStudents: null,
+          presentFiltered: false,
+          abscentFiltered: false
+        }));
+      } else {
+        const filterAttendingTrue = selectedLecture.students.filter(function(
+          student
+        ) {
+          return student.attendance === true;
+        });
+        setFilterAttendanceState(prevState => ({
+          ...prevState,
+          filteredStudents: filterAttendingTrue,
+          presentFiltered: true,
+          abscentFiltered: false
+        }));
+      }
+    }
+  };
+
+  const { filteredStudents } = filteredAttendanceState;
+
   return (
     <>
       {noLectureState ? (
         <div>Denna klass har ingen anmäld närvaro än...</div>
-      ) : allLectures && selectedLectureIndex ? (
+      ) : selectedLecture ? (
         <SCAdminClassContainer navigationState={navigationState}>
           <div className="adminClassInfo">
-            <SCArrowLeftIcon></SCArrowLeftIcon>
+            <SCArrowLeftIcon
+              onClick={() => changeLecture("decrement")}
+            ></SCArrowLeftIcon>
             <span>
-              <h1>{allLectures[selectedLectureIndex].date}</h1>
-              <p>{allLectures[selectedLectureIndex].className} närvarostatus</p>
+              <h1>{selectedLecture.date}</h1>
+              <p>{selectedLecture.className} närvarostatus</p>
             </span>
-            <SCArrowRightIcon></SCArrowRightIcon>
+            <SCArrowRightIcon
+              onClick={() => changeLecture("increment")}
+            ></SCArrowRightIcon>
           </div>
           <div
             className="adminClassNav"
             onClick={() => setNavigationState(!navigationState)}
           >
             <p>
-              Nurvarande sortering <SCArrowDownIcon></SCArrowDownIcon>
+              Sortera <SCArrowDownIcon></SCArrowDownIcon>
             </p>
             <div className="sortingSelections">
-              <button>Allas närvaro</button>
-              <button>Frånvarande</button>
-              <button>Närvarande</button>
+              <button onClick={filterFalse}>Frånvarande</button>
+              <button onClick={filterTrue}>Närvarande</button>
             </div>
           </div>
           <div className="adminClassStudents">
-            {allLectures[selectedLectureIndex].students.map(
-              (student, index) => (
-                <Button
-                  key={student.name + index}
-                  className="submitButton"
-                  variant="contained"
-                  color="primary"
-                  type="button"
-                >
-                  {student.name}
-                  <Switch></Switch>
-                </Button>
-              )
-            )}
-            {/* <Button
-              className="submitButton"
-              variant="contained"
-              color="primary"
-              type="button"
-            >
-              Patrick Anders
-              <Switch size="small"></Switch>
-            </Button>
-            <Button
-              className="submitButton"
-              variant="contained"
-              color="primary"
-              type="button"
-            >
-              hello
-              <Switch></Switch>
-            </Button> */}
+            {filteredStudents
+              ? filteredStudents.map((student, index) => (
+                  <SCSPanButton
+                    key={student.name + "span" + index}
+                    attending={student.attendance}
+                  >
+                    <Button
+                      key={student.name + index}
+                      // disableTouchRipple
+                      className="submitButton"
+                      variant="contained"
+                      type="button"
+                    >
+                      {student.name}
+                      <Switch
+                        color="primary"
+                        defaultChecked={student.attendance}
+                      ></Switch>
+                    </Button>
+                  </SCSPanButton>
+                ))
+              : selectedLecture.students.map((student, index) => (
+                  <SCSPanButton
+                    key={student.name + "span" + index}
+                    attending={student.attendance}
+                  >
+                    <Button
+                      key={student.name + index}
+                      // disableTouchRipple
+                      className="submitButton"
+                      variant="contained"
+                      type="button"
+                    >
+                      {student.name}
+                      <Switch
+                        color="primary"
+                        defaultChecked={student.attendance}
+                      ></Switch>
+                    </Button>
+                  </SCSPanButton>
+                ))}
           </div>
         </SCAdminClassContainer>
       ) : (

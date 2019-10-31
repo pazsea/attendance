@@ -6,13 +6,15 @@ import {
 } from "styled-icons/feather";
 
 export const SCArrowLeftIcon = styled(ArrowLeftCircle)`
-  width: 40px;
+  width: 3em;
   color: white;
+  cursor: pointer;
 `;
 
 export const SCArrowRightIcon = styled(ArrowRightCircle)`
-  width: 40px;
+  width: 3em;
   color: white;
+  cursor: pointer;
 `;
 
 export const SCArrowDownIcon = styled(ArrowDown)`
@@ -83,11 +85,19 @@ export const SCAdminClassContainer = styled.div`
   .adminClassStudents {
     display: grid;
     row-gap: 0.3em;
-    button {
-      width: 100%;
-      background: forestgreen;
-      justify-content: space-between;
-      padding: 0.5em 2em;
+  }
+`;
+
+export const SCSPanButton = styled.span`
+  button {
+    background: ${props => (props.attending ? "forestgreen" : "red")};
+    width: 100%;
+    color:white;
+    /* background: forestgreen; */
+    justify-content: space-between;
+    padding: 0.5em 2em;
+    :hover {
+      background: ${props => (props.attending ? "forestgreen" : "red")};
     }
   }
 `;
