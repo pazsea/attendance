@@ -256,7 +256,7 @@ const AdminClassAttendance = () => {
                             student.attendance
                           )
                         }
-                        defaultChecked={student.attendance}
+                        checked={student.attendance}
                       ></Switch>
                     </Button>
                   </SCSPanButton>
@@ -282,7 +282,7 @@ const AdminClassAttendance = () => {
                             student.attendance
                           )
                         }
-                        defaultChecked={student.attendance}
+                        checked={student.attendance}
                       ></Switch>
                     </Button>
                   </SCSPanButton>
