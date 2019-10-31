@@ -12,7 +12,7 @@ import "react-dropdown/style.css";
 import firebase from "../Firebase";
 import Loading from "../Loading";
 import moment from "moment";
-console.log(moment.locale());
+import "moment/locale/sv";
 
 const INITIAL_CLASSES_STATE = {
   selectedClass: {
@@ -296,10 +296,12 @@ const MyAttendance = () => {
         <>
           <div className="adminClassInfo">
             <span>
-              {/* <h1>26 MAJ 2019</h1> */}
-              <h1>{moment().format("ll")}</h1>
+              <h1>
+                {moment()
+                  .format("ll")
+                  .toUpperCase()}
+              </h1>
 
-              {/* <DateTitle /> */}
               <p>FE16 närvarostatus</p>
             </span>
           </div>
