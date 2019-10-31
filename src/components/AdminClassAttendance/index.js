@@ -130,6 +130,27 @@ const AdminClassAttendance = () => {
     }
   };
 
+  const changeStudentAttendance = (studentName, studentAttendance) => {
+    const { lectureTimeUid } = selectedLecture;
+
+    let path = firebase
+      .classDetails(selectedClassUid)
+      .collection("attendance")
+      .doc(lectureTimeUid);
+
+    firebase.db.runTransaction(transaction => {
+      return transaction.get(path).then(lectureDoc => {
+        if (lectureDoc[studentName] === studentAttendance) {
+          return;
+        } else {
+          transaction.update(path, {
+            [studentName]: !studentAttendance
+          });
+        }
+      });
+    });
+  };
+
   const filterFalse = () => {
     if (allLectures) {
       if (filteredAttendanceState.abscentFiltered) {
@@ -221,7 +242,7 @@ const AdminClassAttendance = () => {
                   >
                     <Button
                       key={student.name + index}
-                      // disableTouchRipple
+                      disableTouchRipple
                       className="submitButton"
                       variant="contained"
                       type="button"
@@ -229,6 +250,12 @@ const AdminClassAttendance = () => {
                       {student.name}
                       <Switch
                         color="primary"
+                        onChange={() =>
+                          changeStudentAttendance(
+                            student.name,
+                            student.attendance
+                          )
+                        }
                         defaultChecked={student.attendance}
                       ></Switch>
                     </Button>
@@ -241,7 +268,7 @@ const AdminClassAttendance = () => {
                   >
                     <Button
                       key={student.name + index}
-                      // disableTouchRipple
+                      disableTouchRipple
                       className="submitButton"
                       variant="contained"
                       type="button"
@@ -249,6 +276,12 @@ const AdminClassAttendance = () => {
                       {student.name}
                       <Switch
                         color="primary"
+                        onChange={() =>
+                          changeStudentAttendance(
+                            student.name,
+                            student.attendance
+                          )
+                        }
                         defaultChecked={student.attendance}
                       ></Switch>
                     </Button>
