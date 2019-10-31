@@ -7,7 +7,6 @@ import {
   SCButton,
   SCArrowDownIcon
 } from "./styles";
-import DateTitle from "../../constants/datetitle";
 import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
 import firebase from "../Firebase";
