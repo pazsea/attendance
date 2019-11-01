@@ -32,36 +32,22 @@ const AdminClassAttendance = () => {
   });
 
   const [lectureIndex, setLectureIndex] = useState({
+    noIndex: false,
     maxIndex: null,
-    currentIndex: null
+    minIndex: 0,
+    currentIndex: null,
+    indexReached: {
+      max: false,
+      min: false
+    }
   });
 
   const [allLectures, setAllLectures] = useState(null);
 
   const [navigationState, setNavigationState] = useState(false);
 
-  // useEffect(() => {
-  //   console.log(lectureIndex);
-  // }, [lectureIndex]);
-
   useEffect(() => {
-    if (allLectures) {
-      console.log("Set Class to closest to your date");
-      setLectureIndex({
-        maxIndex: Number(allLectures.length - 1),
-        currentIndex: Number(allLectures.length - 1)
-      });
-      setSelectedLecture(allLectures[Number(allLectures.length - 1)]);
-
-      // setLectureState(prevState => ({
-      //   ...prevState,
-      //   selectedLectureIndex: prevState.allLectures.length - 1
-      // }));
-    }
-  }, [allLectures]);
-
-  useEffect(() => {
-    console.log("startar");
+    console.log("---FIREBASE GETS LECTURES---");
     const unsubscribe = firebase
       .classDetails(selectedClassUid)
       .collection("attendance")
@@ -100,28 +86,98 @@ const AdminClassAttendance = () => {
     };
   }, [selectedClassUid, className]);
 
-  const changeLecture = value => {
-    const { maxIndex, currentIndex } = lectureIndex;
+  useEffect(() => {
+    if (allLectures) {
+      console.log("---SET NEWEST LECTURE IN SELECTED LECTURE STATE---");
 
-    if (value === "increment" && maxIndex === currentIndex) {
-      setLectureIndex(prevState => ({
-        ...prevState,
-        currentIndex: 0
-      }));
-      setSelectedLecture(allLectures[0]);
-    } else if (value === "increment") {
+      let maxIndex = Number(allLectures.length - 1);
+
+      if (maxIndex === 0) {
+        setLectureIndex(prevState => ({
+          ...prevState,
+          noIndex: true,
+          currentIndex: maxIndex
+        }));
+        setSelectedLecture(allLectures[maxIndex]);
+      } else {
+        setLectureIndex({
+          maxIndex: maxIndex,
+          currentIndex: maxIndex,
+          indexReached: {
+            max: true,
+            min: false
+          }
+        });
+        setSelectedLecture(allLectures[maxIndex]);
+      }
+    }
+  }, [allLectures]);
+
+  useEffect(() => {
+    console.log(" ---LECTURE INDEX CHANGE--- ");
+
+    const {
+      noIndex,
+      maxIndex,
+      currentIndex,
+      minIndex,
+      indexReached: { max, min }
+    } = lectureIndex;
+
+    if (!noIndex) {
+      if (maxIndex === currentIndex && !max) {
+        // console.log(" ---MAX INDEX TO TRUE--- " + maxIndex);
+        setLectureIndex(prevState => ({
+          ...prevState,
+          indexReached: {
+            max: true,
+            min: false
+          }
+        }));
+      } else if (currentIndex === 0 && !min) {
+        // console.log(" ---MIN INDEX TO TRUE--- ");
+        setLectureIndex(prevState => ({
+          ...prevState,
+          indexReached: {
+            max: false,
+            min: true
+          }
+        }));
+      } else if (
+        (max && currentIndex < maxIndex) ||
+        (min && currentIndex > minIndex)
+      ) {
+        // console.log(" ---!!! ELSE !!!--- ");
+        // console.log("CURRENT INDEX " + currentIndex);
+        // console.log("MAX INDEX " + maxIndex);
+        setLectureIndex(prevState => ({
+          ...prevState,
+          indexReached: {
+            max: false,
+            min: false
+          }
+        }));
+      }
+    }
+
+    //Här skulle du kunna spara currentIndex to LS och hämta. Persista Lecture
+  }, [lectureIndex]);
+
+  const changeLecture = value => {
+    console.log(" ---Change Lecture--- ");
+
+    const {
+      currentIndex,
+      indexReached: { max, min }
+    } = lectureIndex;
+
+    if (value === "increment" && !max) {
       setLectureIndex(prevState => ({
         ...prevState,
         currentIndex: Number(currentIndex + 1)
       }));
       setSelectedLecture(allLectures[Number(currentIndex + 1)]);
-    } else if (value === "decrement" && currentIndex === 0) {
-      setLectureIndex(prevState => ({
-        ...prevState,
-        currentIndex: maxIndex
-      }));
-      setSelectedLecture(allLectures[maxIndex]);
-    } else {
+    } else if (value === "decrement" && !min) {
       setLectureIndex(prevState => ({
         ...prevState,
         currentIndex: currentIndex - 1
@@ -202,16 +258,25 @@ const AdminClassAttendance = () => {
   };
 
   const { filteredStudents } = filteredAttendanceState;
+  const {
+    noIndex,
+    indexReached: { min, max }
+  } = lectureIndex;
 
   return (
     <>
       {noLectureState ? (
         <div>Denna klass har ingen anmäld närvaro än...</div>
       ) : selectedLecture ? (
-        <SCAdminClassContainer navigationState={navigationState}>
+        <SCAdminClassContainer
+          navigationState={navigationState}
+          noIndex={noIndex}
+        >
           <div className="adminClassInfo">
             <SCArrowLeftIcon
               onClick={() => changeLecture("decrement")}
+              minIndex={min}
+              noIndex={noIndex}
             ></SCArrowLeftIcon>
             <span>
               <h1>{selectedLecture.date}</h1>
@@ -219,6 +284,8 @@ const AdminClassAttendance = () => {
             </span>
             <SCArrowRightIcon
               onClick={() => changeLecture("increment")}
+              maxIndex={max}
+              noIndex={noIndex}
             ></SCArrowRightIcon>
           </div>
           <div

@@ -6,14 +6,18 @@ import {
 } from "styled-icons/feather";
 
 export const SCArrowLeftIcon = styled(ArrowLeftCircle)`
+  display: ${({ noIndex }) => (noIndex ? "none" : "block")};
   width: 3em;
-  color: white;
+  color: ${({ minIndex }) => (minIndex ? "darkred" : "white")};
+  opacity: ${({ minIndex }) => (minIndex ? 0.3 : "none")};
   cursor: pointer;
 `;
 
 export const SCArrowRightIcon = styled(ArrowRightCircle)`
+  display: ${({ noIndex }) => (noIndex ? "none" : "block")};
   width: 3em;
-  color: white;
+  color: ${({ maxIndex }) => (maxIndex ? "darkred" : "white")};
+  opacity: ${({ maxIndex }) => (maxIndex ? 0.3 : "none")};
   cursor: pointer;
 `;
 
@@ -34,7 +38,7 @@ export const SCAdminClassContainer = styled.div`
 
   .adminClassInfo {
     display: flex;
-    justify-content: space-between;
+    justify-content: ${({ noIndex }) => (noIndex ? "center" : "space-between")};
     background: #3f51b5;
     border-radius: 10px 10px 0 0;
     padding: 0.1em 1em;
@@ -92,7 +96,7 @@ export const SCSPanButton = styled.span`
   button {
     background: ${props => (props.attending ? "forestgreen" : "red")};
     width: 100%;
-    color:white;
+    color: white;
     /* background: forestgreen; */
     justify-content: space-between;
     padding: 0.5em 2em;
