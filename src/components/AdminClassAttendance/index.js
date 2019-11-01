@@ -91,6 +91,7 @@ const AdminClassAttendance = () => {
 
     return () => {
       unsubscribe();
+      localStorage.removeItem("lectureIndex");
     };
   }, [selectedClassUid, className]);
 
@@ -99,15 +100,9 @@ const AdminClassAttendance = () => {
       console.log("---SET NEWEST LECTURE IN SELECTED LECTURE STATE---");
 
       let maxIndex = Number(allLectures.length - 1);
+      let storageLectureIndex = localStorage.getItem("lectureIndex");
 
-      if (maxIndex === 0) {
-        setLectureIndex(prevState => ({
-          ...prevState,
-          noIndex: true,
-          currentIndex: maxIndex
-        }));
-        setSelectedLecture(allLectures[maxIndex]);
-      } else {
+      if (storageLectureIndex === maxIndex && maxIndex !== 0) {
         setLectureIndex({
           maxIndex: maxIndex,
           currentIndex: maxIndex,
@@ -117,6 +112,30 @@ const AdminClassAttendance = () => {
           }
         });
         setSelectedLecture(allLectures[maxIndex]);
+      } else if (maxIndex === 0) {
+        setLectureIndex(prevState => ({
+          ...prevState,
+          noIndex: true,
+          currentIndex: maxIndex
+        }));
+        setSelectedLecture(allLectures[maxIndex]);
+      } else if (storageLectureIndex && Number(storageLectureIndex) === 0) {
+        setLectureIndex(prevState => ({
+          ...prevState,
+          currentIndex: storageLectureIndex,
+          indexReached: {
+            max: false,
+            min: true
+          }
+        }));
+        setSelectedLecture(allLectures[storageLectureIndex]);
+      } else {
+        setLectureIndex(prevState => ({
+          ...prevState,
+          maxIndex: maxIndex,
+          currentIndex: storageLectureIndex || maxIndex
+        }));
+        setSelectedLecture(allLectures[storageLectureIndex || maxIndex]);
       }
     }
   }, [allLectures]);
@@ -206,18 +225,21 @@ const AdminClassAttendance = () => {
     }));
 
     if (value === "increment" && !max) {
+      let incNumber = Number(currentIndex) + 1;
       setLectureIndex(prevState => ({
         ...prevState,
-        currentIndex: Number(currentIndex + 1)
+        currentIndex: incNumber
       }));
-
-      setSelectedLecture(allLectures[Number(currentIndex + 1)]);
+      localStorage.setItem("lectureIndex", incNumber);
+      setSelectedLecture(allLectures[incNumber]);
     } else if (value === "decrement" && !min) {
+      let decrNumber = currentIndex - 1;
       setLectureIndex(prevState => ({
         ...prevState,
-        currentIndex: currentIndex - 1
+        currentIndex: decrNumber
       }));
-      setSelectedLecture(allLectures[currentIndex - 1]);
+      localStorage.setItem("lectureIndex", decrNumber);
+      setSelectedLecture(allLectures[decrNumber]);
     }
   };
 
