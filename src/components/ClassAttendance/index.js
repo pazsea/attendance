@@ -316,14 +316,10 @@ const MyAttendance = () => {
             <>
               {attendingInClassState.studentAttendanceToday ? (
                 <p style={{ fontWeight: "600", textAlign: "center" }}>
-                  {/* Logiken borde fungera om man är på rätt ställe.
-                   Funkar bra i playcode  testdata men jag hittar inte in till våra studenters boolean
-                   så jag kan räkna dom.
-                   I nuläget får jag 7 av 7 studenter.  */}
-                  {Object.values(
-                    attendingInClassState.studentAttendanceToday
-                  ).filter(v => v).length +
-                    " X av " +
+                  {attendingInClassState.studentAttendanceToday.filter(
+                    student => student.attendance
+                  ).length +
+                    " av " +
                     attendingInClassState.studentAttendanceToday.length +
                     " studenter närvarande idag"}
                 </p>
@@ -359,3 +355,15 @@ const MyAttendance = () => {
 };
 
 export default MyAttendance;
+
+// var state = [
+//   {name: "Pelle Larsson",
+//   attendance: true},
+//   {"Sara Överström": false}
+
+// ]
+// const short = Object.values(data).filter((v) => v).length;
+
+// $('#msg').html(data.message)
+
+// console.log(short)
