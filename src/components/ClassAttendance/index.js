@@ -245,15 +245,20 @@ const MyAttendance = () => {
     studentAttendanceToday,
     filteredAttendanceList,
     isAlreadyAttending,
-    errorAttendance
+    errorAttendance,
+    abscentFiltered,
+    presentFiltered
   } = attendingInClassState;
 
   // Om loading är true = Visa loading komponent.
   // Om loading är false och om isAlreadyAttending är true
-  // console.log("Gustav log " + attendingInClassState.);
 
   return (
-    <SCClassAttendanceContainer navigationState={navigationState}>
+    <SCClassAttendanceContainer
+      presentFiltered={presentFiltered}
+      abscentFiltered={abscentFiltered}
+      navigationState={navigationState}
+    >
       {loading ? (
         <Loading text="Hämtar in alla klasser...."></Loading>
       ) : isAlreadyAttending ? (
@@ -281,13 +286,16 @@ const MyAttendance = () => {
             className="adminClassNav"
             onClick={() => setNavigationState(!navigationState)}
           >
-            {/* Till senare: Kanske underline på valt sorteringsalternativ */}
             <p>
               Sortera <SCArrowDownIcon></SCArrowDownIcon>
             </p>
             <div className="sortingSelections">
-              <button onClick={filterFalse}>Frånvarande</button>
-              <button onClick={filterTrue}>Närvarande</button>
+              <button id="abscent" onClick={filterFalse}>
+                Frånvarande
+              </button>
+              <button id="present" onClick={filterTrue}>
+                Närvarande
+              </button>
             </div>
           </div>
 
