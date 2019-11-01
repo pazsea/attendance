@@ -18,7 +18,6 @@ const INITIAL_CLASSES_STATE = {
   selectedClass: {
     label: "Välj klass...",
     lectureDates: null,
-    students: null,
     value: null
   },
   availableClasses: [],
@@ -31,7 +30,7 @@ const INITIAL_ATTENDING_CLASS_STATE = {
   hasLecturesToday: false,
   currentDate: null,
   loading: true,
-  attendanceToday: null,
+  studentAttendanceToday: null,
   filteredAttendanceList: null,
   errorAttendance: null,
   presentFiltered: false,
@@ -116,7 +115,7 @@ const MyAttendance = () => {
 
             setAttendingInClassState(prevState => ({
               ...prevState,
-              attendanceToday: sortedResult,
+              studentAttendanceToday: sortedResult,
               loading: false
             }));
           }
@@ -126,7 +125,7 @@ const MyAttendance = () => {
         setAttendingInClassState(prevState => ({
           ...prevState,
           hasLecturesToday: false,
-          attendanceToday: null,
+          studentAttendanceToday: null,
           filteredAttendanceList: null,
           errorAttendance: "Denna klass har inga föreläsningar idag.."
         }));
@@ -177,6 +176,7 @@ const MyAttendance = () => {
       return obj.value === selectedOption.value;
     });
     console.log({ ...findSelectedClass[0] });
+
     setMyClassesState({
       ...myClassesState,
       selectedClass: { ...findSelectedClass[0] }
@@ -184,7 +184,7 @@ const MyAttendance = () => {
   };
 
   const filterFalse = () => {
-    if (attendingInClassState.attendanceToday) {
+    if (attendingInClassState.studentAttendanceToday) {
       if (attendingInClassState.abscentFiltered) {
         setAttendingInClassState(prevState => ({
           ...prevState,
@@ -193,7 +193,7 @@ const MyAttendance = () => {
           presentFiltered: false
         }));
       } else {
-        const filterAttendingFalse = attendingInClassState.attendanceToday.filter(
+        const filterAttendingFalse = attendingInClassState.studentAttendanceToday.filter(
           function(student) {
             return student.attendance === false;
           }
@@ -209,7 +209,7 @@ const MyAttendance = () => {
   };
 
   const filterTrue = () => {
-    if (attendingInClassState.attendanceToday) {
+    if (attendingInClassState.studentAttendanceToday) {
       if (attendingInClassState.presentFiltered) {
         setAttendingInClassState(prevState => ({
           ...prevState,
@@ -218,7 +218,7 @@ const MyAttendance = () => {
           abscentFiltered: false
         }));
       } else {
-        const filterAttendingTrue = attendingInClassState.attendanceToday.filter(
+        const filterAttendingTrue = attendingInClassState.studentAttendanceToday.filter(
           function(student) {
             return student.attendance === true;
           }
@@ -242,7 +242,7 @@ const MyAttendance = () => {
   } = myClassesState;
 
   const {
-    attendanceToday,
+    studentAttendanceToday,
     filteredAttendanceList,
     isAlreadyAttending,
     errorAttendance
@@ -250,6 +250,7 @@ const MyAttendance = () => {
 
   // Om loading är true = Visa loading komponent.
   // Om loading är false och om isAlreadyAttending är true
+  // console.log("Gustav log " + attendingInClassState.);
 
   return (
     <SCClassAttendanceContainer navigationState={navigationState}>
@@ -302,10 +303,21 @@ const MyAttendance = () => {
               {errorClasses}
             </p>
           ) : (
-            <p style={{ fontWeight: "600", textAlign: "center" }}>
-              8/12 närvarande
-            </p>
+            <>
+              {attendingInClassState.studentAttendanceToday ? (
+                <p style={{ fontWeight: "600", textAlign: "center" }}>
+                  {attendingInClassState.studentAttendanceToday.filter(
+                    student => student.attendance
+                  ).length +
+                    " av " +
+                    attendingInClassState.studentAttendanceToday.length +
+                    " studenter närvarande idag"}
+                </p>
+              ) : null}
+            </>
           )}
+
+          {/* const short = Object.values(data).filter((v) => v).length; */}
 
           <SCStudentNameContainer>
             {filteredAttendanceList ? (
@@ -314,8 +326,8 @@ const MyAttendance = () => {
                   {object.name}
                 </SCButton>
               ))
-            ) : attendanceToday ? (
-              attendanceToday.map((object, i) => (
+            ) : studentAttendanceToday ? (
+              studentAttendanceToday.map((object, i) => (
                 <SCButton attending={object.attendance} key={i}>
                   {object.name}
                 </SCButton>
@@ -333,3 +345,15 @@ const MyAttendance = () => {
 };
 
 export default MyAttendance;
+
+// var state = [
+//   {name: "Pelle Larsson",
+//   attendance: true},
+//   {"Sara Överström": false}
+
+// ]
+// const short = Object.values(data).filter((v) => v).length;
+
+// $('#msg').html(data.message)
+
+// console.log(short)
