@@ -171,11 +171,19 @@ const AdminClassAttendance = () => {
       indexReached: { max, min }
     } = lectureIndex;
 
+    setFilterAttendanceState(prevState => ({
+      ...prevState,
+      filteredStudents: null,
+      abscentFiltered: false,
+      presentFiltered: false
+    }));
+
     if (value === "increment" && !max) {
       setLectureIndex(prevState => ({
         ...prevState,
         currentIndex: Number(currentIndex + 1)
       }));
+
       setSelectedLecture(allLectures[Number(currentIndex + 1)]);
     } else if (value === "decrement" && !min) {
       setLectureIndex(prevState => ({
