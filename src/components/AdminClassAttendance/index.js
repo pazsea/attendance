@@ -13,6 +13,8 @@ import Loading from "../Loading";
 import Button from "@material-ui/core/Button";
 import Switch from "@material-ui/core/Switch";
 import firebase from "../Firebase";
+import moment from "moment";
+import "moment/locale/sv";
 
 const AdminClassAttendance = () => {
   const {
@@ -309,7 +311,12 @@ const AdminClassAttendance = () => {
               noIndex={noIndex}
             ></SCArrowLeftIcon>
             <span>
-              <h1>{selectedLecture.date}</h1>
+              <h1>
+                {moment(selectedLecture.date)
+                  .format("ll")
+                  .toUpperCase()}
+              </h1>
+
               <p>{selectedLecture.className} närvarostatus</p>
             </span>
             <SCArrowRightIcon
