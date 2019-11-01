@@ -26,7 +26,7 @@ const AdminClassAttendance = () => {
   const [noLectureState, setNoLectureState] = useState(false);
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [filteredAttendanceState, setFilterAttendanceState] = useState({
-    filteredAttendanceStateStudents: null,
+    filteredStudents: null,
     abscentFiltered: false,
     presentFiltered: false
   });
@@ -46,6 +46,26 @@ const AdminClassAttendance = () => {
 
   const [navigationState, setNavigationState] = useState(false);
 
+  // const valKeys = Object.keys(val.data());
+  // const valObject = val.data();
+
+  // const result = valKeys.map(name => ({
+  //   name: name,
+  //   attendance: valObject[name]
+  // }));
+
+  // const sortedResult = result
+  //   .sort(function(objectA, objectB) {
+  //     return objectA.attendance - objectB.attendance;
+  //   })
+  //   .reverse();
+
+  // setAttendingInClassState(prevState => ({
+  //   ...prevState,
+  //   attendanceToday: sortedResult,
+  //   loading: false
+  // }));
+
   useEffect(() => {
     console.log("---FIREBASE GETS LECTURES---");
     const unsubscribe = firebase
@@ -55,9 +75,15 @@ const AdminClassAttendance = () => {
         if (snap.empty) {
           setNoLectureState(true);
         } else {
+          //Sorterar docs till senaste föreläsning som uppdaterats
+
           let orderDocs = snap.docs.sort(function(a, b) {
             return Number(a.id) - Number(b.id);
           });
+
+          //Fixar en ny array med flera objekt med reduce.
+          //I students mappar jag ut true och false state med och sedan sorterar jag dem
+          //så att tru states hamnar först i arrayen.
 
           let orderedDocsToState = orderDocs.reduce((acc, obj) => {
             return [
@@ -69,10 +95,15 @@ const AdminClassAttendance = () => {
                   .toISOString()
                   .slice(0, 10),
                 students: obj.data()
-                  ? Object.keys(obj.data()).map(name => ({
-                      name: name,
-                      attendance: obj.data()[name]
-                    }))
+                  ? Object.keys(obj.data())
+                      .map(name => ({
+                        name: name,
+                        attendance: obj.data()[name]
+                      }))
+                      .sort((objA, objB) => {
+                        return objA.attendance - objB.attendance;
+                      })
+                      .reverse()
                   : null
               }
             ];
