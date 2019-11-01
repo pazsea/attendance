@@ -38,21 +38,6 @@ const INITIAL_ATTENDING_CLASS_STATE = {
   abscentFiltered: false
 };
 
-//  Hämta hem alla klasser. Lagra dem i ett state, bäst vore availbleClasses
-
-// Vald class hamnar i selectedClass statet med:
-// tillhörande namn, uid, lecturedates, value
-
-// När man valt klass kollar vi om dagens datum finns med i lectures-arrayen.
-
-// Om True, hämta classUid --> "attendance" --> dagensdatum --> studenter
-// Lagra alla studenter i ett attendingInClass.attendanceToday
-
-// Om False, set något state som visare "Ingen föreläsning idag."
-
-//Stundenterna har false eller true.
-//Renderade knappar med studenternas namn och boolean olika färg.
-
 const MyAttendance = () => {
   // const [attendingStudentState, setAttendingStudentState] = useState(
   //   INITIAL_ATTENDINGSTUDENT_STATE
@@ -247,20 +232,6 @@ const MyAttendance = () => {
       }
     }
   };
-
-  // function DateTitle() {
-  // Om klassens datum är samma som dagens datum visa datum.
-
-  //Alla datum för klassen
-  // const lectureDate = myClassesState.selectedClass.lectureDates;
-
-  // var now = new Date();
-  // now.customFormat("#DD#/#MM#/#YYYY# ");
-
-  // return <h1>{JSON.stringify(date)}</h1>;
-  // return <h1>{now.customFormat}</h1>;
-
-  // }
 
   //Deconstructing av state??
   const {
