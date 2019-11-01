@@ -11,6 +11,8 @@ import KyhLogo from "../../images/logos/kyh_logo.png";
 import "react-dropdown/style.css";
 import firebase from "../Firebase";
 import Loading from "../Loading";
+import moment from "moment";
+import "moment/locale/sv";
 
 const INITIAL_CLASSES_STATE = {
   selectedClass: {
@@ -35,21 +37,6 @@ const INITIAL_ATTENDING_CLASS_STATE = {
   presentFiltered: false,
   abscentFiltered: false
 };
-
-//  Hämta hem alla klasser. Lagra dem i ett state, bäst vore availbleClasses
-
-// Vald class hamnar i selectedClass statet med:
-// tillhörande namn, uid, lecturedates, value
-
-// När man valt klass kollar vi om dagens datum finns med i lectures-arrayen.
-
-// Om True, hämta classUid --> "attendance" --> dagensdatum --> studenter
-// Lagra alla studenter i ett attendingInClass.attendanceToday
-
-// Om False, set något state som visare "Ingen föreläsning idag."
-
-//Stundenterna har false eller true.
-//Renderade knappar med studenternas namn och boolean olika färg.
 
 const MyAttendance = () => {
   // const [attendingStudentState, setAttendingStudentState] = useState(
@@ -246,8 +233,6 @@ const MyAttendance = () => {
     }
   };
 
-  // const presentSorted
-
   //Deconstructing av state??
   const {
     availableClasses,
@@ -282,7 +267,12 @@ const MyAttendance = () => {
         <>
           <div className="adminClassInfo">
             <span>
-              <h1>26 MAJ 2019</h1>
+              <h1>
+                {moment()
+                  .format("ll")
+                  .toUpperCase()}
+              </h1>
+
               <p>FE16 närvarostatus</p>
             </span>
           </div>
