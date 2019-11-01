@@ -59,6 +59,7 @@ export const SCClassAttendanceContainer = styled.div`
 
   .sortingSelections {
     display: ${({ navigationState }) => (navigationState ? "flex" : "none")};
+
     flex-direction: column;
     button {
       border: none;
@@ -66,6 +67,16 @@ export const SCClassAttendanceContainer = styled.div`
       color: white;
       padding: 0.5em 0;
       cursor: pointer;
+    }
+    #abscent {
+      text-decoration: ${({ abscentFiltered }) =>
+        abscentFiltered ? "underline" : "none"};
+      /* text-decoration: underline;  */
+    }
+    #present {
+      text-decoration: ${({ presentFiltered }) =>
+        presentFiltered ? "underline" : "none"};
+      /* text-decoration: underline;  */
     }
   }
 
