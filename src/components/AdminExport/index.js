@@ -8,7 +8,7 @@
 
 // ----  { Libraries } ----
 import React from "react";
-import { SCInfoComponentContainer } from "./styles";
+import { SCInfoComponentContainer, SCCircle, SCTextBlock } from "./styles";
 import "./adminexport.scss";
 import { makeStyles } from "@material-ui/core/styles";
 // ----  { Routes, ActionTypes etc. Custom variables. } ----
@@ -23,14 +23,15 @@ import { makeStyles } from "@material-ui/core/styles";
 //   }
 // });
 
+//Deconstructar text direkt.
 const AdminExport = ({ text }) => {
-  // const classes = useStyles();
   return (
     <SCInfoComponentContainer>
-      {/* <h3>Inga klasser hittades</h3> */}
-      <h3>Inga föreläsningar hittdes för valt datum</h3>
-
-      <p>{text}....</p>
+      <SCCircle>
+        <SCTextBlock>
+          <h2>{text}</h2>
+        </SCTextBlock>
+      </SCCircle>
     </SCInfoComponentContainer>
   );
 };
