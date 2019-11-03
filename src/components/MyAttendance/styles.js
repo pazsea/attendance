@@ -12,13 +12,30 @@ export const SCMyAttendanceContainer = styled.div`
   padding: 2em;
   border-radius: 0.12em;
 
-  img {
-    margin: 0 auto;
-    width: 70%;
+  .adminClassInfo {
+    display: flex;
+    justify-content: center;
+    background: #3f51b5;
+    border-radius: 10px 10px 0 0;
+    padding: 0.1em 1em;
 
+    span {
+      color: white;
+      text-align: center;
+      h1 {
+        font-size: 1.3em;
+      }
+      p {
+        font-size: 0.8em;
+      }
+    }
     @media (min-width: 768px) {
-      width: 30%;
-      margin: 0 auto 2em auto;
+      h1 {
+        font-size: 2em;
+      }
+      p {
+        font-size: 1em;
+      }
     }
   }
 

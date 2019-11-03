@@ -131,7 +131,7 @@ const Navigation = props => {
             path={ROUTES.MYATTENDANCE}
             component={NavLink}
           >
-            Min Närvaro
+            Anmäl Närvaro
           </Button>
           <Button
             color="inherit"

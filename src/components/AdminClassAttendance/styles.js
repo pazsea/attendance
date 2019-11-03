@@ -64,6 +64,10 @@ export const SCAdminClassContainer = styled.div`
     }
   }
 
+  .MuiSwitch-thumb {
+    background: white;
+  }
+
   .adminClassNav {
     color: white;
     text-align: center;

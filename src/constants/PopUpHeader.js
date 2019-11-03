@@ -1,9 +1,9 @@
 import React from "react";
-import { ReactComponent as CloseIcon } from "../images/logos/closeIcon.svg";
+import { CloseO } from "styled-icons/evil/CloseO";
 import styled from "styled-components";
 
 const Head = styled.div`
-  font-family: "Josefin Sans", sans-serif;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   width: 100%;
   background: ${props => props.color};
   display: flex;
@@ -12,8 +12,9 @@ const Head = styled.div`
   align-items: center;
   color: white;
   font-size: 1.3em;
+
   .header_closeIcon {
-    color: black;
+    color: white;
     position: absolute;
     display: flex;
     border: none;
@@ -21,14 +22,12 @@ const Head = styled.div`
     right: 1%;
     background: none;
     cursor: pointer;
-    :hover {
-      color: #f50057;
-    }
-    svg {
-      margin-top: 2px;
-      width: 30px;
-    }
   }
+`;
+
+export const CloseIcon = styled(CloseO)`
+  margin-top: 1px;
+  width: 30px;
 `;
 
 const PopUpHeader = ({ headerTitle, color, close }) => {
