@@ -1,16 +1,13 @@
 import styled from "styled-components/macro";
 import { Check } from "styled-icons/boxicons-regular/Check";
-import { ArrowRight } from "styled-icons/evil/ArrowRight";
+import { RightArrow } from "styled-icons/boxicons-regular/RightArrow";
 
-export const SCArrowDownIcon = styled(ArrowRight)`
-  width: 25px;
+export const SCArrowDownIcon = styled(RightArrow)`
+  width: 12px;
   color: white;
   transition: transform 300ms ease-in-out;
   transform: ${({ navigationState }) =>
     navigationState ? `rotate(90deg)` : ""};
-  /* :hover {
-    transform: rotate(90deg);
-  } */
 `;
 
 export const SCClassAttendanceContainer = styled.div`
@@ -65,7 +62,6 @@ export const SCClassAttendanceContainer = styled.div`
 
   .sortingSelections {
     display: ${({ navigationState }) => (navigationState ? "flex" : "none")};
-
     flex-direction: column;
     button {
       border: none;
@@ -129,11 +125,10 @@ export const SCStudentNameContainer = styled.div`
 
 export const SCButton = styled.button`
   /* Taget från .MuiButton-root */
-  /* ${props => (props.attending ? "palevioletred" : "white")}; */
-  
+
   color: white;
   width: 100%;
-  background: ${({ attending }) => (attending ? "forestgreen" : "darkred")};;
+  background: ${({ attending }) => (attending ? "forestgreen" : "darkred")};
   padding: 6px 16px;
   font-size: 0.875rem;
   min-width: 64px;
@@ -162,7 +157,6 @@ export const SCButton = styled.button`
   justify-content: center;
   text-decoration: none;
   /* background-color: transparent; */
-
   /* -webkit-tap-highlight-color: transparent; */
 `;
 
