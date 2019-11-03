@@ -1,10 +1,16 @@
 import styled from "styled-components/macro";
 import { Check } from "styled-icons/boxicons-regular/Check";
-import { ArrowDown } from "styled-icons/feather";
+import { ArrowRight } from "styled-icons/evil/ArrowRight";
 
-export const SCArrowDownIcon = styled(ArrowDown)`
-  width: 20px;
+export const SCArrowDownIcon = styled(ArrowRight)`
+  width: 25px;
   color: white;
+  transition: transform 300ms ease-in-out;
+  transform: ${({ navigationState }) =>
+    navigationState ? `rotate(90deg)` : ""};
+  /* :hover {
+    transform: rotate(90deg);
+  } */
 `;
 
 export const SCClassAttendanceContainer = styled.div`
