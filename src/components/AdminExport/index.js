@@ -1,7 +1,7 @@
 import React from "react";
-
+import InfoComponent from "../../constants/InfoComponent";
 const AdminExport = () => {
-  return <div>EXPORT NÄRVARO</div>;
+  return <InfoComponent text="Denna funktion är under utveckling" />;
 };
 
 export default AdminExport;

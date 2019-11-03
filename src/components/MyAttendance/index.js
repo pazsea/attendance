@@ -7,7 +7,6 @@ import Dropdown from "react-dropdown";
 import {
   SCMyAttendanceContainer,
   SCStudentNameContainer,
-  CheckIcon,
   SCAlreadyAttending
 } from "./styles";
 import KyhLogo from "../../images/logos/kyh_logo.png";

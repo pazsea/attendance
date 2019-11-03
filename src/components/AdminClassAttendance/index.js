@@ -15,6 +15,7 @@ import Switch from "@material-ui/core/Switch";
 import firebase from "../Firebase";
 import moment from "moment";
 import "moment/locale/sv";
+import InfoComponent from "../../constants/InfoComponent";
 
 const AdminClassAttendance = () => {
   const {
@@ -298,7 +299,13 @@ const AdminClassAttendance = () => {
   return (
     <>
       {noLectureState ? (
-        <div>Denna klass har ingen anmäld närvaro än...</div>
+        <InfoComponent
+          text={
+            className
+              ? `${className} har ingen anmäld närvaro än.`
+              : "Du har inte valt någon klass att visa närvaro för."
+          }
+        />
       ) : selectedLecture ? (
         <SCAdminClassContainer
           navigationState={navigationState}
