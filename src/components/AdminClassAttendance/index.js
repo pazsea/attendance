@@ -25,7 +25,7 @@ const AdminClassAttendance = () => {
   const [noLectureState, setNoLectureState] = useState(false);
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [filteredAttendanceState, setFilterAttendanceState] = useState({
-    currentSortingOption: "Sortera närvaro",
+    currentSortingOption: "Sortera",
     studentsAttending: null,
     studentsAbscent: null
   });
@@ -292,7 +292,7 @@ const AdminClassAttendance = () => {
     indexReached: { min, max }
   } = lectureIndex;
 
-  const showAll = "Sortera närvaro";
+  const showAll = "Sortera";
   const showAttending = "Närvarande";
   const showAbscent = "Frånvarande";
 
@@ -337,7 +337,10 @@ const AdminClassAttendance = () => {
             onClick={() => setNavigationState(!navigationState)}
           >
             <p>
-              {currentSortingOption} <SCArrowDownIcon></SCArrowDownIcon>
+              {currentSortingOption}{" "}
+              <SCArrowDownIcon
+                navigationState={navigationState}
+              ></SCArrowDownIcon>
             </p>
             <div className="sortingSelections">
               <button onClick={() => filterStudents(showAbscent)}>

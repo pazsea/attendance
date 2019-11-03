@@ -287,7 +287,10 @@ const MyAttendance = () => {
             onClick={() => setNavigationState(!navigationState)}
           >
             <p>
-              Sortera <SCArrowDownIcon></SCArrowDownIcon>
+              Sortera{" "}
+              <SCArrowDownIcon
+                navigationState={navigationState}
+              ></SCArrowDownIcon>
             </p>
             <div className="sortingSelections">
               <button id="abscent" onClick={filterFalse}>

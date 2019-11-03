@@ -1,9 +1,7 @@
 import styled from "styled-components/macro";
-import {
-  ArrowLeftCircle,
-  ArrowRightCircle,
-  ArrowDown
-} from "styled-icons/feather";
+import { ArrowLeftCircle, ArrowRightCircle } from "styled-icons/feather";
+
+import { RightArrow } from "styled-icons/boxicons-regular/RightArrow";
 
 export const SCArrowLeftIcon = styled(ArrowLeftCircle)`
   display: ${({ noIndex }) => (noIndex ? "none" : "block")};
@@ -21,9 +19,12 @@ export const SCArrowRightIcon = styled(ArrowRightCircle)`
   cursor: pointer;
 `;
 
-export const SCArrowDownIcon = styled(ArrowDown)`
-  width: 20px;
+export const SCArrowDownIcon = styled(RightArrow)`
+  width: 12px;
   color: white;
+  transition: transform 300ms ease-in-out;
+  transform: ${({ navigationState }) =>
+    navigationState ? `rotate(90deg)` : ""};
 `;
 
 export const SCAdminClassContainer = styled.div`
