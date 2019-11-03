@@ -143,7 +143,7 @@ const MyAttendance = () => {
         // OM empty
         setMyClassesState(prevState => ({
           ...prevState,
-          errorClasses: "Inga klasser hittade från databasen...",
+          errorClasses: "Inga klasser hittade...",
           loading: false
         }));
       } else {
@@ -236,7 +236,7 @@ const MyAttendance = () => {
   //Deconstructing av state??
   const {
     availableClasses,
-    selectedClass: { label },
+    selectedClass: { label, value },
     errorClasses,
     loading
   } = myClassesState;
@@ -273,34 +273,35 @@ const MyAttendance = () => {
         <>
           <div className="adminClassInfo">
             <span>
-              <h1>
+              <h1>Dagens närvaro:</h1>
+              <h3>
                 {moment()
                   .format("ll")
                   .toUpperCase()}
-              </h1>
-
-              <p>FE16 närvarostatus</p>
+              </h3>
             </span>
           </div>
-          <div
-            className="adminClassNav"
-            onClick={() => setNavigationState(!navigationState)}
-          >
-            <p>
-              Sortera{" "}
-              <SCArrowDownIcon
-                navigationState={navigationState}
-              ></SCArrowDownIcon>
-            </p>
-            <div className="sortingSelections">
-              <button id="abscent" onClick={filterFalse}>
-                Frånvarande
-              </button>
-              <button id="present" onClick={filterTrue}>
-                Närvarande
-              </button>
+          {value ? (
+            <div
+              className="adminClassNav"
+              onClick={() => setNavigationState(!navigationState)}
+            >
+              <p>
+                Sortera{" "}
+                <SCArrowDownIcon
+                  navigationState={navigationState}
+                ></SCArrowDownIcon>
+              </p>
+              <div className="sortingSelections">
+                <button id="abscent" onClick={filterFalse}>
+                  Frånvarande
+                </button>
+                <button id="present" onClick={filterTrue}>
+                  Närvarande
+                </button>
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <Dropdown
             placeholder="Välj klass..."

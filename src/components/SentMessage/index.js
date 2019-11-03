@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { CheckCircle } from "styled-icons/fa-regular/CheckCircle";
 
 const SentMessageDiv = styled.div`
-  font-family: "Josefin Sans", sans-serif;
+font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   text-align: center;
   margin: 0 auto;
   padding: 2em;

@@ -18,6 +18,9 @@ import firebase from "../Firebase";
 import Loading from "../Loading";
 import Button from "@material-ui/core/Button";
 
+import moment from "moment";
+import "moment/locale/sv";
+
 const INITIAL_ATTENDINGSTUDENT_STATE = {
   isAlreadyAttending: false,
   hasLecturesToday: false,
@@ -106,7 +109,7 @@ const MyAttendance = () => {
       if (empty) {
         setMyClassesState(prevState => ({
           ...prevState,
-          errorClasses: "Inga klasser hittade från databasen...",
+          errorClasses: "Inga klasser hittades...",
           loading: false
         }));
       } else {
@@ -332,7 +335,16 @@ const MyAttendance = () => {
         </SCAlreadyAttending>
       ) : (
         <>
-          <img src={KyhLogo} alt="KYH Logo"></img>
+          <div className="adminClassInfo">
+            <span>
+              <h1>Anmäl närvaro:</h1>
+              <h3>
+                {moment()
+                  .format("ll")
+                  .toUpperCase()}
+              </h3>
+            </span>
+          </div>
           <Dropdown
             placeholder="Välj klass..."
             value={label}

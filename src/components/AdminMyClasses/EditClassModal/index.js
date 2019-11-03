@@ -248,7 +248,7 @@ export default function EditClassModal(props) {
               onClick={sendChangesToDB}
               disabled={!modificationState || !classDetails.className} //Bra knep!
             >
-              REDIGERA KLASS
+              SPARA ÄNDRINGAR
             </Button>
           </form>
         </div>

@@ -33,7 +33,7 @@ export default function AddStudentsModal(props) {
     <Modal open={studentsModalState} onClose={setStudentsModalState}>
       <div className="add_students_container">
         <PopUpHeader
-          color="#559FFF"
+          color="#3f51b5"
           headerTitle="LÄGG TILL ELEVER"
           close={setStudentsModalState}
         ></PopUpHeader>
@@ -82,16 +82,28 @@ export default function AddStudentsModal(props) {
           >
             Lägg till elev
           </Button>
-          <Button
-            className="submitButton"
-            variant="contained"
-            color="primary"
-            type="submit"
-            size="large"
-            onClick={setStudentsModalState}
-          >
-            Tillbaka
-          </Button>
+          <div className="studentButtonDiv">
+            <Button
+              className="submitButton"
+              variant="contained"
+              color="primary"
+              type="submit"
+              size="large"
+              onClick={setStudentsModalState}
+            >
+              Tillbaka
+            </Button>
+            <Button
+              className="submitButton"
+              variant="contained"
+              color="secondary"
+              type="submit"
+              size="large"
+              onClick={setStudentsModalState}
+            >
+              Bekräfta
+            </Button>
+          </div>
         </form>
       </div>
     </Modal>

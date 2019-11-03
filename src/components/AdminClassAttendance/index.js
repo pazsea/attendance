@@ -318,13 +318,20 @@ const AdminClassAttendance = () => {
               noIndex={noIndex}
             ></SCArrowLeftIcon>
             <span>
-              <h1>
+              <h3>
+                Klass Närvaro <br></br>
+                {selectedLecture.className}
+              </h3>
+              <h4
+                style={{
+                  margin: "none",
+                  padding: "0"
+                }}
+              >
                 {moment(selectedLecture.date)
                   .format("ll")
                   .toUpperCase()}
-              </h1>
-
-              <p>{selectedLecture.className} närvarostatus</p>
+              </h4>
             </span>
             <SCArrowRightIcon
               onClick={() => changeLecture("increment")}
