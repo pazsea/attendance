@@ -24,17 +24,18 @@
     flex-grow: 1;
   }
 
-  button {
+  .submitButton {
     width: 100%;
+    background: green;
   }
 }
 
-.submitButton {
-  background: forestgreen;
-}
-.submitButton:hover {
-  background: forestgreen;
-}
+// .submitButton {
+//   background: forestgreen;
+// }
+// .submitButton:hover {
+//   background: forestgreen;
+// }
 
 .add_lectures_datepicker {
   display: flex;

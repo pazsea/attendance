@@ -4,10 +4,10 @@ import styled from "styled-components/macro";
 import { Info } from "styled-icons/typicons/Info";
 
 //Deconstructar text direkt.
-const InfoComponent = ({ text }) => {
+const InfoComponent = ({ text, noMargin }) => {
   return (
     <SCInfoComponentContainer>
-      <SCCircle>
+      <SCCircle noMargin={noMargin}>
         <SCTextBlock>
           <SICheckIcon />
           <h2>{text}</h2>
@@ -25,7 +25,7 @@ export const SCInfoComponentContainer = styled.div`
 
 export const SCCircle = styled.div`
   display: flex;
-  margin-top: 8%;
+  margin-top: ${({ noMargin }) => (noMargin ? "0" : "8%")};
   width: 20rem;
   height: 20rem;
   background: white;

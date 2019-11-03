@@ -62,21 +62,10 @@ export default function AddLectureModal(props) {
 
           <p className="divider"></p>
 
-          {/* <Button
-            className="submitButton"
-            variant="contained"
-            color="primary"
-            type="button"
-            size="large"
-            onClick={setLectureModalState}
-          >
-            Tillbaka
-          </Button> */}
-
           <Button
             className="submitButton"
             variant="contained"
-            color="secondary"
+            color="primary"
             type="button"
             size="large"
             onClick={setLectureModalState}

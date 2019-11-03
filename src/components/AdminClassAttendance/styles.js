@@ -47,12 +47,12 @@ export const SCAdminClassContainer = styled.div`
     span {
       color: white;
       text-align: center;
-      h1 {
+      /* h1 {
         font-size: 1.3em;
-      }
-      p {
-        font-size: 0.8em;
-      }
+      } */
+      /* p {
+        font-size: 1em;
+      } */
     }
     @media (min-width: 768px) {
       h1 {

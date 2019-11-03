@@ -102,7 +102,7 @@ export default function MainContainer(props) {
               ></ClassContainer>
             ))
           ) : (
-            <InfoComponent text="Du har inte skapat några klasser" />
+            <InfoComponent noMargin text="Du har inte skapat några klasser" />
           )}
         </Typography>
         <div className="addClassesDiv">
@@ -110,7 +110,6 @@ export default function MainContainer(props) {
             color="secondary"
             aria-label="add"
             style={{ width: "60px", height: "60px" }}
-            // className={{ root: "addClassesDiv" }}
             onClick={() => setCreateModalState(true)}
           >
             <Icon style={{ fontSize: 40 }}>add</Icon>
