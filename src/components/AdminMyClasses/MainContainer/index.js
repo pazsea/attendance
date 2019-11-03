@@ -22,6 +22,7 @@ import Fab from "@material-ui/core/Fab";
 import CreateClassModal from "../CreateClassModal";
 import EditClassModal from "../EditClassModal";
 import ClassContainer from "../../ClassContainer";
+import InfoComponent from "../../../constants/InfoComponent";
 
 export default function MainContainer(props) {
   const {
@@ -101,7 +102,7 @@ export default function MainContainer(props) {
               ></ClassContainer>
             ))
           ) : (
-            <div>Du har inga klasser</div>
+            <InfoComponent text="Du har inte skapat några klasser" />
           )}
         </Typography>
         <div className="addClassesDiv">

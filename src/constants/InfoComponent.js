@@ -1,4 +1,21 @@
+// ----  { Libraries } ----
+import React from "react";
 import styled from "styled-components/macro";
+import { Info } from "styled-icons/typicons/Info";
+
+//Deconstructar text direkt.
+const InfoComponent = ({ text }) => {
+  return (
+    <SCInfoComponentContainer>
+      <SCCircle>
+        <SCTextBlock>
+          <SICheckIcon />
+          <h2>{text}</h2>
+        </SCTextBlock>
+      </SCCircle>
+    </SCInfoComponentContainer>
+  );
+};
 
 export const SCInfoComponentContainer = styled.div`
   border: 2 px solid orange;
@@ -9,15 +26,14 @@ export const SCInfoComponentContainer = styled.div`
 export const SCCircle = styled.div`
   display: flex;
   margin-top: 8%;
-  width: 25rem;
-  height: 25rem;
+  width: 20rem;
+  height: 20rem;
   background: white;
   border-radius: 50%;
   border: 8px solid #3f51b5;
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.87);
-  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   /* h2 {
     text-align: center;
@@ -26,22 +42,29 @@ export const SCCircle = styled.div`
 
 export const SCTextBlock = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 9rem;
-  height: 9rem;
+  height: 8rem;
   background: #3f51b5;
   border-radius: 10px;
   text-align: center;
+  align-items: center;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.87);
-  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   h2 {
     color: white;
     font-size: 0.7em;
-    align-self: center;
+    /* align-self: center; */
     padding: 0 0.5rem 0 0.5rem;
-    /* margin-bottom: 3.5rem; */
+    /* margin-top: 1em; */
   }
 `;
 
-// align-items:  center = Vertikalt
-// justify-content: = horizontellt.
+export const SICheckIcon = styled(Info)`
+  color: white;
+  width: 3em;
+  margin: 0 auto;
+`;
+
+export default InfoComponent;
