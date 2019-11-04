@@ -94,14 +94,14 @@ export const SCAdminClassContainer = styled.div`
 
 export const SCSPanButton = styled.span`
   button {
-    background: ${props => (props.attending ? "forestgreen" : "red")};
+    background: ${props => (props.attending ? "forestgreen" : "darkred")};
     width: 100%;
     color: white;
     /* background: forestgreen; */
     justify-content: space-between;
     padding: 0.5em 2em;
     :hover {
-      background: ${props => (props.attending ? "forestgreen" : "red")};
+      background: ${props => (props.attending ? "forestgreen" : "darkred")};
     }
   }
 `;
